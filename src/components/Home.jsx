@@ -240,10 +240,7 @@ function Home() {
         {/* Headline block */}
         <div className="relative z-10 flex h-full items-center">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full">
-            <div
-              className="max-w-4xl rounded-3xl ring-1 ring-white/20 bg-white/10 backdrop-blur-md shadow-[0_20px_70px_rgba(0,0,0,.40)] p-6 sm:p-8 md:p-10"
-              data-reveal
-            >
+           
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-amber-100/95 px-3 py-1 text-amber-900 text-xs font-semibold shadow-sm">
                 <span className="h-2 w-2 rounded-full bg-amber-700 animate-ping-slow" />
                 Alumni Institute Interaction Cell • NIT Tiruchirappalli
@@ -274,7 +271,7 @@ function Home() {
                 >
                   Support NITT
                 </a>
-              </div>
+              
             </div>
           </div>
         </div>
