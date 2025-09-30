@@ -75,30 +75,24 @@ function Section({ title, children }) {
                   <span className="mt-2 h-2 w-2 rounded-full bg-amber-600 shrink-0" />
                   <p>
                     <span className="font-semibold text-amber-900">Nurturing a culture of innovation and research:</span>{" "}
-                    We seek your expertise to guide research programs, mentor budding innovators, and fuel the next wave of
-                    scientific breakthroughs.
                   </p>
                 </li>
                 <li className="flex gap-3">
                   <span className="mt-2 h-2 w-2 rounded-full bg-amber-600 shrink-0" />
                   <p>
                     <span className="font-semibold text-amber-900">Expanding global collaborations:</span>{" "}
-                    Your diverse networks can enable partnerships, joint research ventures, and student exchanges with renowned global institutions.
                   </p>
                 </li>
                 <li className="flex gap-3">
                   <span className="mt-2 h-2 w-2 rounded-full bg-amber-600 shrink-0" />
                   <p>
                     <span className="font-semibold text-amber-900">Support in infrastructure development:</span>{" "}
-                    With shifting financial patterns for CFTIs, alumni support for infrastructure development and refurbishment
-                    is vital to our future-readiness.
                   </p>
                 </li>
                 <li className="flex gap-3">
                   <span className="mt-2 h-2 w-2 rounded-full bg-amber-600 shrink-0" />
                   <p>
                     <span className="font-semibold text-amber-900">Forging the Institute–alumni bond:</span>{" "}
-                    Your continued engagement—through workshops, guest talks, and mentorship—will inspire the next generation of changemakers.
                   </p>
                 </li>
               </ul>

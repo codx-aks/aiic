@@ -2,31 +2,25 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 function Donate() {
-  // Optional fallback if backend isn't ready: your hosted Razorpay Payment Page URL
   const RAZORPAY_PAYMENT_PAGE_URL = ""; // e.g. "https://rzp.io/l/aiic-donate"
 
-  // Keep these IDs in sync with Causes/Clubs pages
   const CAUSES = [
     { id: "scholarships-merit", name: "Merit & Need-Based Scholarships" },
     { id: "research-seed", name: "Undergraduate Research Seed Grants" },
     { id: "teams-technical", name: "Technical Teams & Clubs (Generic)" },
-    { id: "infra-learning", name: "Learning Spaces & Infrastructure" },
+    { id: "Hostel-Development", name: "Hostel Construction & Development" },
     { id: "mentorship-network", name: "Mentorship & Career Enablement" },
     { id: "emergency-fund", name: "Student Emergency & Wellness Fund" },
   ];
   const CLUBS = [
-    { id: "pragyan", name: "Pragyan (Techno-Managerial Fest)" },
     { id: "festember", name: "Festember (Cultural Fest)" },
     { id: "delta", name: "Delta Force (Software & Web)" },
     { id: "spider", name: "SPIDER (Robotics, Embedded & AI)" },
     { id: "rmi", name: "RMI (Automotive & Mechanical)" },
-    { id: "music", name: "Music Club" },
-    { id: "dance", name: "Dance Club" },
-    { id: "literary", name: "Literary & Debating Society" },
-    { id: "sports", name: "Sports Council" },
+    { id: "music-troupe", name: "Music Club" },
+    { id: "dance-troupe", name: "Dance Club" },
   ];
 
-  // Alumni metadata helpers
   const CURRENT_YEAR = new Date().getFullYear();
   const YEAR_OPTIONS = Array.from({ length: 60 }, (_, i) => CURRENT_YEAR - i); // last 60 years
   const BRANCHES = [
@@ -555,7 +549,7 @@ function Donate() {
             )}
           </form>
 
-          {/* SUMMARY / RECEIPT INFO */}
+      
           <aside className="rounded-3xl border border-amber-200/50 bg-white/70 backdrop-blur-md p-5 sm:p-7 h-max shadow-[0_8px_24px_rgba(180,83,9,.08)]">
             <h3 className="font-serif text-xl text-amber-900">Summary</h3>
             <div className="mt-4 space-y-3 text-sm">

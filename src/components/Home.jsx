@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-/* ---------- Tiny particles layer (no deps) ---------- */
 function Particles({ count = 22 }) {
   const dots = useMemo(() => {
     return Array.from({ length: count }).map((_, i) => {
@@ -30,7 +29,6 @@ function Particles({ count = 22 }) {
               "radial-gradient(circle, rgba(255,255,255,.85), rgba(255,255,255,.1) 60%, transparent 70%)",
             filter: "blur(.2px)",
             animation: `float ${d.dur}s linear ${d.delay}s infinite`,
-            // custom properties for this dot
             "--xdrift": `${d.xDrift}px`,
             "--ytravel": `-${d.yTravel}vh`,
           }}
@@ -39,9 +37,219 @@ function Particles({ count = 22 }) {
     </div>
   );
 }
+function NumbersBand() {
+  const useCountUp = ({ start = 0, end = 0, duration = 1800, inView = false, delay = 0 }) => {
+    const [val, setVal] = React.useState(start);
+    React.useEffect(() => {
+      if (!inView) return;
+      let raf = 0, t0 = 0;
+      const ease = (t) => 1 - Math.pow(1 - t, 3);
+      const step = (ts) => {
+        if (!t0) t0 = ts;
+        const p = Math.min(1, (ts - t0) / duration);
+        setVal(start + (end - start) * ease(p));
+        if (p < 1) raf = requestAnimationFrame(step);
+      };
+      const t = setTimeout(() => (raf = requestAnimationFrame(step)), delay);
+      return () => { clearTimeout(t); cancelAnimationFrame(raf); };
+    }, [start, end, duration, inView, delay]);
+    return val;
+  };
+
+  // one stat row
+  const StatRow = ({ value, suffix, label, idx, inView }) => {
+    const n = useCountUp({ end: value, duration: 1800, inView, delay: idx * 120 });
+    const display =
+      value >= 1000 && suffix?.includes("K")
+        ? `${(n / 1000).toFixed(0)}`
+        : Math.round(n).toLocaleString();
+
+    return (
+      <div
+        className={`grid grid-cols-2 md:grid-cols-[1fr_auto] items-center gap-3 md:gap-6 px-4 md:px-6 py-5 md:py-6 border-t border-white/10
+        ${inView ? "animate-row-in" : "opacity-0 translate-y-2"}`}
+        style={{ animationDelay: `${idx * 90}ms` }}
+      >
+        <div className="flex items-baseline gap-3">
+          <span className="text-4xl md:text-5xl font-extrabold tracking-tight text-white drop-shadow-[0_8px_24px_rgba(0,0,0,.35)]">
+            {display}<span className="text-amber-200">{suffix}</span>
+          </span>
+        </div>
+        <div className="relative text-right text-amber-100/90 text-lg md:text-xl font-medium">
+          <span className="relative inline-block">
+            {label}
+            <span className={`absolute inset-x-0 -inset-y-1 rounded-md opacity-0 ${inView ? "animate-shimmer" : ""}`} />
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  const ref = React.useRef(null);
+  const [inView, setInView] = React.useState(false);
+
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (ents) => ents.forEach((e) => e.isIntersecting && (setInView(true), io.disconnect())),
+      { rootMargin: "0px 0px -20% 0px", threshold: 0.2 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const STATS = React.useMemo(
+    () => [
+      { value: 50, suffix: "K+", label: "ALUMNI" },
+      { value: 7, suffix: "K+", label: "STUDENTS" },
+      { value: 350, suffix: "+", label: "FACULTY" },
+      { value: 165, suffix: "+", label: "PATENTS" },
+    ],
+    []
+  );
+
+  return (
+    <section ref={ref} className="relative w-full overflow-hidden" aria-labelledby="nitt-in-numbers">
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-950 via-stone-900 to-stone-900 animate-breathe" />
+      <div className="absolute inset-0 opacity-45 bg-[radial-gradient(80%_60%_at_10%_10%,rgba(251,191,36,.18),transparent_60%),radial-gradient(70%_50%_at_90%_90%,rgba(234,88,12,.14),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[.10] [background:repeating-linear-gradient(0deg,transparent,transparent_36px,rgba(255,255,255,.18)_37px)]" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-12 md:py-16">
+        <div className="grid gap-10 lg:grid-cols-12 items-center">
+          <div className="lg:col-span-5">
+            <h2 id="nitt-in-numbers" className="font-serif text-4xl md:text-6xl tracking-tight text-amber-50">
+              NITT in Numbers
+            </h2>
+            <p className="mt-2 text-amber-100/85 text-sm md:text-base">
+              Institution of Eminence · Growing impact, stronger community
+            </p>
+          </div>
+
+          <div className="lg:col-span-7">
+            <div
+              className={`relative rounded-3xl border border-amber-900/30 bg-white/5 backdrop-blur p-2 md:p-3 overflow-hidden
+              ${inView ? "animate-card-in" : "opacity-0 translate-y-3"}`}
+            >
+              {/* gloss sweep */}
+              <div className={`pointer-events-none absolute -left-1/3 top-0 h-full w-1/2 rotate-12 bg-gradient-to-r from-transparent via-white/10 to-transparent ${inView ? "animate-sweep" : "opacity-0"}`} />
+              {STATS.map((s, i) => (
+                <StatRow key={s.label} {...s} idx={i} inView={inView} />
+              ))}
+            </div>
+            <div className="mt-3 text-amber-100/70 text-xs">
+              Figures indicative; continually updated as the community grows.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Local styles */}
+      <style>{`
+        @keyframes breathe {
+          0%,100% { transform: scale(1); filter: brightness(1); }
+          50%     { transform: scale(1.01); filter: brightness(1.02); }
+        }
+        .animate-breathe { animation: breathe 14s ease-in-out infinite; }
+
+        @keyframes sweep {
+          0%   { transform: translateX(-120%) rotate(12deg); opacity:.0; }
+          15%  { opacity:1; }
+          60%  { transform: translateX(220%) rotate(12deg); opacity:1; }
+          100% { opacity:.0; }
+        }
+        .animate-sweep { animation: sweep 2.6s ease 200ms 1; }
+
+        @keyframes row-in {
+          0%   { opacity: 0; transform: translateY(8px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-row-in { animation: row-in .6s cubic-bezier(.2,.65,.2,1) both; }
+
+        @keyframes card-in {
+          0%   { opacity: 0; transform: translateY(10px) scale(.99); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-card-in { animation: card-in .5s ease-out both; }
+
+        @keyframes shimmer {
+          0% { background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent); transform: translateX(-60%); opacity: 0; }
+          15% { opacity: 1; }
+          100% { transform: translateX(160%); opacity: 0; }
+        }
+        .animate-shimmer { animation: shimmer 1.8s ease .4s 1; }
+      `}</style>
+    </section>
+  );
+}
+
+
+
+function FacebookSection() {
+  const PAGE_URL =
+    "https://www.facebook.com/p/NIT-Trichy-Alumni-100072175306327/";
+
+  const src = `https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(
+    PAGE_URL
+  )}&tabs=timeline&width=500&height=680&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true`;
+
+  return (
+    <section
+      className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_8px_24px_rgba(180,83,9,.08)]"
+      aria-labelledby="alumni-social"
+      data-reveal
+    >
+      <div className="flex items-center gap-2 mb-5">
+        <span className="h-2 w-2 rounded-full bg-amber-700" />
+        <h2 id="alumni-social" className="font-serif text-2xl md:text-3xl text-amber-900">
+          Stay Connected
+        </h2>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 items-start">
+        <div className="rounded-2xl border border-amber-200/70 bg-white p-3 shadow">
+          <div className="relative w-full" style={{ paddingBottom: "680px" }}>
+            <iframe
+              title="NIT Trichy Alumni Facebook Page"
+              src={src}
+              className="absolute inset-0 w-full h-full"
+              style={{ border: "none", overflow: "hidden" }}
+              scrolling="no"
+              frameBorder="0"
+              allow="encrypted-media; clipboard-write; picture-in-picture; web-share"
+            />
+          </div>
+        </div>
+
+        <div className="text-[15px] leading-7 text-stone-800">
+          <p>
+            Follow the NIT Trichy Alumni community for reunions, chapters,
+            opportunities, and campus updates—right from Facebook.
+          </p>
+          <p className="mt-3">
+            Highlights, throwbacks, and impact stories are posted regularly.
+            Join the conversation and amplify NITT’s momentum!
+          </p>
+          <a
+            href={PAGE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02]"
+          >
+            Open on Facebook
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+              <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function Home() {
   const [activeResearch, setActiveResearch] = useState(0);
+  const [pauseResearch, setPauseResearch] = useState(false); 
 
   const scrollerRef = useRef(null);
   const pauseRef = useRef(false);
@@ -64,8 +272,7 @@ function Home() {
         dept: "Department of Physics",
         institute: "National Institute of Technology, Tiruchirappalli",
         image: "/research1.jpeg",
-        description:
-          "The research areas of the magnetic materials laboratory encompass studies on the structure-property correlation in a wide range of soft and hard magnetic materials. The research team under Prof. R. Justin Joseyphus explored exchange bias, size and shape-dependent coercivities in nanoparticles of Fe and its alloys obtained through a novel instant polyol process. The Fe-based alloys are tailor-made to reduce the coercivity without losing their morphology with annealing and are expected to be utilized in future-generation more-electric vehicles. In another study, equipped with a 500 kHz indigenous AC magnetic field generator, the team established high-heating efficiency in superparamagnetic nanoparticles. The discovery has opened up new avenues for efficient magnetic nanoparticles suitable for cancer therapy by lowering the anisotropy energy using appropriate dopants. The image illustrates the magnetic nanoparticle hyperthermia methodology for brain tumor therapy and the thermal profile of the magnetic nanoparticles recorded in the research team's laboratory.",
+        description: "The research areas of the magnetic materials laboratory encompass studies on the structure-property correlation in a wide range of soft and hard magnetic materials. The research team under Prof. R. Justin Joseyphus explored exchange bias, size and shape-dependent coercivities in nanoparticles of Fe and its alloys obtained through a novel instant polyol process. The Fe-based alloys are tailor-made to reduce the coercivity without losing their morphology with annealing and are expected to be utilized in future-generation more-electric vehicles. In another study, equipped with a 500 kHz indigenous AC magnetic field generator, the team established high-heating efficiency in superparamagnetic nanoparticles. The discovery has opened up new avenues for efficient magnetic nanoparticles suitable for cancer therapy by lowering the anisotropy energy using appropriate dopants. The image illustrates the magnetic nanoparticle hyperthermia methodology for brain tumor therapy and the thermal profile of the magnetic nanoparticles recorded in the research team's laboratory.",
         facultyLink: "https://www.nitt.edu/home/academics/departments/physics/Faculty/justin/",
       },
       {
@@ -74,7 +281,7 @@ function Home() {
         institute: "National Institute of Technology, Tiruchirappalli",
         image: "/research2.jpeg",
         description:
-          "Dr. Sudharsan P work spans 3 important topics in 6G wireless communication such as intelligent reflecting surfaces (IRS), hybrid satellite-terrestrial system and THz communication. In IRS work we considered a direct Tx-Rx channel in addition to the IRS channel and analyzed the system. We analyzed the IRS system in a multi antenna setup too. We have anlayzed coverage of amplify-forward relay based multi user hybrid satellite-terrestrial systems. The analytical expressions derived have been verified with simulation giving us good insights into the wireless system. The work with my Ph.D scholar focuses on analyzing THz communication networks. The challenge is to model the interference in such networks carefully and derive metrics such as coverage, rate etc. I have recently obtained a 3 year SERB-MATRICS grant to use stochastic geometry techniques to analyze vehicular communication networks. We have used Poisson point process to analyze automotive radar systems and presented it in NCC 2024 at IIT Madras.",
+        "Dr. Sudharsan P work spans 3 important topics in 6G wireless communication such as intelligent reflecting surfaces (IRS), hybrid satellite-terrestrial system and THz communication. In IRS work we considered a direct Tx-Rx channel in addition to the IRS channel and analyzed the system. We analyzed the IRS system in a multi antenna setup too. We have anlayzed coverage of amplify-forward relay based multi user hybrid satellite-terrestrial systems. The analytical expressions derived have been verified with simulation giving us good insights into the wireless system. The work with my Ph.D scholar focuses on analyzing THz communication networks. The challenge is to model the interference in such networks carefully and derive metrics such as coverage, rate etc. I have recently obtained a 3 year SERB-MATRICS grant to use stochastic geometry techniques to analyze vehicular communication networks. We have used Poisson point process to analyze automotive radar systems and presented it in NCC 2024 at IIT Madras.",
         facultyLink: "https://www.nitt.edu/home/academics/departments/ece/faculty/sudharsan/",
       },
       {
@@ -83,7 +290,7 @@ function Home() {
         institute: "National Institute of Technology, Tiruchirappalli",
         image: "/research3.jpeg",
         description:
-          "Dr. R. Periyasamy's recent research focuses on developing an innovative biomedical diagnostic device to enhance patient care, particularly for diabetic foot ulcers, neonatal jaundice, and pulmonary diseases. One of his notable projects involves creating a novel sensing device funded by DST-TIDE, which is designed to detect ulcer risk areas in diabetic feet at an early stage. Additionally, he has developed a handheld device for diagnosing compressive neuropathy in diabetic subjects using a two-point discrimination test, supported by DST-SYST. In the field of neonatal care, he has pioneered a non-invasive, on-contact jaundice meter that uses skin reflectometry technique to measure bilirubin levels; this device is currently patent-filed and in process, funded by DST-IDP. Furthermore, he is working on non-invasive haemoglobin estimation and other patient vital sign parameter monitoring by utilizing dual-wavelength photoplethysmography (PPG) and machine learning techniques. He is also involved in the diagnosis of pulmonary diseases through lung sound analysis using machine learning and deep learning approaches. His research, which combines biomedical instrumentation with advanced diagnostic techniques, has been published in high-impact journals and has received several awards.",
+        "Dr. R. Periyasamy's recent research focuses on developing an innovative biomedical diagnostic device to enhance patient care, particularly for diabetic foot ulcers, neonatal jaundice, and pulmonary diseases. One of his notable projects involves creating a novel sensing device funded by DST-TIDE, which is designed to detect ulcer risk areas in diabetic feet at an early stage. Additionally, he has developed a handheld device for diagnosing compressive neuropathy in diabetic subjects using a two-point discrimination test, supported by DST-SYST. In the field of neonatal care, he has pioneered a non-invasive, on-contact jaundice meter that uses skin reflectometry technique to measure bilirubin levels; this device is currently patent-filed and in process, funded by DST-IDP. Furthermore, he is working on non-invasive haemoglobin estimation and other patient vital sign parameter monitoring by utilizing dual-wavelength photoplethysmography (PPG) and machine learning techniques. He is also involved in the diagnosis of pulmonary diseases through lung sound analysis using machine learning and deep learning approaches. His research, which combines biomedical instrumentation with advanced diagnostic techniques, has been published in high-impact journals and has received several awards.",
         facultyLink: "https://www.nitt.edu/home/academics/departments/ice/faculty/periyasamyr/",
       },
       {
@@ -92,61 +299,49 @@ function Home() {
         institute: "National Institute of Technology, Tiruchirappalli",
         image: "/research4.jpeg",
         description:
-          "Dr. Projesh Kumar Roy, Assistant Professor in the Department of Chemistry at NIT Tiruchirappalli, leads the Computational Material Discovery Laboratory (@MatDisco), where cutting-edge computational methods are employed to analyze and predict the properties of novel materials such as 2D materials, glasses, ring-polymers, and proteins. The lab not only advances academic research but also addresses real-world challenges through collaborations with industrial partners. Previously, the PI have successfully completed an industrial project–sponsored jointly by SHELL India Inc. and IISc, Bangalore—on the CO2 gas adsorption in a high-performance polyimide-type polymeric membranes using molecular dynamics and associated methods. We are further extending the project using coarse-grain methodology to understand the intricate details of QSAR between pore-networks and adsorption properties of polymers. A DST-SERB sponsored project on the interactions between oncogenic p53-p73 protein is ongoing at @MatDisco in collaboration with IIT-Madras, with aim to design anti-cancer drugs using cheminformatic tools. We are extending our expertise in machine learning, artificial intelligence, and QM/MM methods as well.",
+        "Dr. Projesh Kumar Roy, Assistant Professor in the Department of Chemistry at NIT Tiruchirappalli, leads the Computational Material Discovery Laboratory (@MatDisco), where cutting-edge computational methods are employed to analyze and predict the properties of novel materials such as 2D materials, glasses, ring-polymers, and proteins. The lab not only advances academic research but also addresses real-world challenges through collaborations with industrial partners. Previously, the PI have successfully completed an industrial project–sponsored jointly by SHELL India Inc. and IISc, Bangalore—on the CO2 gas adsorption in a high-performance polyimide-type polymeric membranes using molecular dynamics and associated methods. We are further extending the project using coarse-grain methodology to understand the intricate details of QSAR between pore-networks and adsorption properties of polymers. A DST-SERB sponsored project on the interactions between oncogenic p53-p73 protein is ongoing at @MatDisco in collaboration with IIT-Madras, with aim to design anti-cancer drugs using cheminformatic tools. We are extending our expertise in machine learning, artificial intelligence, and QM/MM methods as well.",
         facultyLink: "https://www.nitt.edu/home/academics/departments/chemistry/Faculty/projesh/",
       },
       {
-        title: "Can AI Transform Materials Engineering and Waste Management?",
-        dept: "",
-        institute: "",
+        title: "AI for Materials & Waste",
+        dept: "Department of MME",
+        institute: "National Institute of Technology, Tiruchirappalli",
         image: "/research5.jpeg",
         description:
-          "At Theoretical Metallurgy Lab, my team and I (Dr.-Ing. Prince Gideon Kubendran Amos) are investigating this pivotal question. We perform quantitative analysis of intricate, temporally-evolving microstructures both experimentally observed or numerically modeled. By applying AI techniques—from regression-based object detection to deep learning—we assess dynamic and static microstructures, focusing on the kinetics and characteristic features that influence material properties. Additionally, we explore how large language models (LLMs) can enhance access to crucial information on Metallurgical Waste Management, helping to mitigate its adverse effects and advance sustainable practices in materials engineering.",
+        "At Theoretical Metallurgy Lab, my team and I (Dr.-Ing. Prince Gideon Kubendran Amos) are investigating this pivotal question. We perform quantitative analysis of intricate, temporally-evolving microstructures both experimentally observed or numerically modeled. By applying AI techniques—from regression-based object detection to deep learning—we assess dynamic and static microstructures, focusing on the kinetics and characteristic features that influence material properties. Additionally, we explore how large language models (LLMs) can enhance access to crucial information on Metallurgical Waste Management, helping to mitigate its adverse effects and advance sustainable practices in materials engineering.",
         facultyLink: "https://www.nitt.edu/home/academics/departments/meta/faculty/prince/",
       },
     ],
     []
   );
 
+  useEffect(() => {
+    if (pauseResearch || research.length <= 1) return;
+    const id = setInterval(() => {
+      setActiveResearch((i) => (i + 1) % research.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [pauseResearch, research.length]);
+
+  const handleManualSelect = (i) => {
+    setActiveResearch(i);
+    setPauseResearch(true);               
+    window.clearTimeout(handleManualSelect._t);
+    handleManualSelect._t = window.setTimeout(() => setPauseResearch(false), 8000);
+  };
+
   const news = useMemo(
     () => [
-      {
-        title: "Global Alumni Meet 2025",
-        tag: "Alumni",
-        image:
-          "/gam.jpeg",
-        blurb:
-          "Panels, networking and campus nostalgia—our global community grew stronger than ever.",
-      },
-      {
-        title: "Distinguished Alumni Awards",
-        tag: "Awards",
-        image:
-          "daa.jpeg",
-        blurb:
-          "Celebrating leadership, innovation and service that inspire the next generation.",
-      },
-      {
-        title: "New City Chapters",
-        tag: "Community",
-        image:
-          "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1400&auto=format&fit=crop",
-        blurb:
-          "Meetups, mentorship circles and industry connects are now live across cities.",
-      },
-      {
-        title: "Campus Giveback Drive",
-        tag: "Giving",
-        image:
-          "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1400&auto=format&fit=crop",
-        blurb:
-          "Alumni rallied to support scholarships, wellness and transformative learning spaces.",
-      },
+      { title: "Global Alumni Meet 2025", tag: "Alumni", image: "/gam.jpeg", blurb: "Panels, networking and campus nostalgia—our global community grew stronger than ever." },
+      { title: "Distinguished Alumni Awards", tag: "Awards", image: "daa.jpeg", blurb: "Celebrating leadership, innovation and service that inspire the next generation." },
+      { title: "Distinguished Alumni Awards", tag: "Awards", image: "daa.jpeg", blurb: "Celebrating leadership, innovation and service that inspire the next generation." },
+      { title: "Distinguished Alumni Awards", tag: "Awards", image: "daa.jpeg", blurb: "Celebrating leadership, innovation and service that inspire the next generation." },
+      { title: "Distinguished Alumni Awards", tag: "Awards", image: "daa.jpeg", blurb: "Celebrating leadership, innovation and service that inspire the next generation." },
+    
     ],
     []
   );
 
-  // --- Auto-nudge news strip ---
   useEffect(() => {
     const el = scrollerRef.current;
     if (!el) return;
@@ -162,7 +357,6 @@ function Home() {
     return () => clearInterval(tick);
   }, []);
 
-  // Drag-to-scroll
   useEffect(() => {
     const el = scrollerRef.current;
     if (!el) return;
@@ -202,14 +396,13 @@ function Home() {
     pauseRef.current = true;
     const step = el.clientWidth * 0.7;
     el.scrollBy({ left: dir === "left" ? -step : step, behavior: "smooth" });
-    setTimeout(() => (pauseRef.current = false), 4000);
+    setTimeout(() => (pauseRef.current = false), 2500);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
       {/* HERO */}
       <section className="relative h-[100svh] w-full overflow-hidden">
-        {/* Ken Burns wrapper */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute inset-0 animate-kenburns will-change-transform">
             <video
@@ -223,10 +416,7 @@ function Home() {
             />
           </div>
         </div>
-
-        {/* Dark-to-warm gradient veil for legibility */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/50 to-black/70" />
-        {/* Animated color wash */}
         <div
           className="pointer-events-none absolute inset-0 opacity-80 animate-pan-slow z-[5]"
           style={{
@@ -234,116 +424,55 @@ function Home() {
               "radial-gradient(120% 80% at 10% 10%, rgba(251,191,36,0.16), transparent 60%), radial-gradient(110% 70% at 90% 90%, rgba(234,88,12,0.16), transparent 60%)",
           }}
         />
-        {/* Floating particles (subtle) */}
         <Particles count={22} />
-
-        {/* Headline block */}
         <div className="relative z-10 flex h-full items-center">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full">
-           
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-amber-100/95 px-3 py-1 text-amber-900 text-xs font-semibold shadow-sm">
-                <span className="h-2 w-2 rounded-full bg-amber-700 animate-ping-slow" />
-                Alumni Institute Interaction Cell • NIT Tiruchirappalli
-              </div>
-
-              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight text-transparent bg-clip-text bg-[linear-gradient(90deg,#fff,rgba(255,255,255,.85),#fde68a,#fff)] bg-[length:200%_100%] animate-gradient-x drop-shadow-[0_8px_24px_rgba(0,0,0,.35)]">
-                A Living Bridge Between Alumni and NITT
-              </h1>
-
-              <p className="mt-4 text-stone-100/95 md:text-lg">
-                Mentorship. Research. Campus transformation. Together, we turn legacy into momentum.
-              </p>
-
-              <div className="mt-6 flex flex-wrap gap-3" data-reveal>
-                <a
-                  href="/about"
-                  className="group relative inline-flex items-center gap-2 rounded-2xl bg-amber-600 px-5 py-3 text-white shadow-lg hover:brightness-110 active:brightness-95 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400"
-                >
-                  <span className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition bg-[linear-gradient(120deg,rgba(255,255,255,.35),transparent_40%)] animate-shine" />
-                  Explore AIIC
-                  <svg viewBox="0 0 24 24" className="h-4 w-4 transition group-hover:translate-x-0.5" fill="currentColor">
-                    <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
-                  </svg>
-                </a>
-                <a
-                  href="/donate"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-white/90 px-5 py-3 text-amber-900 ring-1 ring-amber-200 hover:bg-white transition shadow"
-                >
-                  Support NITT
-                </a>
-              
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-amber-100/95 px-3 py-1 text-amber-900 text-xs font-semibold shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-amber-700 animate-ping-slow" />
+              Alumni Institute Interaction Cell • NIT Tiruchirappalli
+            </div>
+            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight text-transparent bg-clip-text bg-[linear-gradient(90deg,#fff,rgba(255,255,255,.85),#fde68a,#fff)] bg-[length:200%_100%] animate-gradient-x drop-shadow-[0_8px_24px_rgba(0,0,0,.35)]">
+              A Living Bridge Between Alumni and NITT
+            </h1>
+            <p className="mt-4 text-stone-100/95 md:text-lg">
+              Mentorship. Research. Campus transformation. Together, we turn legacy into momentum.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3" data-reveal>
+              <a
+                href="/about"
+                className="group relative inline-flex items-center gap-2 rounded-2xl bg-amber-600 px-5 py-3 text-white shadow-lg hover:brightness-110 active:brightness-95 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400"
+              >
+                <span className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition bg-[linear-gradient(120deg,rgba(255,255,255,.35),transparent_40%)] animate-shine" />
+                Explore AIIC
+                <svg viewBox="0 0 24 24" className="h-4 w-4 transition group-hover:translate-x-0.5" fill="currentColor">
+                  <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
+                </svg>
+              </a>
+              <a
+                href="/donate"
+                className="inline-flex items-center gap-2 rounded-2xl bg-white/90 px-5 py-3 text-amber-900 ring-1 ring-amber-200 hover:bg-white transition shadow"
+              >
+                Support NITT
+              </a>
             </div>
           </div>
         </div>
-
-        {/* Soft white fade into content */}
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white to-transparent" />
       </section>
 
+       <NumbersBand />
+
       {/* CONTENT */}
       <main className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 space-y-10 md:space-y-12 -mt-10">
-        {/* Director’s Message */}
-        <section
-          className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.12)]"
-          data-reveal
-        >
-          <div className="flex items-center gap-2 mb-6">
-            <span className="h-2 w-2 rounded-full bg-amber-700" />
-            <h2 className="font-serif text-2xl md:text-3xl text-amber-900">Director’s Message</h2>
-          </div>
-          <div className="grid gap-6 md:grid-cols-12 items-start">
-            <div className="md:col-span-4 lg:col-span-4">
-              <div className="relative mx-auto md:mx-0 w-full max-w-[320px]">
-                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-amber-600/25 via-orange-600/15 to-amber-800/15 blur-xl animate-pulse-soft" />
-                <figure className="relative overflow-hidden rounded-2xl border border-amber-200/70 bg-white shadow">
-                  <img src="/director.jpeg" alt="Director" className="aspect-[4/5] w-full object-cover" />
-                  <figcaption className="p-4">
-                    <div className="text-amber-900 font-semibold leading-tight">Dr. G. Aghila</div>
-                    <div className="text-xs text-stone-600">
-                      Director, National Institute of Technology, Tiruchirappalli
-                    </div>
-                  </figcaption>
-                </figure>
-              </div>
-            </div>
-            <div className="md:col-span-8 lg:col-span-8 text-[15px] leading-7 text-stone-800 space-y-4">
-              <h3 className="text-amber-900 font-semibold text-lg">Clock Tower Echoes, Legacy Endures</h3>
-              <p>Dear esteemed alumni,</p>
-              <p>
-                Stepping beneath the iconic clock tower marked the beginning of an enduring bond. You entered a legacy,
-                etched in the annals of NITT– an institution consistently ranked number one among all NITs in the country.
-              </p>
-              <p>
-                Remember the vibrant discussions under the canopy of our shady trees, the late-night study sessions fueled
-                by shared dreams, and the camaraderie that cemented lifelong friendships. As alumni, you have proven that you
-                carry those memories not just in your hearts, but in the tangible impact you have made on NITT today.
-              </p>
-              <p>
-                NITT boasts a unique treasure – its alumni network. Your diverse expertise, global presence, and unwavering
-                commitment to “give back” are a force like no other. Whether it’s through funding cutting-edge labs, mentoring
-                budding engineers, or collaborating on research at the forefront of progress, your contributions echo within
-                these very walls, infrastructure development, greening the campus, inspiring the next generation to climb even
-                higher and other social constraints.
-              </p>
-              <p>
-                Through alumni reunions and generous donations, you have ensured that the NITT legacy endures, echoing not just
-                within the clock tower, but across the world.
-              </p>
-              <p>
-                The clock tower may mark your entry, but your enduring connection is what truly defines your NITT story. Let us
-                continue to build bridges. Share your wisdom, offer your expertise, and join hands in shaping the future of this
-                esteemed institution. Your participation in research collaborations, guest lectures, and mentorship programs can
-                illuminate the path for our students.
-              </p>
-              <p>As does the clock tower, let your legacy resonate in perpetuity…</p>
-            </div>
-          </div>
-        </section>
 
-        {/* Research Highlights */}
+        {/* Facebook feed */}
+        
+        {/* Research Highlights (auto-advance every 3s, pauses on hover/click) */}
         <section
           className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_8px_24px_rgba(180,83,9,.08)]"
           data-reveal
+          onMouseEnter={() => setPauseResearch(true)}
+          onMouseLeave={() => setPauseResearch(false)}
         >
           <div className="flex items-center gap-3 mb-6">
             <span className="h-2 w-2 rounded-full bg-amber-700" />
@@ -352,11 +481,11 @@ function Home() {
               {research.map((_, i) => (
                 <button
                   key={i}
-                  onClick={() => setActiveResearch(i)}
+                  onClick={() => handleManualSelect(i)}
                   className={`h-8 w-8 rounded-full text-xs font-semibold transition relative overflow-hidden
                     ${
                       i === activeResearch
-                        ? "bg-amber-800 text-white shadow after:absolute after:inset-0 after:animate-shine"
+                        ? "bg-amber-800 text-white shadow"
                         : "bg-white border border-amber-200 text-amber-900 hover:bg-amber-50"
                     }`}
                   aria-label={`Show research ${i + 1}`}
@@ -403,6 +532,8 @@ function Home() {
             </div>
           </div>
         </section>
+
+        
 
         {/* News */}
         <section
@@ -466,87 +597,32 @@ function Home() {
           </div>
           <div className="mt-3 text-center text-xs text-stone-600">Drag to explore • Use arrows on desktop</div>
         </section>
+        <FacebookSection />
       </main>
 
       {/* Animations & utilities */}
       <style>{`
-        /* Hide scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .dragging { cursor: grabbing !important; user-select: none; }
-
-        /* Reveal on scroll */
         [data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity .8s ease, transform .8s ease; }
         .is-visible { opacity: 1 !important; transform: translateY(0) !important; }
-
-        /* Gradient animation */
-        @keyframes gradient-x {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
+        @keyframes gradient-x { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         .animate-gradient-x { animation: gradient-x 12s ease infinite; }
-
-        /* Slow color wash pan */
-        @keyframes pan-slow {
-          0%   { transform: translate3d(0,0,0); }
-          50%  { transform: translate3d(1.5%, -1.5%, 0); }
-          100% { transform: translate3d(0,0,0); }
-        }
+        @keyframes pan-slow { 0%{transform:translate3d(0,0,0)} 50%{transform:translate3d(1.5%,-1.5%,0)} 100%{transform:translate3d(0,0,0)} }
         .animate-pan-slow { animation: pan-slow 14s ease-in-out infinite; }
-
-        /* Ken Burns effect */
-        @keyframes kenburns {
-          0%   { transform: scale(1.05) translate3d(-1%, -1%, 0); }
-          50%  { transform: scale(1.10) translate3d(1%, 1%, 0); }
-          100% { transform: scale(1.05) translate3d(-1%, -1%, 0); }
-        }
+        @keyframes kenburns { 0%{transform:scale(1.05) translate3d(-1%,-1%,0)} 50%{transform:scale(1.10) translate3d(1%,1%,0)} 100%{transform:scale(1.05) translate3d(-1%,-1%,0)} }
         .animate-kenburns { animation: kenburns 24s ease-in-out infinite; }
-
-        /* Shine overlay for buttons/cards */
-        @keyframes shine {
-          0% { transform: translateX(-120%); }
-          100% { transform: translateX(120%); }
-        }
-        .animate-shine::before {
-          content:"";
-          position:absolute;
-          inset:-2px;
-          background: linear-gradient(120deg, rgba(255,255,255,.5), rgba(255,255,255,0) 30%, rgba(255,255,255,.5) 60%, rgba(255,255,255,0));
-          transform: translateX(-120%);
-          animation: shine 1.5s ease-in-out infinite;
-        }
-        .animate-shine { overflow: hidden; }
-
-        /* Image fade-in */
-        @keyframes fade-in {
-          from { opacity: 0; transform: scale(.98); }
-          to   { opacity: 1; transform: scale(1); }
-        }
+        @keyframes shine { 0%{transform:translateX(-120%)} 100%{transform:translateX(120%)} }
+        .animate-shine::before { content:""; position:absolute; inset:-2px; background:linear-gradient(120deg,rgba(255,255,255,.5),rgba(255,255,255,0) 30%,rgba(255,255,255,.5) 60%,rgba(255,255,255,0)); transform:translateX(-120%); animation:shine 1.5s ease-in-out infinite; }
+        .animate-shine { overflow:hidden; }
+        @keyframes fade-in { from{opacity:0;transform:scale(.98)} to{opacity:1;transform:scale(1)} }
         .animate-fade-in { animation: fade-in .6s ease forwards; }
-
-        /* Ping */
-        @keyframes ping-slow {
-          0% { transform: scale(1); opacity: 1; }
-          70% { transform: scale(1.6); opacity: 0; }
-          100% { transform: scale(1.6); opacity: 0; }
-        }
+        @keyframes ping-slow { 0%{transform:scale(1);opacity:1} 70%{transform:scale(1.6);opacity:0} 100%{transform:scale(1.6);opacity:0} }
         .animate-ping-slow { animation: ping-slow 2.2s cubic-bezier(0,0,.2,1) infinite; }
-
-        /* Soft pulse bg accent */
-        @keyframes pulse-soft {
-          0%, 100% { opacity: .55; }
-          50% { opacity: .85; }
-        }
+        @keyframes pulse-soft { 0%,100%{opacity:.55} 50%{opacity:.85} }
         .animate-pulse-soft { animation: pulse-soft 4.2s ease-in-out infinite; }
-
-        /* Particles float: use CSS vars injected per-dot */
-        @keyframes float {
-          0%   { transform: translate3d(0, 0, 0); opacity: .0; }
-          8%   { opacity: .7; }
-          92%  { opacity: .7; }
-          100% { transform: translate3d(var(--xdrift, 0), var(--ytravel, -60vh), 0); opacity: 0; }
-        }
+        @keyframes float { 0%{ transform:translate3d(0,0,0); opacity:.0 } 8%{ opacity:.7 } 92%{ opacity:.7 } 100%{ transform:translate3d(var(--xdrift,0), var(--ytravel,-60vh), 0); opacity:0 } }
       `}</style>
     </div>
   );

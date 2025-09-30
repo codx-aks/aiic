@@ -6,6 +6,7 @@ import About from './components/About';
 import Donate from './components/Donate';
 import Contact from './components/Contact';
 
+import DirectorMessage from './components/DirectorMessage';
 import DeanMessage from './components/DeanMessage';
 import Team from './components/Team';
 
@@ -30,13 +31,10 @@ import Faculty from './components/Faculty';
 import Infra from './components/Infra';
 import Hostel from './components/Hostel';
 
-
-
 import DAA from './components/DAA';
 import YAA from './components/YAA';
 
 import UpcomingEvents from './components/UpcomingEvents';
-import PreviousContributions from './components/PreviousContributions';
 
 const MENU = [
   { id: 'home', label: 'Home', to: '/' },
@@ -45,6 +43,7 @@ const MENU = [
     label: 'AIIC',
     children: [
       { label: 'About', to: '/aiic/about' },
+      { label: 'Director’s Message', to: '/aiic/directors-message' },
       { label: 'Dean’s Message', to: '/aiic/deans-message' },
       { label: 'Meet the Team', to: '/aiic/team' },
       { label: 'RECAL', href: 'https://www.nittrichyalumni.org', external: true },
@@ -87,7 +86,6 @@ const MENU = [
     label: 'Events',
     children: [
       { label: 'Upcoming Events', to: '/events/upcoming' },
-      { label: 'Previous Contribution', to: '/events/previous' },
     ],
   },
   { id: 'contact', label: 'Contact Us', to: '/contact' },
@@ -317,6 +315,7 @@ function App() {
         <Route path="/" element={<Home />} />
 
         <Route path="/aiic/about" element={<About />} />
+         <Route path="/aiic/directors-message" element={<DirectorMessage />} />
         <Route path="/aiic/deans-message" element={<DeanMessage />} />
         <Route path="/aiic/team" element={<Team />} />
 
@@ -346,7 +345,6 @@ function App() {
         <Route path="/awards/yaa" element={<YAA />} />
 
         <Route path="/events/upcoming" element={<UpcomingEvents />} />
-        <Route path="/events/previous" element={<PreviousContributions />} />
 
         <Route path="/donate" element={<Donate />} />
         <Route path="/contact" element={<Contact />} />
