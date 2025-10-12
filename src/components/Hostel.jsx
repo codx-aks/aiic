@@ -1,86 +1,94 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+const DONATE_CAUSE_ID = "infra-learning"; // must match Donate.jsx CAUSES id
+
+const SECTIONS = [
+  {
+    key: "new-hostel",
+    title: "New Hostel Construction",
+    summary: (
+      <>
+        <p>
+          Our students are the Institute’s cornerstones and their well-being is of paramount
+          importance. The Institute is continuously striving to provide the best in-campus experience—
+          both learning and living. Since our inception, we have incrementally constructed hostels to
+          accommodate our growing student strength. Currently, there are 24 Hostels for Boys and 7 for girls.
+          To fairly match the present strength of students (~7000), two new hostels—Amethyst and OPAL F—
+          have been added recently.
+        </p>
+        <p>
+          A 10-year forecast shows a steep increase in admissions. Based on this, it is proposed to expand
+          the hostel facility by 1500 boys and 600 girls in the next 4 years. The estimated project cost is
+          <strong> ₹160 crores</strong>.
+        </p>
+        <p>
+          The institute plans to take up this work in <em>HEFA</em> mode (Higher Education Funding Aid),
+          where the principal is repaid to the Government. We invite partial or full support from alumni to
+          realise this goal.
+        </p>
+      </>
+    ),
+    impacts: ["Student Wellbeing", "Campus Growth", "Alumni Support"],
+  },
+  {
+    key: "international",
+    title: "International Hostel",
+    summary: (
+      <>
+        <p>
+          NITT 2020 aims to internationalise higher education through global networking, collaborative
+          teaching & research, and student mobility via Study in India (SII), ICCR, and DASA. In support
+          of this, construction of a <strong>250 single-seated International Hostel</strong> has been
+          approved by BWC and BoG.
+        </p>
+        <p>
+          As per the Ministry/BoG directions, the project may be executed in a <em>Public-Private
+          Partnership (PPP)</em> mode. We request alumni and alumni batches to partner with us and make
+          NITT a magnet for international talent.
+        </p>
+      </>
+    ),
+    impacts: ["Global Exposure", "Cultural Exchange", "Academic Mobility"],
+  },
+  {
+    key: "renovation",
+    title: "Renovation of Hostels",
+    summary: (
+      <>
+        <p>
+          There are 24 Boys and 7 Girls Hostels built over different periods. Several buildings now require
+          moderate to severe renovation. <strong>Garnet-A/B/C, Agate, and Opal-C</strong> need floor tiling,
+          civil/electrical repairs, and painting. These G+2 buildings were constructed without lifts; to
+          support differently abled students, one lift per hostel is proposed by adding new lift wells
+          (Project-1).
+        </p>
+        <p>
+          Older hostels like <strong>Emerald, Lapis, Ruby, Sapphire, Topaz, and Pearl</strong> (~50 years)
+          need new toilet blocks accessible from all floors, plus comprehensive renovation: floor tiling,
+          civil/electrical works, and painting (Project-2). Proposals and estimates have been approved by
+          the Building Works Committee and BoG.
+        </p>
+      </>
+    ),
+    impacts: ["Infrastructure Upgrade", "Safety Standards", "Modern Facilities"],
+  },
+];
+
+function classNames(...s) {
+  return s.filter(Boolean).join(" ");
+}
+
 export default function Hostel() {
-  
-  const DONATE_CAUSE_ID = "Hostel-Development";
-
-
-  const SECTIONS = [
-    {
-      title: "New Hostel Construction",
-      description: (
-        <>
-          <p>
-            Our students are the Institute’s cornerstones and their well-being is of paramount importance.
-            The Institute is continuously striving to provide the best in-campus experience-both learning and
-            living experience. Since our inception, we have incrementally constructed hostels to accommodate
-            our growing student strength. Currently, there are 24 Hostels for Boys and 7 for girls. To fairly
-            match the present strength of students which is approximately 7000, 2 new hostels - Amethyst and
-            OPAL F have been added, quite recently. A 10 year forecast for the student population within the
-            campus shows a steep increase in the number of students to be admitted. Based on this forecast,
-            it is proposed that the hostel facility be increased to 1500 boys and 600 girls in the next 4 years.
-            The cost to fund this project is 160 crores.
-          </p>
-          <p>
-            The institute plans to take up this work in HEFA mode (Higher Education Funding Aid), where the
-            principal amount has to be repaid to the Government. The Institute solicits partial or full support
-            from Alumni towards realising this goal.
-          </p>
-        </>
-      ),
-      impacts: ["Student Wellbeing", "Campus Growth", "Alumni Support"],
-    },
-    {
-      title: "International Hostel",
-      description: (
-        <>
-          <p>
-            NITT 2020 aims to achieve its goal of internationalisation in higher education institutions in the
-            country by incorporating internationalisation in terms of networking collaboration teaching and
-            research, mobility of students for courses/programme by establishing MoU with various foreign
-            universities and research and development institutes. And also, by creating infrastructure and
-            facilities to attract more foreign national students through Study in India (SII), Indian Council for
-            Cultural Relations (ICCR), Direct Admission of Students Abroad (DASA) etc. In this regard,
-            construction of 250 Single seated International Hostel has been approved by BWC and BOG. As per
-            the directions from the ministry and BOG, the same can be constructed by Public-Private Partnership
-            (PPP) mode. In this regard the alumni /alumni batch is requested to support the same.
-          </p>
-        </>
-      ),
-      impacts: ["Global Exposure", "Cultural Exchange", "Academic Mobility"],
-    },
-    {
-      title: "Renovation of Hostels",
-      description: (
-        <>
-          <p>
-            There are 24 Boys Hostels and 7 Girls Hostels in the Institute that were built during different
-            time periods. Few of the hostel buildings require moderate to severe renovation work to meet the
-            functionality requirement. To mention, Garnet- A, Garnet-B, Garnet-C, Agate, and Opal-C requires
-            renovation work which includes floor tiling, civil/electrical repair work and internal/external
-            painting. All the above five hostels are of G+2 storey buildings constructed without lift facility.
-            Considering the differently abled students residing in these hostels it is proposed to provide one
-            lift in each hostel. As there are no provisions, new lift wells are to be newly constructed in each
-            hostel. These works are of utmost priority and need immediate attention (Project -1).
-          </p>
-          <p>
-            Few of the hostel buildings like Emerald, Lapis, Ruby, Sapphire, Topaz, and Pearl were constructed
-            around 50 years back and the existing toilet blocks and washroom facility in many of these buildings
-            are beyond repair and maintenance. The construction of separate toilet blocks for all these hostels
-            with access from different floors is essential, together with renovation of all the hostels, which
-            includes floor tiling, civil/electrical repair work and internal/external painting (Project-2). The
-            proposal and cost estimation has been approved by the Building Works Committee and BOG.
-          </p>
-        </>
-      ),
-      impacts: ["Infrastructure Upgrade", "Safety Standards", "Modern Facilities"],
-    },
-  ];
+  const [active, setActive] = useState(SECTIONS[0].key);
+  const current = useMemo(
+    () => SECTIONS.find((s) => s.key === active) || SECTIONS[0],
+    [active]
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
-      {/* Hero Section (original look) */}
+      {/* Hero (dark) */}
       <header className="relative overflow-hidden">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="py-10 sm:py-12">
@@ -95,7 +103,7 @@ export default function Hostel() {
                 </h1>
                 <p className="mt-3 max-w-3xl text-amber-100/90">
                   Supporting world-class residential facilities that enrich the student experience,
-                  foster global exchange, and ensure a safe and modern living environment.
+                  foster global exchange, and ensure a safe & modern living environment.
                 </p>
               </div>
             </div>
@@ -103,59 +111,99 @@ export default function Hostel() {
         </div>
       </header>
 
-      {/* Main image (original) */}
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 mb-10">
-        <figure className="overflow-hidden rounded-3xl border border-amber-200/70 shadow">
-          <img
-            src="/cause5.jpeg"
-            alt="Hostel Development at NIT Trichy"
-            className="w-full h-auto object-cover"
-          />
-        </figure>
-      </div>
+      {/* Overview block (image + intro, like Faculty) */}
+      <section className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="grid gap-6 md:grid-cols-12 items-start">
+          <figure className="md:col-span-5 rounded-2xl overflow-hidden border border-amber-200/70 bg-white shadow">
+            <img
+              src="/cause5.jpeg"
+              alt="Hostel Development at NIT Trichy"
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          </figure>
 
-      {/* Sections (original card style) */}
-      <main className="mx-auto max-w-6xl px-4 sm:px-6 pb-20 space-y-12">
-        {SECTIONS.map((sec, i) => (
-          <section
-            key={i}
-            className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-10 shadow-[0_10px_28px_rgba(180,83,9,.08)]"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <h2 className="text-amber-900 font-serif text-2xl">{sec.title}</h2>
-
-              {/* Donate button (routes with query + state so Donate preselects the Cause) */}
-              <Link
-                to={{ pathname: "/donate", search: `?cause=${DONATE_CAUSE_ID}` }}
-                state={{ causeId: DONATE_CAUSE_ID }}
-                className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.01] transition"
-                aria-label={`Donate to ${sec.title}`}
-              >
-                Donate
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                  <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
-                </svg>
-              </Link>
-            </div>
-
-            <div className="mt-4 space-y-4 text-[15px] leading-7 text-stone-800">
-              {sec.description}
-            </div>
-
-            {/* Impacts (original simple chips) */}
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              {sec.impacts.map((imp, idx) => (
-                <div
-                  key={idx}
-                  className="rounded-xl border border-amber-200/70 bg-gradient-to-br from-amber-50 to-orange-50 px-4 py-3 text-center text-amber-900 font-medium shadow-sm"
+          <div className="md:col-span-7 rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
+            <p className="text-[14px] leading-7 text-stone-800">
+              Comfortable, safe, and inclusive residences are essential to student success. Your support
+              helps NITT expand capacity for a growing cohort, welcome international students, and
+              rejuvenate ageing infrastructure so that learning, community, and wellbeing thrive beyond
+              classrooms.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {["Student Wellbeing", "Capacity Expansion", "Inclusive Campus"].map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-amber-200 bg-amber-50/70 px-3 py-1 text-xs font-medium text-amber-900"
                 >
-                  {imp}
-                </div>
+                  {tag}
+                </span>
               ))}
             </div>
-          </section>
-        ))}
-      </main>
+          </div>
+        </div>
+      </section>
+
+      {/* Tabs (matches Faculty style chips) */}
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-8">
+        <div className="rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-3 shadow-[0_8px_24px_rgba(180,83,9,.08)]">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar" role="tablist" aria-label="Hostel sub-projects">
+            {SECTIONS.map((s) => (
+              <button
+                key={s.key}
+                role="tab"
+                aria-selected={active === s.key}
+                onClick={() => setActive(s.key)}
+                className={classNames(
+                  "whitespace-nowrap rounded-xl px-3.5 py-2 text-sm transition",
+                  active === s.key
+                    ? "bg-amber-900 text-white shadow"
+                    : "border border-amber-200 bg-white text-amber-900 hover:bg-amber-50"
+                )}
+              >
+                {s.title}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Active section card (each has Donate) */}
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-6 pb-16">
+        <article className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
+          <header className="flex items-start justify-between gap-4">
+            <h2 className="font-serif text-2xl md:text-3xl text-amber-900">{current.title}</h2>
+            <Link
+              to={{ pathname: "/donate", search: `?cause=${DONATE_CAUSE_ID}` }}
+              state={{ causeId: DONATE_CAUSE_ID }}
+              className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.01] transition"
+            >
+              Donate
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
+              </svg>
+            </Link>
+          </header>
+
+          <div className="mt-4 space-y-4 text-[15px] leading-7 text-stone-800">{current.summary}</div>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {current.impacts.map((imp) => (
+              <span
+                key={imp}
+                className="rounded-full border border-amber-200 bg-amber-50/80 px-3 py-1 text-xs font-medium text-amber-900"
+              >
+                {imp}
+              </span>
+            ))}
+          </div>
+        </article>
+      </section>
+
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 }

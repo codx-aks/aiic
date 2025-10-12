@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 const SUBCAUSES = [
   {
@@ -19,6 +20,11 @@ const SUBCAUSES = [
   },
 ];
 
+// Choose a stable ID for this cause.
+// If your Donate.jsx CAUSES doesn’t include this yet, it will fall back to General.
+// (You can later add { id: "staff-support", name: "Staff Support" } there to preselect.)
+const DONATE_CAUSE_ID = "staff-support";
+
 function classNames(...s) {
   return s.filter(Boolean).join(" ");
 }
@@ -32,37 +38,59 @@ export default function Staff() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
+      {/* Hero / Title */}
       <header className="relative overflow-hidden">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="py-10 sm:py-12">
             <div className="relative rounded-3xl border border-amber-900/30 bg-gradient-to-br from-amber-950 to-stone-900 shadow-[0_14px_36px_rgba(0,0,0,.35)]">
               <div className="absolute inset-0 opacity-40 bg-[radial-gradient(80%_60%_at_10%_10%,rgba(251,191,36,.25),transparent_60%),radial-gradient(70%_50%_at_90%_90%,rgba(234,88,12,.18),transparent_60%)]" />
               <div className="relative px-6 py-8 sm:px-10 sm:py-12">
-                <p className="text-amber-100/90 text-xs tracking-wider uppercase">
-                  Giving Back · Student Success
-                </p>
-                <h1 className="mt-1 font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
-                  Staff Support
-                </h1>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-amber-100/90 text-xs tracking-wider uppercase">
+                      Giving Back · Student Success
+                    </p>
+                    <h1 className="mt-1 font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
+                      Staff Support
+                    </h1>
+                  </div>
+
+                  {/* Top Donate button */}
+                  <Link
+                    to={{ pathname: "/donate", search: `?cause=${DONATE_CAUSE_ID}` }}
+                    state={{ causeId: DONATE_CAUSE_ID }}
+                    className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
+                    aria-label="Donate to Staff Support"
+                  >
+                    Donate
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                      <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
+                    </svg>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </header>
 
+      {/* Intro block */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="grid gap-6 md:grid-cols-12 items-start">
           <figure className="md:col-span-5 rounded-2xl overflow-hidden border border-amber-200/70 bg-white shadow">
             <img
               src="/cause2.webp"
-              alt="Scholarship & Student Support"
+              alt="Staff Support"
               className="w-full h-full object-cover"
             />
           </figure>
 
-          <div className="md:col-span-7 rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
+        <div className="md:col-span-7 rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
             <p className="mt-3 text-[14px] leading-7 text-stone-800">
-                NIT Tiruchirappalli invites you to support our dedicated staff and their families in two crucial areas. By contributing to this fund, you directly impact the lives of those who ensure our institution operates smoothly and efficiently every day.
+              NIT Tiruchirappalli invites you to support our dedicated staff and their
+              families in two crucial areas. By contributing to this fund, you directly
+              impact the lives of those who ensure our institution operates smoothly and
+              efficiently every day.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {["Operational Backbone", "Support Staff", "Shared Growth"].map((tag) => (
@@ -78,12 +106,13 @@ export default function Staff() {
         </div>
       </section>
 
+      {/* Tabs */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-10">
         <div className="rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-3 shadow-[0_8px_24px_rgba(180,83,9,.08)]">
           <div
             className="flex gap-2 overflow-x-auto no-scrollbar"
             role="tablist"
-            aria-label="Student support sub-causes"
+            aria-label="Staff support sub-causes"
           >
             {SUBCAUSES.map((c) => (
               <button
@@ -105,34 +134,42 @@ export default function Staff() {
         </div>
       </section>
 
+      {/* Active sub-cause card + Donate */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-6 pb-16">
         <article className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
-          <header className="flex items-start gap-4">
+          <header className="flex items-start justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-serif text-2xl md:text-3xl text-amber-900">
-                  {current.title}
-                </h3>
-              </div>
+              <h3 className="font-serif text-2xl md:text-3xl text-amber-900">
+                {current.title}
+              </h3>
               <p className="mt-2 max-w-3xl text-[15px] leading-7 text-stone-800">
                 {current.summary}
               </p>
             </div>
+
+            {/* Donate for this sub-cause */}
+            <Link
+              to={{ pathname: "/donate", search: `?cause=${DONATE_CAUSE_ID}` }}
+              state={{ causeId: DONATE_CAUSE_ID }}
+              className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
+              aria-label={`Donate to ${current.title}`}
+            >
+              Donate
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
+              </svg>
+            </Link>
           </header>
 
-          <div className="mt-5">
-            
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              {current.impact.map((t) => (
-                <span
-                  key={t}
-                  className="rounded-full border border-amber-200 bg-amber-50/80 px-3 py-1 text-xs font-medium text-amber-900"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {current.impact.map((t) => (
+              <span
+                key={t}
+                className="rounded-full border border-amber-200 bg-amber-50/80 px-3 py-1 text-xs font-medium text-amber-900"
+              >
+                {t}
+              </span>
+            ))}
           </div>
         </article>
       </section>

@@ -37,6 +37,14 @@ const CAUSES = [
       "Our students are the Institute’s cornerstones and their well-being is of paramount importance.",
     image: "/cause5.jpeg",
   },
+
+   {
+    slug: "clubs",
+    title: "Clubs & Student Activities",
+    blurb:
+      "Support cultural, technical, and literary clubs and fests—like Delta, Spider, RMI, PSI Racing, Music Troupe, Dance Troupe, Sports Teams, Orientation, Festember, Pragyan, NITTFest that build leadership, creativity, and community on campus.",
+    image: "/cause6.jpg", 
+  },
 ];
 
 export default function Causes() {

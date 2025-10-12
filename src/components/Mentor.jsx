@@ -4,7 +4,7 @@ import React from "react";
 export default function Mentor() {
   const FORM_URL =
     "https://docs.google.com/forms/d/e/1FAIpQLScDEoqD5ws5L0urNgSKS3Q4PL3FehKXmzEXZvksoSZiPy9W4g/viewform";
-  const ILLUSTRATION = "/mentor.jpeg"; 
+  const ILLUSTRATION = "/mentor.webp"; 
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">

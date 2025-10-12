@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 const SUBCAUSES = [
   {
@@ -51,6 +52,17 @@ const SUBCAUSES = [
   },
 ];
 
+// Map each sub-cause to a Donate.jsx cause id (with sensible fallbacks)
+const DONATE_DEFAULT_CAUSE_ID = "scholarships-merit";
+const SUBCAUSE_TO_CAUSE = {
+  scholarships: "scholarships-merit",
+  project: "research-seed",
+  travel: "scholarships-merit", // fallback
+  clubs: "teams-technical",
+  adopt: "emergency-fund",
+  medical: "emergency-fund",
+};
+
 function classNames(...s) {
   return s.filter(Boolean).join(" ");
 }
@@ -62,20 +74,40 @@ export default function Scholarship() {
     [active]
   );
 
+  const activeCauseId =
+    SUBCAUSE_TO_CAUSE[current.key] || DONATE_DEFAULT_CAUSE_ID;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
+      {/* Hero with Donate CTA */}
       <header className="relative overflow-hidden">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="py-10 sm:py-12">
             <div className="relative rounded-3xl border border-amber-900/30 bg-gradient-to-br from-amber-950 to-stone-900 shadow-[0_14px_36px_rgba(0,0,0,.35)]">
               <div className="absolute inset-0 opacity-40 bg-[radial-gradient(80%_60%_at_10%_10%,rgba(251,191,36,.25),transparent_60%),radial-gradient(70%_50%_at_90%_90%,rgba(234,88,12,.18),transparent_60%)]" />
               <div className="relative px-6 py-8 sm:px-10 sm:py-12">
-                <p className="text-amber-100/90 text-xs tracking-wider uppercase">
-                  Giving Back · Student Success
-                </p>
-                <h1 className="mt-1 font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
-                  Scholarship and Student Support Aid
-                </h1>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-amber-100/90 text-xs tracking-wider uppercase">
+                      Giving Back · Student Success
+                    </p>
+                    <h1 className="mt-1 font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
+                      Scholarship and Student Support Aid
+                    </h1>
+                  </div>
+
+                  <Link
+                    to={{ pathname: "/donate", search: `?cause=${DONATE_DEFAULT_CAUSE_ID}` }}
+                    state={{ causeId: DONATE_DEFAULT_CAUSE_ID }}
+                    className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
+                    aria-label="Donate to Scholarships"
+                  >
+                    Donate
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                      <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
+                    </svg>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -95,7 +127,14 @@ export default function Scholarship() {
 
           <div className="md:col-span-7 rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
             <p className="mt-3 text-[14px] leading-7 text-stone-800">
-              NIT Tiruchirappalli attracts the brightest young minds to its undergraduate programs. However, financial constraints often hinder highly accomplished and meritorious students from pursuing their education. Over 30% of our students require financial aid to continue their studies. Scholarships and student support aid are crucial in ensuring these deserving students are not held back by financial barriers. We urge you to support our scholarship fund and aid programs, helping talented individuals achieve their academic goals and uphold the esteemed legacy of NIT Tiruchirappalli. Your support can make a transformative difference in their lives.
+              NIT Tiruchirappalli attracts the brightest young minds to its undergraduate programs.
+              However, financial constraints often hinder highly accomplished and meritorious students
+              from pursuing their education. Over 30% of our students require financial aid to continue
+              their studies. Scholarships and student support aid are crucial in ensuring these deserving
+              students are not held back by financial barriers. We urge you to support our scholarship
+              fund and aid programs, helping talented individuals achieve their academic goals and uphold
+              the esteemed legacy of NIT Tiruchirappalli. Your support can make a transformative difference
+              in their lives.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {["Access & Equity", "Merit & Need", "Transparent Impact"].map((tag) => (
@@ -111,6 +150,7 @@ export default function Scholarship() {
         </div>
       </section>
 
+      {/* Tabs */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-10">
         <div className="rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-3 shadow-[0_8px_24px_rgba(180,83,9,.08)]">
           <div
@@ -138,34 +178,41 @@ export default function Scholarship() {
         </div>
       </section>
 
+      {/* Active sub-cause card + Donate */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-6 pb-16">
         <article className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
-          <header className="flex items-start gap-4">
+          <header className="flex items-start justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-serif text-2xl md:text-3xl text-amber-900">
-                  {current.title}
-                </h3>
-              </div>
+              <h3 className="font-serif text-2xl md:text-3xl text-amber-900">
+                {current.title}
+              </h3>
               <p className="mt-2 max-w-3xl text-[15px] leading-7 text-stone-800">
                 {current.summary}
               </p>
             </div>
+
+            <Link
+              to={{ pathname: "/donate", search: `?cause=${activeCauseId}` }}
+              state={{ causeId: activeCauseId }}
+              className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
+              aria-label={`Donate to ${current.title}`}
+            >
+              Donate
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
+              </svg>
+            </Link>
           </header>
 
-          <div className="mt-5">
-            
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              {current.impact.map((t) => (
-                <span
-                  key={t}
-                  className="rounded-full border border-amber-200 bg-amber-50/80 px-3 py-1 text-xs font-medium text-amber-900"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {current.impact.map((t) => (
+              <span
+                key={t}
+                className="rounded-full border border-amber-200 bg-amber-50/80 px-3 py-1 text-xs font-medium text-amber-900"
+              >
+                {t}
+              </span>
+            ))}
           </div>
         </article>
       </section>

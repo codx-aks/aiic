@@ -1,50 +1,70 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
-/* ---------- Data (from whiteboard) ---------- */
-const EVENTS = [
-  {
-    id: "1970-diamond",
-    title: "1970 Batch • Diamond Jubilee",
-    when: [{ date: "2025-09-23" }],
-    venue: "NIT Tiruchirappalli Campus",
-    tag: "Milestone",
-    accent: "emerald",
-  },
-  {
-    id: "2000-silver",
-    title: "2000 Batch • Silver Jubilee (25 Years)",
-    when: [{ date: "2025-12-19" }],
-    venue: "NIT Tiruchirappalli Campus",
-    tag: "Silver Jubilee",
-    accent: "amber",
-  },
-  {
-    id: "1985-40th",
-    title: "1985 Batch • 40ᵗʰ Year Reunion",
-    when: [{ date: "2026-02-06" }],
-    venue: "NIT Tiruchirappalli Campus",
-    tag: "Reunion",
-    accent: "sky",
-  },
-  {
-    id: "2001-25th",
-    title: "2001 Batch • 25ᵗʰ Year Reunion",
-    // Dec 18,19,21,22,23,24, 2026
-    when: [
-      { date: "2026-12-18" },
-      { date: "2026-12-19" },
-      { date: "2026-12-21" },
-      { date: "2026-12-22" },
-      { date: "2026-12-23" },
-      { date: "2026-12-24" },
-    ],
-    venue: "NIT Tiruchirappalli Campus",
-    tag: "Silver Jubilee",
-    accent: "rose",
-  },
-];
+/* ================== CONFIG ================== */
+// Replace with your sheet's Publish-to-web CSV URL
+const CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWA0-6f-rV3cf8E6c8vE8bBB0VHMSRXDjwHpqRtqQWPt2_RTDxyC2Gk5iwgE2fXP-KnOEdjv2lUlSx/pub?gid=1970216258&single=true&output=csv";
 
-/* ---------- Helpers ---------- */
+/* ================== CSV UTILS ================== */
+// Tiny CSV parser that handles quotes and commas inside quotes.
+function parseCSV(text) {
+  const rows = [];
+  let cur = [], val = "", inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i], n = text[i + 1];
+    if (inQ) {
+      if (c === '"' && n === '"') { val += '"'; i++; }
+      else if (c === '"') { inQ = false; }
+      else { val += c; }
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ",") { cur.push(val); val = ""; }
+      else if (c === "\n" || c === "\r") {
+        if (val !== "" || cur.length) { cur.push(val); rows.push(cur.map(s => s.trim())); cur = []; val = ""; }
+        if (c === "\r" && n === "\n") i++;
+      } else { val += c; }
+    }
+  }
+  if (val !== "" || cur.length) { cur.push(val); rows.push(cur.map(s => s.trim())); }
+  return rows;
+}
+
+/* ============== DATES PARSING HELPERS ============== */
+// Accepts tokens like "2026-12-18", "2026-12-18..2026-12-24"
+function expandDateToken(token) {
+  const t = token.trim();
+  if (!t) return [];
+  if (t.includes("..")) {
+    const [a, b] = t.split("..").map(s => s.trim());
+    const start = new Date(a), end = new Date(b);
+    if (isNaN(start) || isNaN(end) || start > end) return [];
+    const out = [];
+    const d = new Date(start);
+    while (d <= end) {
+      out.push(d.toISOString().slice(0, 10));
+      d.setDate(d.getDate() + 1);
+    }
+    return out;
+  }
+  const d = new Date(t);
+  return isNaN(d) ? [] : [d.toISOString().slice(0, 10)];
+}
+
+function parseDatesCell(cell) {
+  if (!cell) return [];
+  // split on comma or semicolon
+  const tokens = cell.split(/[,;]+/);
+  const out = [];
+  for (const tok of tokens) {
+    out.push(...expandDateToken(tok));
+  }
+  // dedupe + sort
+  const uniq = Array.from(new Set(out));
+  uniq.sort((a, b) => new Date(a) - new Date(b));
+  return uniq;
+}
+
+/* ================== PRESENTATION HELPERS ================== */
 const fmt = (iso) =>
   new Date(iso).toLocaleDateString(undefined, {
     day: "2-digit",
@@ -89,14 +109,12 @@ function DayPill({ date }) {
   );
 }
 
-/* ---------- Card ---------- */
+/* ================== CARD ================== */
 function EventCard({ e, index }) {
-  // Primary month/year for badge (first date)
-  const first = e.when[0]?.date;
-  // Compact label for single vs multi day
+  const first = e.when[0];
   const dateText =
     e.when.length === 1
-      ? fmt(e.when[0].date)
+      ? fmt(first)
       : `Multiple days • ${new Date(first).toLocaleString(undefined, {
           month: "long",
           year: "numeric",
@@ -112,7 +130,7 @@ function EventCard({ e, index }) {
         <AccentDot color={e.accent} />
         <h3 className="text-white font-semibold leading-tight">{e.title}</h3>
         <div className="ml-auto">
-          <MonthBadge date={first} />
+          {first && <MonthBadge date={first} />}
         </div>
         <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-[linear-gradient(120deg,rgba(255,255,255,.25),transparent_40%)]" />
       </div>
@@ -120,43 +138,96 @@ function EventCard({ e, index }) {
       {/* Body */}
       <div className="px-5 pt-4 pb-5">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-medium text-amber-900">
-            {e.tag}
-          </span>
-          <span className="text-sm text-stone-700">•</span>
+          {e.tag && (
+            <>
+              <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-medium text-amber-900">
+                {e.tag}
+              </span>
+              <span className="text-sm text-stone-700">•</span>
+            </>
+          )}
           <span className="text-sm text-stone-700">{dateText}</span>
         </div>
 
         {e.when.length > 1 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {e.when.map((d) => (
-              <DayPill key={d.date} date={d.date} />
+              <DayPill key={d} date={d} />
             ))}
           </div>
         )}
 
-        <div className="mt-3 text-[13px] text-stone-600">
-          Venue: <span className="font-medium text-stone-800">{e.venue}</span>
-        </div>
-
+        {e.venue && (
+          <div className="mt-3 text-[13px] text-stone-600">
+            Venue: <span className="font-medium text-stone-800">{e.venue}</span>
+          </div>
+        )}
       </div>
 
-      {/* Glow highlight on hover */}
+      {/* Glow */}
       <div className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition bg-[radial-gradient(60%_40%_at_70%_15%,rgba(251,191,36,.20),transparent_60%)]" />
     </article>
   );
 }
 
-/* ---------- Page ---------- */
+/* ================== PAGE (fetches from Sheet) ================== */
 export default function UpcomingEvents() {
-  const sorted = useMemo(
-    () =>
-      [...EVENTS].sort(
-        (a, b) =>
-          new Date(a.when[0].date).getTime() - new Date(b.when[0].date).getTime()
-      ),
-    []
-  );
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        setLoading(true);
+        setErr("");
+        const res = await fetch(CSV_URL, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Fetch failed (${res.status})`);
+        const txt = await res.text();
+        const rows = parseCSV(txt);
+        if (!rows.length) { if (alive) setItems([]); return; }
+
+        // Index headers
+        const headers = rows[0].map(h => h.toLowerCase());
+        const idx = {
+          id: headers.indexOf("id"),
+          title: headers.indexOf("title"),
+          dates: headers.indexOf("dates"),
+          venue: headers.indexOf("venue"),
+          tag: headers.indexOf("tag"),
+          accent: headers.indexOf("accent"),
+        };
+
+        const parsed = rows.slice(1)
+          .map(r => {
+            const when = parseDatesCell(r[idx.dates]);
+            return {
+              id: r[idx.id] || `${r[idx.title]}-${when[0] || ""}`.replace(/\s+/g, "-").toLowerCase(),
+              title: r[idx.title] || "",
+              when,
+              venue: r[idx.venue] || "",
+              tag: r[idx.tag] || "",
+              accent: (r[idx.accent] || "amber").toLowerCase(),
+            };
+          })
+          // must have title and at least one valid date
+          .filter(e => e.title && e.when.length > 0);
+
+        // sort by first date
+        parsed.sort((a, b) => new Date(a.when[0]) - new Date(b.when[0]));
+
+        if (alive) setItems(parsed);
+      } catch (e) {
+        if (alive) setErr(e.message || "Failed to load events.");
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  const content = useMemo(() => items, [items]);
 
   return (
     <div className="relative min-h-[60vh] bg-gradient-to-br from-stone-50 via-amber-50/30 to-orange-50/20">
@@ -175,7 +246,7 @@ export default function UpcomingEvents() {
               Upcoming Events
             </h1>
             <p className="mt-2 max-w-2xl text-amber-100/90">
-              Jubiliees and reunions planned by our alumni community. Dates may
+              Jubilees and reunions planned by our alumni community. Dates may
               fine-tune closer to the event—watch this space!
             </p>
           </div>
@@ -184,22 +255,42 @@ export default function UpcomingEvents() {
 
       {/* Grid */}
       <main className="mx-auto max-w-6xl px-6 pb-16 pt-8">
-        <div className="grid gap-5 sm:gap-6 grid-cols-1 md:grid-cols-2">
-          {sorted.map((e, i) => (
-            <EventCard key={e.id} e={e} index={i} />
-          ))}
-        </div>
+        {/* Loading & error states */}
+        {loading && (
+          <div className="grid gap-5 sm:gap-6 grid-cols-1 md:grid-cols-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="rounded-2xl border border-amber-200/70 bg-white/90 p-4 shadow">
+                <div className="h-12 rounded-xl bg-stone-200/70" />
+                <div className="mt-3 h-4 w-3/4 bg-stone-200/70 rounded" />
+                <div className="mt-2 h-3 w-5/6 bg-stone-200/70 rounded" />
+              </div>
+            ))}
+          </div>
+        )}
+        {err && !loading && (
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-red-900">
+            {err}
+          </div>
+        )}
+
+        {!loading && !err && (
+          <div className="grid gap-5 sm:gap-6 grid-cols-1 md:grid-cols-2">
+            {content.map((e, i) => (
+              <EventCard key={e.id} e={e} index={i} />
+            ))}
+            {!content.length && (
+              <div className="text-stone-600 text-sm">
+                No upcoming events found.
+              </div>
+            )}
+          </div>
+        )}
       </main>
 
       {/* Local animations */}
       <style>{`
-        .animate-ping {
-          animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite;
-        }
-        @keyframes ping {
-          0% { transform: scale(1); opacity: 1; }
-          75%,100% { transform: scale(1.8); opacity: 0; }
-        }
+        .animate-ping { animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
+        @keyframes ping { 0% { transform: scale(1); opacity: 1; } 75%,100% { transform: scale(1.8); opacity: 0; } }
       `}</style>
     </div>
   );

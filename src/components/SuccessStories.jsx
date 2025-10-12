@@ -53,7 +53,7 @@ export default function SuccessStories() {
       </header>
 
       {/* Stories */}
-      <main className="mx-auto max-w-6xl px-4 sm:px-6 pb-20 space-y-6 sm:space-y-8">
+      <main className="mx-auto max-w-6xl px-4 sm:px-6 pb-20 space-y-5 sm:space-y-6">
         {STORIES.map((s) => (
           <StoryCard key={s.name} story={s} />
         ))}
@@ -64,42 +64,55 @@ export default function SuccessStories() {
 
 function StoryCard({ story }) {
   const [open, setOpen] = useState(false);
-
-  // show first paragraph always; expand to see rest
   const head = story.paragraphs[0];
   const tail = story.paragraphs.slice(1);
 
   return (
-    <article className="rounded-3xl border border-amber-200/70 bg-white/95 backdrop-blur p-5 sm:p-7 shadow-[0_10px_28px_rgba(180,83,9,.10)] transition hover:shadow-lg">
-      <div className="grid gap-5 sm:grid-cols-[120px,1fr] items-start">
-        <div className="mx-auto sm:mx-0 w-28 h-28 rounded-2xl overflow-hidden ring-1 ring-amber-200/70 bg-gradient-to-br from-amber-50 to-orange-50">
-          <img
-            src={story.image}
-            alt={story.name}
-            className="h-full w-full object-cover"
-            loading="lazy"
-          />
-        </div>
+    <article className="group relative overflow-hidden rounded-2xl border border-amber-200/70 bg-white/95 backdrop-blur shadow-[0_8px_22px_rgba(180,83,9,.10)] hover:shadow-lg transition">
+      <div className="flex flex-col sm:flex-row">
+        {/* LEFT: compact image */}
+        <figure className="shrink-0 sm:w-[220px] md:w-[240px] relative">
+          <div className="h-[180px] sm:h-full w-full overflow-hidden">
+            <img
+              src={story.image}
+              alt={story.name}
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="pointer-events-none absolute left-2 top-2 rounded-full bg-white/85 px-2.5 py-1 text-[10px] font-medium text-amber-900 shadow">
+            Alumni
+          </div>
+        </figure>
 
-        <div>
-          <h3 className="text-xl sm:text-2xl font-semibold text-amber-900">{story.name}</h3>
-          {story.role && <p className="text-sm text-stone-600">{story.role}</p>}
+        {/* RIGHT: content */}
+        <div className="p-5 sm:p-6 md:p-7">
+          <header>
+            <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-amber-900 leading-tight">
+              {story.name}
+            </h3>
+            {story.role && (
+              <p className="mt-0.5 text-sm text-stone-600">{story.role}</p>
+            )}
+          </header>
 
           <div className="mt-3 space-y-3 text-[15px] leading-7 text-stone-800">
             <p>{head}</p>
 
-            {/* expandable part */}
-            {open && tail.map((t, i) => (
-              <p key={i} className="relative pl-3 sm:pl-4">
-                <span className="absolute left-0 top-2 h-3 w-0.5 rounded bg-amber-300/80" />
-                {t}
-              </p>
-            ))}
+            {open &&
+              tail.map((t, i) => (
+                <p key={i} className="relative pl-3 sm:pl-4">
+                  <span className="absolute left-0 top-2 h-3 w-0.5 rounded bg-amber-300/80" />
+                  {t}
+                </p>
+              ))}
+          </div>
 
-            {tail.length > 0 && (
+          {tail.length > 0 && (
+            <div className="mt-4">
               <button
                 onClick={() => setOpen((v) => !v)}
-                className="mt-1 inline-flex items-center gap-2 rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm text-amber-900 hover:bg-amber-50"
+                className="inline-flex items-center gap-2 rounded-xl border border-amber-200 bg-white px-3.5 py-2 text-sm text-amber-900 hover:bg-amber-50 transition"
                 aria-expanded={open}
               >
                 {open ? "Show less" : "Read more"}
@@ -112,10 +125,11 @@ function StoryCard({ story }) {
                   <path d="M5.5 7.5l4.5 4.5 4.5-4.5" />
                 </svg>
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </article>
   );
 }
+

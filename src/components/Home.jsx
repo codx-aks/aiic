@@ -1,15 +1,42 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
+const NEWS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWA0-6f-rV3cf8E6c8vE8bBB0VHMSRXDjwHpqRtqQWPt2_RTDxyC2Gk5iwgE2fXP-KnOEdjv2lUlSx/pub?gid=1063083730&single=true&output=csv";
+/* ======================================================================= */
+
+/* ----------------------------- CSV PARSER ------------------------------ */
+function parseCSV(text) {
+  const rows = [];
+  let cur = [], val = "", inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i], n = text[i + 1];
+    if (inQ) {
+      if (c === '"' && n === '"') { val += '"'; i++; }
+      else if (c === '"') { inQ = false; }
+      else { val += c; }
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ",") { cur.push(val.trim()); val = ""; }
+      else if (c === "\n" || c === "\r") {
+        if (val !== "" || cur.length) { cur.push(val.trim()); rows.push(cur); cur = []; val = ""; }
+        if (c === "\r" && n === "\n") i++;
+      } else { val += c; }
+    }
+  }
+  if (val !== "" || cur.length) { cur.push(val.trim()); rows.push(cur); }
+  return rows;
+}
+
+/* ----------------------------- Ambient Particles ---------------------------- */
 function Particles({ count = 22 }) {
   const dots = useMemo(() => {
     return Array.from({ length: count }).map((_, i) => {
-      const size = Math.random() * 3 + 2;         // 2–5px
-      const left = Math.random() * 100;           // 0–100%
-      const top = Math.random() * 100;            // 0–100%
-      const dur = Math.random() * 14 + 14;        // 14–28s
-      const delay = Math.random() * 8;            // 0–8s
-      const xDrift = (Math.random() - 0.5) * 40;  // -20 to 20px
-      const yTravel = Math.random() * 60 + 40;    // 40–100vh
+      const size = Math.random() * 3 + 2;
+      const left = Math.random() * 100;
+      const top = Math.random() * 100;
+      const dur = Math.random() * 14 + 14;
+      const delay = Math.random() * 8;
+      const xDrift = (Math.random() - 0.5) * 40;
+      const yTravel = Math.random() * 60 + 40;
       return { id: i, size, left, top, dur, delay, xDrift, yTravel };
     });
   }, [count]);
@@ -37,6 +64,8 @@ function Particles({ count = 22 }) {
     </div>
   );
 }
+
+/* ----------------------------- Numbers Section ----------------------------- */
 function NumbersBand() {
   const useCountUp = ({ start = 0, end = 0, duration = 1800, inView = false, delay = 0 }) => {
     const [val, setVal] = React.useState(start);
@@ -56,7 +85,6 @@ function NumbersBand() {
     return val;
   };
 
-  // one stat row
   const StatRow = ({ value, suffix, label, idx, inView }) => {
     const n = useCountUp({ end: value, duration: 1800, inView, delay: idx * 120 });
     const display =
@@ -131,7 +159,6 @@ function NumbersBand() {
               className={`relative rounded-3xl border border-amber-900/30 bg-white/5 backdrop-blur p-2 md:p-3 overflow-hidden
               ${inView ? "animate-card-in" : "opacity-0 translate-y-3"}`}
             >
-              {/* gloss sweep */}
               <div className={`pointer-events-none absolute -left-1/3 top-0 h-full w-1/2 rotate-12 bg-gradient-to-r from-transparent via-white/10 to-transparent ${inView ? "animate-sweep" : "opacity-0"}`} />
               {STATS.map((s, i) => (
                 <StatRow key={s.label} {...s} idx={i} inView={inView} />
@@ -144,47 +171,155 @@ function NumbersBand() {
         </div>
       </div>
 
-      {/* Local styles */}
       <style>{`
-        @keyframes breathe {
-          0%,100% { transform: scale(1); filter: brightness(1); }
-          50%     { transform: scale(1.01); filter: brightness(1.02); }
-        }
+        @keyframes breathe { 0%,100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.01); filter: brightness(1.02); } }
         .animate-breathe { animation: breathe 14s ease-in-out infinite; }
 
-        @keyframes sweep {
-          0%   { transform: translateX(-120%) rotate(12deg); opacity:.0; }
-          15%  { opacity:1; }
-          60%  { transform: translateX(220%) rotate(12deg); opacity:1; }
-          100% { opacity:.0; }
-        }
+        @keyframes sweep { 0%{ transform: translateX(-120%) rotate(12deg); opacity:.0; } 15%{opacity:1;} 60%{ transform: translateX(220%) rotate(12deg); opacity:1;} 100%{opacity:.0;} }
         .animate-sweep { animation: sweep 2.6s ease 200ms 1; }
 
-        @keyframes row-in {
-          0%   { opacity: 0; transform: translateY(8px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes row-in { 0%{opacity:0;transform:translateY(8px);} 100%{opacity:1;transform:translateY(0);} }
         .animate-row-in { animation: row-in .6s cubic-bezier(.2,.65,.2,1) both; }
 
-        @keyframes card-in {
-          0%   { opacity: 0; transform: translateY(10px) scale(.99); }
-          100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
+        @keyframes card-in { 0%{opacity:0;transform:translateY(10px) scale(.99);} 100%{opacity:1;transform:translateY(0) scale(1);} }
         .animate-card-in { animation: card-in .5s ease-out both; }
 
-        @keyframes shimmer {
-          0% { background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent); transform: translateX(-60%); opacity: 0; }
-          15% { opacity: 1; }
-          100% { transform: translateX(160%); opacity: 0; }
-        }
+        @keyframes shimmer { 0% { background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent); transform: translateX(-60%); opacity: 0; }
+                             15% { opacity: 1; }
+                             100% { transform: translateX(160%); opacity: 0; } }
         .animate-shimmer { animation: shimmer 1.8s ease .4s 1; }
       `}</style>
     </section>
   );
 }
 
+/* ---------------------------- News: Carousel UI ---------------------------- */
+function NewsCarousel({ items }) {
+  const [idx, setIdx] = React.useState(0);
+  const [paused, setPaused] = React.useState(false);
+  const wrap = (i) => (i + items.length) % items.length;
 
+  const AUTO_MS = 3000;                 // 3s independent auto-advance
+  const IMG_H = "h-[320px] md:h-[420px]"; // constant height for both sides
 
+  React.useEffect(() => {
+    if (paused || items.length <= 1) return;
+    const to = setTimeout(() => setIdx((p) => wrap(p + 1)), AUTO_MS);
+    return () => clearTimeout(to);
+  }, [idx, paused, items.length]);
+
+  const go = (dir) => setIdx((p) => wrap(p + (dir === "right" ? 1 : -1)));
+
+  React.useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "ArrowRight") go("right");
+      if (e.key === "ArrowLeft") go("left");
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  return (
+    <div
+      className="relative select-none"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* Slides track */}
+      <div className="relative">
+        <div
+          className="flex transition-transform duration-500 ease-out"
+          style={{ transform: `translateX(-${idx * 100}%)` }}
+        >
+          {items.map((n, i) => {
+            const active = i === idx;
+            return (
+              <div key={i} className="shrink-0 w-full px-4 sm:px-6 pb-16">
+                <div className="mx-auto max-w-6xl grid gap-6 md:grid-cols-12 items-stretch">
+                  {/* Image: constant height */}
+                  <div className={`md:col-span-7 relative overflow-hidden rounded-2xl border border-amber-200/60 shadow ${IMG_H}`}>
+                    <div className="absolute top-0 left-0 right-0 h-12 bg-amber-800" />
+                    <img
+                      src={n.image}
+                      alt={n.title}
+                      className={`absolute inset-0 h-full w-full object-cover transition-all duration-500 ${active ? "opacity-100" : "opacity-70 grayscale"}`}
+                    />
+                  </div>
+
+                  {/* Text: vertically centered and same height */}
+                  <div className="md:col-span-5 flex items-center">
+                    <div className={`relative rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow w-full ${IMG_H} flex flex-col justify-center`}>
+                      <div className="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-900 ring-1 ring-amber-200/70">
+                        {n.tag || "Alumni"}
+                      </div>
+                      <h3 className="mt-3 text-[22px] md:text-[26px] font-semibold text-stone-900 leading-snug line-clamp-3">
+                        {n.title}
+                      </h3>
+                      {n.blurb && (
+                        <p className="mt-2 text-stone-700 text-sm md:text-[15px] leading-7 line-clamp-4">
+                          {n.blurb}
+                        </p>
+                      )}
+                      {n.link && (
+                        <a
+                          href={n.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-6 inline-flex items-center gap-2 rounded-xl border border-amber-800 text-amber-900 px-4 py-2 text-sm hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+                        >
+                          READ MORE
+                          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                            <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* bottom fade */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/90 to-transparent" />
+      </div>
+
+      {/* Controls & progress bar */}
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 -mt-10 flex items-center justify-between">
+        <button
+          onClick={() => go("left")}
+          className="group rounded-full h-12 w-12 grid place-items-center border border-amber-200 bg-white text-amber-900 shadow hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-400"
+          aria-label="Previous"
+        >
+          <svg viewBox="0 0 24 24" className="h-5 w-5 group-active:-translate-x-0.5 transition" fill="currentColor">
+            <path d="M15 6l-6 6 6 6" />
+          </svg>
+        </button>
+
+        <div className="relative w-[46%] md:w-[52%] h-1.5 rounded-full bg-stone-200/70 overflow-hidden">
+          <div
+            key={idx} /* restart the animation per slide */
+            className="h-full bg-amber-800 animate-news-progress"
+            style={{ animationDuration: `3000ms` }}
+          />
+        </div>
+
+        <button
+          onClick={() => go("right")}
+          className="group rounded-full h-12 w-12 grid place-items-center border border-amber-200 bg-white text-amber-900 shadow hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-400"
+          aria-label="Next"
+        >
+          <svg viewBox="0 0 24 24" className="h-5 w-5 group-active:translate-x-0.5 transition" fill="currentColor">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------ Facebook Panel ----------------------------- */
 function FacebookSection() {
   const PAGE_URL =
     "https://www.facebook.com/p/NIT-Trichy-Alumni-100072175306327/";
@@ -247,15 +382,79 @@ function FacebookSection() {
   );
 }
 
+/* ----------------------------------- Home ---------------------------------- */
 function Home() {
   const [activeResearch, setActiveResearch] = useState(0);
-  const [pauseResearch, setPauseResearch] = useState(false); 
+  const [pauseResearch, setPauseResearch] = useState(false);
 
-  const scrollerRef = useRef(null);
-  const pauseRef = useRef(false);
-  const dragRef = useRef({ down: false, startX: 0, startLeft: 0, id: null });
+  /* ---------- NEWS: fetch from Google Sheets CSV ---------- */
+  const [news, setNews] = useState([]);
+  const [newsLoading, setNewsLoading] = useState(true);
+  const [newsErr, setNewsErr] = useState("");
 
-  // --- Reveal on scroll ---
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        setNewsLoading(true);
+        setNewsErr("");
+        const res = await fetch(NEWS_CSV_URL, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Fetch failed (${res.status})`);
+        const text = await res.text();
+        const rows = parseCSV(text);
+        if (!rows.length) { if (alive) setNews([]); return; }
+
+        // header indices (case-insensitive)
+        const headers = rows[0].map((h) => h.toLowerCase());
+        const idx = {
+          title: headers.indexOf("title"),
+          tag: headers.indexOf("tag"),
+          image: headers.indexOf("image"),
+          blurb: headers.indexOf("blurb"),
+          link: headers.indexOf("link"),
+          active: headers.indexOf("active"),
+        };
+
+        const out = rows.slice(1)
+          .map((r) => ({
+            title: r[idx.title] || "",
+            tag: r[idx.tag] || "",
+            image: r[idx.image] || "",
+            blurb: r[idx.blurb] || "",
+            link: r[idx.link] || "",
+            active: (r[idx.active] || "yes").toLowerCase(),
+          }))
+          .filter((n) => n.title.trim().length)               // need a title
+          .filter((n) => n.active !== "no" && n.active !== "false"); // allow quick off switch
+
+        // small fallback if sheet is empty
+        if (alive) setNews(out.length ? out : [
+          {
+            title: "Global Alumni Meet 2025",
+            tag: "Alumni",
+            image: "/gam.jpeg",
+            blurb: "Panels, networking and campus nostalgia—our global community grew stronger than ever.",
+            link: "https://www.nittrichyalumni.org/events/event/381742.dz",
+          },
+          {
+            title: "Distinguished Alumni Awards",
+            tag: "Awards",
+            image: "/daa.jpeg",
+            blurb: "Celebrating leadership, innovation and service that inspire the next generation.",
+            link: "",
+          },
+        ]);
+      } catch (e) {
+        if (alive) setNewsErr(e.message || "Failed to load news.");
+      } finally {
+        if (alive) setNewsLoading(false);
+      }
+    })();
+    return () => { alive = false; };
+  }, []);
+  /* ------------------------------------------------------- */
+
+  // Reveal-on-scroll
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("is-visible")),
@@ -272,7 +471,8 @@ function Home() {
         dept: "Department of Physics",
         institute: "National Institute of Technology, Tiruchirappalli",
         image: "/research1.jpeg",
-        description: "The research areas of the magnetic materials laboratory encompass studies on the structure-property correlation in a wide range of soft and hard magnetic materials. The research team under Prof. R. Justin Joseyphus explored exchange bias, size and shape-dependent coercivities in nanoparticles of Fe and its alloys obtained through a novel instant polyol process. The Fe-based alloys are tailor-made to reduce the coercivity without losing their morphology with annealing and are expected to be utilized in future-generation more-electric vehicles. In another study, equipped with a 500 kHz indigenous AC magnetic field generator, the team established high-heating efficiency in superparamagnetic nanoparticles. The discovery has opened up new avenues for efficient magnetic nanoparticles suitable for cancer therapy by lowering the anisotropy energy using appropriate dopants. The image illustrates the magnetic nanoparticle hyperthermia methodology for brain tumor therapy and the thermal profile of the magnetic nanoparticles recorded in the research team's laboratory.",
+        description:
+          "The research areas of the magnetic materials laboratory encompass studies on the structure-property correlation in a wide range of soft and hard magnetic materials...",
         facultyLink: "https://www.nitt.edu/home/academics/departments/physics/Faculty/justin/",
       },
       {
@@ -281,7 +481,7 @@ function Home() {
         institute: "National Institute of Technology, Tiruchirappalli",
         image: "/research2.jpeg",
         description:
-        "Dr. Sudharsan P work spans 3 important topics in 6G wireless communication such as intelligent reflecting surfaces (IRS), hybrid satellite-terrestrial system and THz communication. In IRS work we considered a direct Tx-Rx channel in addition to the IRS channel and analyzed the system. We analyzed the IRS system in a multi antenna setup too. We have anlayzed coverage of amplify-forward relay based multi user hybrid satellite-terrestrial systems. The analytical expressions derived have been verified with simulation giving us good insights into the wireless system. The work with my Ph.D scholar focuses on analyzing THz communication networks. The challenge is to model the interference in such networks carefully and derive metrics such as coverage, rate etc. I have recently obtained a 3 year SERB-MATRICS grant to use stochastic geometry techniques to analyze vehicular communication networks. We have used Poisson point process to analyze automotive radar systems and presented it in NCC 2024 at IIT Madras.",
+          "Work spans intelligent reflecting surfaces (IRS), hybrid satellite-terrestrial systems, and THz communication...",
         facultyLink: "https://www.nitt.edu/home/academics/departments/ece/faculty/sudharsan/",
       },
       {
@@ -290,7 +490,7 @@ function Home() {
         institute: "National Institute of Technology, Tiruchirappalli",
         image: "/research3.jpeg",
         description:
-        "Dr. R. Periyasamy's recent research focuses on developing an innovative biomedical diagnostic device to enhance patient care, particularly for diabetic foot ulcers, neonatal jaundice, and pulmonary diseases. One of his notable projects involves creating a novel sensing device funded by DST-TIDE, which is designed to detect ulcer risk areas in diabetic feet at an early stage. Additionally, he has developed a handheld device for diagnosing compressive neuropathy in diabetic subjects using a two-point discrimination test, supported by DST-SYST. In the field of neonatal care, he has pioneered a non-invasive, on-contact jaundice meter that uses skin reflectometry technique to measure bilirubin levels; this device is currently patent-filed and in process, funded by DST-IDP. Furthermore, he is working on non-invasive haemoglobin estimation and other patient vital sign parameter monitoring by utilizing dual-wavelength photoplethysmography (PPG) and machine learning techniques. He is also involved in the diagnosis of pulmonary diseases through lung sound analysis using machine learning and deep learning approaches. His research, which combines biomedical instrumentation with advanced diagnostic techniques, has been published in high-impact journals and has received several awards.",
+          "Non-invasive neonatal jaundice meter, diabetic foot ulcer early risk detection, PPG + ML vitals monitoring, lung sound analysis...",
         facultyLink: "https://www.nitt.edu/home/academics/departments/ice/faculty/periyasamyr/",
       },
       {
@@ -299,7 +499,7 @@ function Home() {
         institute: "National Institute of Technology, Tiruchirappalli",
         image: "/research4.jpeg",
         description:
-        "Dr. Projesh Kumar Roy, Assistant Professor in the Department of Chemistry at NIT Tiruchirappalli, leads the Computational Material Discovery Laboratory (@MatDisco), where cutting-edge computational methods are employed to analyze and predict the properties of novel materials such as 2D materials, glasses, ring-polymers, and proteins. The lab not only advances academic research but also addresses real-world challenges through collaborations with industrial partners. Previously, the PI have successfully completed an industrial project–sponsored jointly by SHELL India Inc. and IISc, Bangalore—on the CO2 gas adsorption in a high-performance polyimide-type polymeric membranes using molecular dynamics and associated methods. We are further extending the project using coarse-grain methodology to understand the intricate details of QSAR between pore-networks and adsorption properties of polymers. A DST-SERB sponsored project on the interactions between oncogenic p53-p73 protein is ongoing at @MatDisco in collaboration with IIT-Madras, with aim to design anti-cancer drugs using cheminformatic tools. We are extending our expertise in machine learning, artificial intelligence, and QM/MM methods as well.",
+          "Computational materials discovery across 2D materials, polymers, proteins, with industry & SERB projects...",
         facultyLink: "https://www.nitt.edu/home/academics/departments/chemistry/Faculty/projesh/",
       },
       {
@@ -308,13 +508,14 @@ function Home() {
         institute: "National Institute of Technology, Tiruchirappalli",
         image: "/research5.jpeg",
         description:
-        "At Theoretical Metallurgy Lab, my team and I (Dr.-Ing. Prince Gideon Kubendran Amos) are investigating this pivotal question. We perform quantitative analysis of intricate, temporally-evolving microstructures both experimentally observed or numerically modeled. By applying AI techniques—from regression-based object detection to deep learning—we assess dynamic and static microstructures, focusing on the kinetics and characteristic features that influence material properties. Additionally, we explore how large language models (LLMs) can enhance access to crucial information on Metallurgical Waste Management, helping to mitigate its adverse effects and advance sustainable practices in materials engineering.",
+          "AI for microstructure analysis and LLMs for metallurgical waste knowledge access...",
         facultyLink: "https://www.nitt.edu/home/academics/departments/meta/faculty/prince/",
       },
     ],
     []
   );
 
+  // Research highlights auto-advance (independent of news)
   useEffect(() => {
     if (pauseResearch || research.length <= 1) return;
     const id = setInterval(() => {
@@ -325,78 +526,9 @@ function Home() {
 
   const handleManualSelect = (i) => {
     setActiveResearch(i);
-    setPauseResearch(true);               
+    setPauseResearch(true);
     window.clearTimeout(handleManualSelect._t);
     handleManualSelect._t = window.setTimeout(() => setPauseResearch(false), 8000);
-  };
-
-  const news = useMemo(
-    () => [
-      { title: "Global Alumni Meet 2025", tag: "Alumni", image: "/gam.jpeg", blurb: "Panels, networking and campus nostalgia—our global community grew stronger than ever." },
-      { title: "Distinguished Alumni Awards", tag: "Awards", image: "daa.jpeg", blurb: "Celebrating leadership, innovation and service that inspire the next generation." },
-      { title: "Distinguished Alumni Awards", tag: "Awards", image: "daa.jpeg", blurb: "Celebrating leadership, innovation and service that inspire the next generation." },
-      { title: "Distinguished Alumni Awards", tag: "Awards", image: "daa.jpeg", blurb: "Celebrating leadership, innovation and service that inspire the next generation." },
-      { title: "Distinguished Alumni Awards", tag: "Awards", image: "daa.jpeg", blurb: "Celebrating leadership, innovation and service that inspire the next generation." },
-    
-    ],
-    []
-  );
-
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    let i = 0;
-    const tick = setInterval(() => {
-      if (pauseRef.current) return;
-      const cards = Array.from(el.children);
-      if (cards.length === 0) return;
-      i = (i + 1) % cards.length;
-      const next = cards[i];
-      el.scrollTo({ left: next.offsetLeft - 16, behavior: "smooth" });
-    }, 4200);
-    return () => clearInterval(tick);
-  }, []);
-
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const onDown = (e) => {
-      pauseRef.current = true;
-      dragRef.current.down = true;
-      dragRef.current.id = e.pointerId;
-      dragRef.current.startX = e.clientX;
-      dragRef.current.startLeft = el.scrollLeft;
-      el.setPointerCapture?.(e.pointerId);
-      el.classList.add("dragging");
-    };
-    const onMove = (e) => {
-      if (!dragRef.current.down) return;
-      const dx = e.clientX - dragRef.current.startX;
-      el.scrollLeft = dragRef.current.startLeft - dx;
-    };
-    const onUp = () => {
-      dragRef.current.down = false;
-      pauseRef.current = false;
-      el.releasePointerCapture?.(dragRef.current.id);
-      el.classList.remove("dragging");
-    };
-    el.addEventListener("pointerdown", onDown, { passive: true });
-    el.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerup", onUp, { passive: true });
-    return () => {
-      el.removeEventListener("pointerdown", onDown);
-      el.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
-    };
-  }, []);
-
-  const nudgeNews = (dir) => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    pauseRef.current = true;
-    const step = el.clientWidth * 0.7;
-    el.scrollBy({ left: dir === "left" ? -step : step, behavior: "smooth" });
-    setTimeout(() => (pauseRef.current = false), 2500);
   };
 
   return (
@@ -460,14 +592,11 @@ function Home() {
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white to-transparent" />
       </section>
 
-       <NumbersBand />
+      <NumbersBand />
 
       {/* CONTENT */}
       <main className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 space-y-10 md:space-y-12 -mt-10">
-
-        {/* Facebook feed */}
-        
-        {/* Research Highlights (auto-advance every 3s, pauses on hover/click) */}
+        {/* Research Highlights */}
         <section
           className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_8px_24px_rgba(180,83,9,.08)]"
           data-reveal
@@ -483,11 +612,7 @@ function Home() {
                   key={i}
                   onClick={() => handleManualSelect(i)}
                   className={`h-8 w-8 rounded-full text-xs font-semibold transition relative overflow-hidden
-                    ${
-                      i === activeResearch
-                        ? "bg-amber-800 text-white shadow"
-                        : "bg-white border border-amber-200 text-amber-900 hover:bg-amber-50"
-                    }`}
+                    ${i === activeResearch ? "bg-amber-800 text-white shadow" : "bg-white border border-amber-200 text-amber-900 hover:bg-amber-50"}`}
                   aria-label={`Show research ${i + 1}`}
                 >
                   {i + 1}
@@ -496,107 +621,75 @@ function Home() {
             </div>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2 items-start">
-            <div className="order-2 lg:order-1 space-y-1">
-              <h3 className="text-xl font-semibold text-amber-900">{research[activeResearch].title}</h3>
-              <div className="text-sm text-stone-700">{research[activeResearch].dept}</div>
-              <div className="text-sm text-stone-700">{research[activeResearch].institute}</div>
-              <p className="mt-4 text-[15px] leading-7 text-stone-800">{research[activeResearch].description}</p>
-              <div className="mt-5">
-                <a
-                  href={research[activeResearch].facultyLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
-                >
-                  Faculty Profile
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-                    <path d="M13.5 4.5H21v7.5h-1.5V7.06l-8.97 8.97-1.06-1.06 8.97-8.97H13.5V4.5z" />
-                    <path d="M19.5 19.5h-15v-15H12V3H3v18h18v-9h-1.5v7.5z" />
-                  </svg>
-                </a>
+          {/* Constant-height boxes */}
+          <div className="grid gap-6 lg:grid-cols-2 items-stretch">
+            <div className="order-2 lg:order-1">
+              <div className="h-[340px] md:h-[420px] relative rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow flex flex-col">
+                <div className="space-y-1">
+                  <h3 className="text-xl font-semibold text-amber-900">{research[activeResearch].title}</h3>
+                  <div className="text-sm text-stone-700">{research[activeResearch].dept}</div>
+                  <div className="text-sm text-stone-700">{research[activeResearch].institute}</div>
+                </div>
+                <div className="mt-4 text-[15px] leading-7 text-stone-800 overflow-auto pr-1">
+                  {research[activeResearch].description}
+                </div>
+                <div className="mt-4 pt-2">
+                  <a
+                    href={research[activeResearch].facultyLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
+                  >
+                    Faculty Profile
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                      <path d="M13.5 4.5H21v7.5h-1.5V7.06l-8.97 8.97-1.06-1.06 8.97-8.97H13.5V4.5z" />
+                      <path d="M19.5 19.5h-15v-15H12V3H3v18h18v-9h-1.5v7.5z" />
+                    </svg>
+                  </a>
+                </div>
               </div>
             </div>
+
             <div className="order-1 lg:order-2">
-              <div className="relative w-full rounded-2xl border border-amber-200/70 bg-white shadow overflow-hidden group">
-                <div className="relative w-full" style={{ paddingBottom: "100%" }}>
-                  <img
-                    key={activeResearch}
-                    src={research[activeResearch].image}
-                    alt={research[activeResearch].title}
-                    className="absolute inset-0 h-full w-full object-contain opacity-0 animate-fade-in"
-                  />
-                </div>
+              <div className="h-[340px] md:h-[420px] relative w-full rounded-2xl border border-amber-200/70 bg-white shadow overflow-hidden group">
+                <img
+                  key={activeResearch}
+                  src={research[activeResearch].image}
+                  alt={research[activeResearch].title}
+                  className="absolute inset-0 h-full w-full object-cover opacity-0 animate-fade-in"
+                />
                 <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-[radial-gradient(60%_40%_at_70%_20%,rgba(251,191,36,.10),transparent_60%)]" />
               </div>
             </div>
           </div>
         </section>
 
-        
-
-        {/* News */}
+        {/* News (Refined Carousel) */}
         <section
-          className="relative rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_8px_24px_rgba(180,83,9,.08)]"
+          className="relative rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur shadow-[0_8px_24px_rgba(180,83,9,.08)] overflow-hidden"
           data-reveal
         >
-          <div className="flex items-center gap-2 mb-5">
+          <header className="flex items-center gap-2 px-6 pt-6">
             <span className="h-2 w-2 rounded-full bg-amber-700" />
-            <h2 className="font-serif text-2xl md:text-3xl text-amber-900">Latest News about Alumni</h2>
-            <div className="ml-auto hidden sm:flex gap-2">
-              <button
-                onClick={() => nudgeNews("left")}
-                className="rounded-xl border border-amber-200 bg-white px-3 py-2 text-sm text-amber-900 hover:bg-amber-50"
-              >
-                ←
-              </button>
-              <button
-                onClick={() => nudgeNews("right")}
-                className="rounded-xl border border-amber-200 bg-white px-3 py-2 text-sm text-amber-900 hover:bg-amber-50"
-              >
-                →
-              </button>
+            <h2 className="font-serif text-2xl md:text-3xl text-amber-900">LATEST NEWS</h2>
+          </header>
+          <br />
+          {newsLoading && (
+            <div className="px-6 pb-8 text-stone-600 text-sm">Loading news…</div>
+          )}
+          {newsErr && !newsLoading && (
+            <div className="px-6 pb-8 text-red-700 bg-red-50 border border-red-200 mx-6 rounded-xl">
+              {newsErr}
             </div>
-          </div>
-
-          <div
-            ref={scrollerRef}
-            className="mt-4 overflow-x-auto snap-x snap-mandatory flex gap-4 px-4 -mx-4 pb-3 no-scrollbar cursor-grab"
-            style={{
-              WebkitMaskImage:
-                "linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)",
-              maskImage:
-                "linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)",
-              touchAction: "pan-x",
-            }}
-            onMouseEnter={() => (pauseRef.current = true)}
-            onMouseLeave={() => (pauseRef.current = false)}
-          >
-            {news.map((n, i) => (
-              <article
-                key={i}
-                className="snap-center shrink-0 w-[86%] sm:w-[60%] lg:w-[44%] relative overflow-hidden rounded-2xl border border-amber-200/60 shadow group hover:shadow-lg transition"
-              >
-                <div className="relative">
-                  <img
-                    src={n.image}
-                    alt={n.title}
-                    className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <div className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-amber-900">
-                      {n.tag}
-                    </div>
-                    <h3 className="mt-2 text-white text-lg font-semibold drop-shadow">{n.title}</h3>
-                    <p className="text-white/90 text-xs">{n.blurb}</p>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-          <div className="mt-3 text-center text-xs text-stone-600">Drag to explore • Use arrows on desktop</div>
+          )}
+          {!newsLoading && !newsErr && news.length > 0 && (
+            <NewsCarousel items={news} />
+          )}
+          {!newsLoading && !newsErr && news.length === 0 && (
+            <div className="px-6 pb-8 text-stone-600 text-sm">No news yet.</div>
+          )}
         </section>
+
         <FacebookSection />
       </main>
 
@@ -604,25 +697,31 @@ function Home() {
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .dragging { cursor: grabbing !important; user-select: none; }
         [data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity .8s ease, transform .8s ease; }
         .is-visible { opacity: 1 !important; transform: translateY(0) !important; }
+
         @keyframes gradient-x { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         .animate-gradient-x { animation: gradient-x 12s ease infinite; }
         @keyframes pan-slow { 0%{transform:translate3d(0,0,0)} 50%{transform:translate3d(1.5%,-1.5%,0)} 100%{transform:translate3d(0,0,0)} }
         .animate-pan-slow { animation: pan-slow 14s ease-in-out infinite; }
         @keyframes kenburns { 0%{transform:scale(1.05) translate3d(-1%,-1%,0)} 50%{transform:scale(1.10) translate3d(1%,1%,0)} 100%{transform:scale(1.05) translate3d(-1%,-1%,0)} }
         .animate-kenburns { animation: kenburns 24s ease-in-out infinite; }
+
         @keyframes shine { 0%{transform:translateX(-120%)} 100%{transform:translateX(120%)} }
         .animate-shine::before { content:""; position:absolute; inset:-2px; background:linear-gradient(120deg,rgba(255,255,255,.5),rgba(255,255,255,0) 30%,rgba(255,255,255,.5) 60%,rgba(255,255,255,0)); transform:translateX(-120%); animation:shine 1.5s ease-in-out infinite; }
         .animate-shine { overflow:hidden; }
+
         @keyframes fade-in { from{opacity:0;transform:scale(.98)} to{opacity:1;transform:scale(1)} }
         .animate-fade-in { animation: fade-in .6s ease forwards; }
+
         @keyframes ping-slow { 0%{transform:scale(1);opacity:1} 70%{transform:scale(1.6);opacity:0} 100%{transform:scale(1.6);opacity:0} }
         .animate-ping-slow { animation: ping-slow 2.2s cubic-bezier(0,0,.2,1) infinite; }
-        @keyframes pulse-soft { 0%,100%{opacity:.55} 50%{opacity:.85} }
-        .animate-pulse-soft { animation: pulse-soft 4.2s ease-in-out infinite; }
+
         @keyframes float { 0%{ transform:translate3d(0,0,0); opacity:.0 } 8%{ opacity:.7 } 92%{ opacity:.7 } 100%{ transform:translate3d(var(--xdrift,0), var(--ytravel,-60vh), 0); opacity:0 } }
+
+        /* News progress bar (3s default) */
+        @keyframes news-progress { from { width: 0% } to { width: 100% } }
+        .animate-news-progress { animation-name: news-progress; animation-timing-function: linear; }
       `}</style>
     </div>
   );

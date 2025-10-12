@@ -30,6 +30,7 @@ import Staff from './components/Staff';
 import Faculty from './components/Faculty';
 import Infra from './components/Infra';
 import Hostel from './components/Hostel';
+import Clubs from './components/Clubs';
 
 import DAA from './components/DAA';
 import YAA from './components/YAA';
@@ -340,6 +341,7 @@ function App() {
         <Route path="/causes/faculty-support" element={<Faculty/>} />
         <Route path="/causes/infrastructure" element={<Infra/>} />
         <Route path="/causes/hostels" element={<Hostel/>} />
+         <Route path="/causes/clubs" element={<Clubs/>} />
 
         <Route path="/awards/daa" element={<DAA />} />
         <Route path="/awards/yaa" element={<YAA />} />
