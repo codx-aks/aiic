@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const SUBCAUSES = [
   {
-    key: "research",
+    key: "faculty-research-support",
     title: "Research Support",
     color: "amber",
     summary:
@@ -11,43 +11,41 @@ const SUBCAUSES = [
     impact: ["Groundbreaking Research", "Student Involvement", "Knowledge Advancement"],
   },
   {
-    key: "young-faculty",
+    key: "faculty-young-faculty-award",
     title: "Young Faculty Award",
     color: "orange",
     summary:
-      "The Young Faculty Award is designed to recognize and reward early-career faculty members who demonstrate exceptional promise in teaching and research. This award provides financial support, enabling young faculty to develop their research initiatives and further their professional growth. By investing in emerging talent, we ensure the continued excellence and innovation of our academic community. Your contributions can help nurture the next generation of academic leaders.",
+      "The Young Faculty Award recognizes early-career faculty with exceptional promise in teaching and research. Support helps them kick-start or scale research initiatives, develop labs, and grow professionally—ensuring a strong pipeline of future academic leaders.",
     impact: ["Emerging Talent", "Professional Growth", "Future Leaders"],
   },
   {
-    key: "chair",
+    key: "faculty-chair-professorship",
     title: "Chair Professorship",
     color: "orange",
     summary:
-      "Establishing new Chair Professorships is essential for NIT Tiruchirappalli to attract and retain high-quality research faculty, enhancing its status as a premier institution. An endowed Chair Professorship recognizes outstanding faculty achievements and attracts exceptional visiting academicians, enriching our students' educational journeys. Donations create an endowment whose interest covers the Chair's expenses, including an honorarium and contingency costs, while the Institute funds the salary and other benefits. By contributing to a Chair Professorship, you support NITT's mission of academic excellence and innovation, ensuring we remain at the forefront of education and research.",
+      "Endowed Chairs help NIT Trichy attract and retain world-class faculty and visiting scholars. Your gift builds a lasting endowment whose income supports honorarium and research contingencies, while the Institute covers salary and benefits—elevating academic excellence and global standing.",
     impact: ["Academic Prestige", "Global Expertise", "Endowed Legacy"],
   },
+  {
+    key: "faculty-medical-support",
+    title: "Faculty Medical Support",
+    color: "emerald",
+    summary:
+      "Help us provide timely medical support for faculty members facing emergencies or critical care needs. Your gift bridges gaps for procedures, therapies, diagnostics, and recovery support—reducing stress so faculty can focus on their well-being and return to teaching and research.",
+    impact: ["Timely Care", "Financial Relief", "Well-being & Continuity"],
+  },
 ];
-
-// Map each sub-cause to a Donate page cause id (from Donate.jsx CAUSES)
-const DONATE_MAP = {
-  research: "research-seed",
-  "young-faculty": "research-seed",
-  chair: "research-seed",
-};
 
 function classNames(...s) {
   return s.filter(Boolean).join(" ");
 }
 
 export default function Faculty() {
-  const [active, setActive] = useState("research");
+  const [active, setActive] = useState(SUBCAUSES[0].key);
   const current = useMemo(
     () => SUBCAUSES.find((c) => c.key === active) || SUBCAUSES[0],
     [active]
   );
-
-  // Determine which cause id to preselect on Donate page
-  const donateCauseId = DONATE_MAP[active] || "research-seed";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
@@ -58,12 +56,29 @@ export default function Faculty() {
             <div className="relative rounded-3xl border border-amber-900/30 bg-gradient-to-br from-amber-950 to-stone-900 shadow-[0_14px_36px_rgba(0,0,0,.35)]">
               <div className="absolute inset-0 opacity-40 bg-[radial-gradient(80%_60%_at_10%_10%,rgba(251,191,36,.25),transparent_60%),radial-gradient(70%_50%_at_90%_90%,rgba(234,88,12,.18),transparent_60%)]" />
               <div className="relative px-6 py-8 sm:px-10 sm:py-12">
-                <p className="text-amber-100/90 text-xs tracking-wider uppercase">
-                  Giving Back · Student Success
-                </p>
-                <h1 className="mt-1 font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
-                  Faculty Support
-                </h1>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-amber-100/90 text-xs tracking-wider uppercase">
+                      Giving Back · Faculty Excellence
+                    </p>
+                    <h1 className="mt-1 font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
+                      Faculty Support
+                    </h1>
+                  </div>
+
+                  {/* Header Donate — uses current key directly */}
+                  <Link
+                    to={{ pathname: "/donate", search: `?cause=${current.key}` }}
+                    state={{ causeId: current.key }}
+                    className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
+                    aria-label={`Donate to ${current.title}`}
+                  >
+                    Donate
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                      <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
+                    </svg>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -84,11 +99,9 @@ export default function Faculty() {
 
           <div className="md:col-span-7 rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
             <p className="mt-3 text-[14px] leading-7 text-stone-800">
-              NIT Tiruchirappalli is renowned for its accomplished and distinguished faculty members who
-              have significantly contributed to its reputation as a premier institution. As we continue to
-              grow and advance, one of our key objectives is to attract and retain brilliant minds from
-              across the country. To support this mission, NITT has implemented several initiatives and
-              awards, and we invite you to join us in funding these critical efforts.
+              NIT Tiruchirappalli’s acclaimed faculty power our teaching, research, and innovation.
+              Your support helps us attract, retain, and sustain outstanding educators and researchers—
+              across research funding, early-career awards, endowed Chairs, and medical support.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {["Faculty Excellence", "Talent Retention", "Academic Growth"].map((tag) => (
@@ -141,10 +154,9 @@ export default function Faculty() {
               <p className="mt-2 max-w-3xl text-[15px] leading-7 text-stone-800">{current.summary}</p>
             </div>
 
-            {/* Donate button (preselects cause on /donate) */}
             <Link
-              to={{ pathname: "/donate", search: `?cause=${donateCauseId}` }}
-              state={{ causeId: donateCauseId }}
+              to={{ pathname: "/donate", search: `?cause=${current.key}` }}
+              state={{ causeId: current.key }}
               className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.01] transition"
               aria-label={`Donate to ${current.title}`}
             >

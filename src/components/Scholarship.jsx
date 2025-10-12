@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const SUBCAUSES = [
   {
-    key: "scholarships",
+    key: "student scholarships",
     title: "Scholarships",
     color: "amber",
     summary:
@@ -11,7 +11,7 @@ const SUBCAUSES = [
     impact: ["Covers term fees", "Reduces loan burden", "Retains top talent"],
   },
   {
-    key: "project",
+    key: "student project funding",
     title: "Project Funding",
     color: "orange",
     summary:
@@ -19,7 +19,7 @@ const SUBCAUSES = [
     impact: ["Prototype ready", "Publishable results", "IP & startups"],
   },
   {
-    key: "travel",
+    key: "student travel grant",
     title: "Travel Grant",
     color: "emerald",
     summary:
@@ -27,7 +27,7 @@ const SUBCAUSES = [
     impact: ["Paper presented", "Global exposure", "Career acceleration"],
   },
   {
-    key: "adopt",
+    key: "studnet financial support",
     title: "Financial Support (Adopt a Student)",
     color: "rose",
     summary:
@@ -35,7 +35,7 @@ const SUBCAUSES = [
     impact: ["Essential needs met", "Improved retention", "Dignity preserved"],
   },
   {
-    key: "medical",
+    key: "student medical support",
     title: "Medical Support",
     color: "sky",
     summary:
@@ -43,17 +43,6 @@ const SUBCAUSES = [
     impact: ["Faster care", "Fewer dropouts", "Community safety net"],
   },
 ];
-
-// Map each sub-cause to a Donate.jsx cause id (with sensible fallbacks)
-const DONATE_DEFAULT_CAUSE_ID = "scholarships-merit";
-const SUBCAUSE_TO_CAUSE = {
-  scholarships: "scholarships-merit",
-  project: "research-seed",
-  travel: "scholarships-merit", // fallback
-  clubs: "teams-technical",
-  adopt: "emergency-fund",
-  medical: "emergency-fund",
-};
 
 function classNames(...s) {
   return s.filter(Boolean).join(" ");
@@ -66,12 +55,9 @@ export default function Scholarship() {
     [active]
   );
 
-  const activeCauseId =
-    SUBCAUSE_TO_CAUSE[current.key] || DONATE_DEFAULT_CAUSE_ID;
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
-      {/* Hero with Donate CTA */}
+      {/* Hero with Donate CTA (defaults to 'scholarships') */}
       <header className="relative overflow-hidden">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="py-10 sm:py-12">
@@ -89,8 +75,8 @@ export default function Scholarship() {
                   </div>
 
                   <Link
-                    to={{ pathname: "/donate", search: `?cause=${DONATE_DEFAULT_CAUSE_ID}` }}
-                    state={{ causeId: DONATE_DEFAULT_CAUSE_ID }}
+                    to={{ pathname: "/donate", search: `?cause=scholarships` }}
+                    state={{ causeId: "scholarships" }}
                     className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
                     aria-label="Donate to Scholarships"
                   >
@@ -170,7 +156,7 @@ export default function Scholarship() {
         </div>
       </section>
 
-      {/* Active sub-cause card + Donate */}
+      {/* Active sub-cause card + Donate (passes key directly) */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-6 pb-16">
         <article className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
           <header className="flex items-start justify-between gap-4">
@@ -184,8 +170,8 @@ export default function Scholarship() {
             </div>
 
             <Link
-              to={{ pathname: "/donate", search: `?cause=${activeCauseId}` }}
-              state={{ causeId: activeCauseId }}
+              to={{ pathname: "/donate", search: `?cause=${current.key}` }}
+              state={{ causeId: current.key }}
               className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
               aria-label={`Donate to ${current.title}`}
             >

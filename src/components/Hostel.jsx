@@ -1,11 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-const DONATE_CAUSE_ID = "infra-learning"; // must match Donate.jsx CAUSES id
-
 const SECTIONS = [
   {
-    key: "new-hostel",
+    key: "hostel-new-construction",
     title: "New Hostel Construction",
     summary: (
       <>
@@ -32,7 +30,7 @@ const SECTIONS = [
     impacts: ["Student Wellbeing", "Campus Growth", "Alumni Support"],
   },
   {
-    key: "international",
+    key: "hostel-international-hostel",
     title: "International Hostel",
     summary: (
       <>
@@ -52,8 +50,8 @@ const SECTIONS = [
     impacts: ["Global Exposure", "Cultural Exchange", "Academic Mobility"],
   },
   {
-    key: "renovation",
-    title: "Renovation of Hostels",
+    key: "hostel-renovation-accessibility",
+    title: "Renovation & Accessibility",
     summary: (
       <>
         <p>
@@ -111,7 +109,7 @@ export default function Hostel() {
         </div>
       </header>
 
-      {/* Overview block (image + intro, like Faculty) */}
+      {/* Overview block */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="grid gap-6 md:grid-cols-12 items-start">
           <figure className="md:col-span-5 rounded-2xl overflow-hidden border border-amber-200/70 bg-white shadow">
@@ -144,7 +142,7 @@ export default function Hostel() {
         </div>
       </section>
 
-      {/* Tabs (matches Faculty style chips) */}
+      {/* Tabs */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-8">
         <div className="rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-3 shadow-[0_8px_24px_rgba(180,83,9,.08)]">
           <div className="flex gap-2 overflow-x-auto no-scrollbar" role="tablist" aria-label="Hostel sub-projects">
@@ -168,15 +166,17 @@ export default function Hostel() {
         </div>
       </section>
 
-      {/* Active section card (each has Donate) */}
+      {/* Active section card */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-6 pb-16">
         <article className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
           <header className="flex items-start justify-between gap-4">
             <h2 className="font-serif text-2xl md:text-3xl text-amber-900">{current.title}</h2>
+            {/* Pass the exact key through to Donate */}
             <Link
-              to={{ pathname: "/donate", search: `?cause=${DONATE_CAUSE_ID}` }}
-              state={{ causeId: DONATE_CAUSE_ID }}
+              to={{ pathname: "/donate", search: `?cause=${current.key}` }}
+              state={{ causeId: current.key }}
               className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.01] transition"
+              aria-label={`Donate to ${current.title}`}
             >
               Donate
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">

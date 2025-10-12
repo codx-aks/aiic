@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const SUBCAUSES = [
   {
-    key: "medical",
+    key: "staff medical support",
     title: "Medical Support",
     color: "amber",
     summary:
@@ -11,7 +11,7 @@ const SUBCAUSES = [
     impact: ["Timely Care", "Financial Relief", "Well-being Boost"],
   },
   {
-    key: "education",
+    key: "staff's ward education support",
     title: "Education Support of Wards of Non Muster roll (NMR) Staff",
     color: "orange",
     summary:
@@ -20,17 +20,12 @@ const SUBCAUSES = [
   },
 ];
 
-// Choose a stable ID for this cause.
-// If your Donate.jsx CAUSES doesn’t include this yet, it will fall back to General.
-// (You can later add { id: "staff-support", name: "Staff Support" } there to preselect.)
-const DONATE_CAUSE_ID = "staff-support";
-
 function classNames(...s) {
   return s.filter(Boolean).join(" ");
 }
 
 export default function Staff() {
-  const [active, setActive] = useState("medical");
+  const [active, setActive] = useState(SUBCAUSES[0].key);
   const current = useMemo(
     () => SUBCAUSES.find((c) => c.key === active) || SUBCAUSES[0],
     [active]
@@ -48,19 +43,19 @@ export default function Staff() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-amber-100/90 text-xs tracking-wider uppercase">
-                      Giving Back · Student Success
+                      Giving Back · Staff & Families
                     </p>
                     <h1 className="mt-1 font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
                       Staff Support
                     </h1>
                   </div>
 
-                  {/* Top Donate button */}
+                  {/* Header Donate — uses the currently active sub-cause key */}
                   <Link
-                    to={{ pathname: "/donate", search: `?cause=${DONATE_CAUSE_ID}` }}
-                    state={{ causeId: DONATE_CAUSE_ID }}
+                    to={{ pathname: "/donate", search: `?cause=${current.key}` }}
+                    state={{ causeId: current.key }}
                     className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
-                    aria-label="Donate to Staff Support"
+                    aria-label={`Donate to ${current.title}`}
                   >
                     Donate
                     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
@@ -85,7 +80,7 @@ export default function Staff() {
             />
           </figure>
 
-        <div className="md:col-span-7 rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
+          <div className="md:col-span-7 rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
             <p className="mt-3 text-[14px] leading-7 text-stone-800">
               NIT Tiruchirappalli invites you to support our dedicated staff and their
               families in two crucial areas. By contributing to this fund, you directly
@@ -147,10 +142,10 @@ export default function Staff() {
               </p>
             </div>
 
-            {/* Donate for this sub-cause */}
+            {/* Donate for this sub-cause — passes the exact key */}
             <Link
-              to={{ pathname: "/donate", search: `?cause=${DONATE_CAUSE_ID}` }}
-              state={{ causeId: DONATE_CAUSE_ID }}
+              to={{ pathname: "/donate", search: `?cause=${current.key}` }}
+              state={{ causeId: current.key }}
               className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
               aria-label={`Donate to ${current.title}`}
             >

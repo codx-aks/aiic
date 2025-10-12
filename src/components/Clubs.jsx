@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-const CSV_URL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQWA0-6f-rV3cf8E6c8vE8bBB0VHMSRXDjwHpqRtqQWPt2_RTDxyC2Gk5iwgE2fXP-KnOEdjv2lUlSx/pub?gid=0&single=true&output=csv`;
-
-const DONATE_CAUSE_ID = "teams-technical"; 
+/** ===================== CONFIG ===================== **/
+const CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWA0-6f-rV3cf8E6c8vE8bBB0VHMSRXDjwHpqRtqQWPt2_RTDxyC2Gk5iwgE2fXP-KnOEdjv2lUlSx/pub?gid=0&single=true&output=csv";
 
 const CATEGORIES = [
   { key: "fests",     label: "Fests" },
@@ -13,6 +13,7 @@ const CATEGORIES = [
   { key: "social",    label: "Social" },
 ];
 
+/** ===================== UTILS ===================== **/
 function parseCSV(text) {
   const rows = [];
   let cur = [], val = "", inQ = false;
@@ -26,9 +27,7 @@ function parseCSV(text) {
       if (c === '"') inQ = true;
       else if (c === ",") { cur.push(val.trim()); val = ""; }
       else if (c === "\n" || c === "\r") {
-        // finish row on newline
         if (val !== "" || cur.length) { cur.push(val.trim()); rows.push(cur); cur = []; val = ""; }
-        // skip \r\n double
         if (c === "\r" && n === "\n") i++;
       } else { val += c; }
     }
@@ -44,12 +43,23 @@ function normalizeCategory(s) {
   if (v.startsWith("soc"))   return "social";
   if (v.startsWith("tech"))  return "technical";
   if (v.includes("fest") || v.includes("pragyan") || v.includes("festember")) return "fests";
-  return "social"; 
+  return "social";
 }
 
+// Turn an id like "delta-force" or "spider_team" into "Delta Force" / "Spider Team"
+function prettyFromId(id) {
+  if (!id) return "";
+  return id
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+/** ===================== PAGE ===================== **/
 export default function Clubs() {
   const [active, setActive] = useState("fests");
-  const [clubs, setClubs] = useState([]);      
+  const [clubs, setClubs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
@@ -67,21 +77,27 @@ export default function Clubs() {
 
         const headers = rows[0].map(h => h.toLowerCase());
         const idx = {
-          name: headers.indexOf("name"),
+          id: headers.indexOf("id"),                 // REQUIRED (unique club id)
           category: headers.indexOf("category"),
           blurb: headers.indexOf("blurb"),
           image: headers.indexOf("image"),
           link: headers.indexOf("link"),
         };
-        const out = rows.slice(1).map(r => ({
-          name: r[idx.name] || "",
-          category: normalizeCategory(r[idx.category] || ""),
-          blurb: r[idx.blurb] || "",
-          image: r[idx.image] || "",
-          link: r[idx.link] || "",
-        }))
-        // basic sanity filter: need at least a name
-        .filter(r => r.name?.trim().length > 0);
+
+        const out = rows
+          .slice(1)
+          .map(r => {
+            const rawId = r[idx.id] || "";
+            return {
+              id: rawId,                                         // cause param will use this as-is
+              displayName: prettyFromId(rawId),                  // shown title derived from id
+              category: normalizeCategory(r[idx.category] || ""),
+              blurb: r[idx.blurb] || "",
+              image: r[idx.image] || "",
+              link: r[idx.link] || "",
+            };
+          })
+          .filter(r => r.id?.trim().length > 0);                 // must have an id
 
         if (alive) setClubs(out);
       } catch (e) {
@@ -95,13 +111,8 @@ export default function Clubs() {
 
   const grouped = useMemo(() => {
     const map = Object.fromEntries(CATEGORIES.map(c => [c.key, []]));
-    for (const c of clubs) {
-      (map[c.category] || map.social).push(c);
-    }
-    // Sort by name inside each category
-    for (const k of Object.keys(map)) {
-      map[k].sort((a, b) => a.name.localeCompare(b.name));
-    }
+    for (const c of clubs) (map[c.category] || map.social).push(c);
+    for (const k of Object.keys(map)) map[k].sort((a, b) => a.displayName.localeCompare(b.displayName));
     return map;
   }, [clubs]);
 
@@ -128,10 +139,10 @@ export default function Clubs() {
                     </p>
                   </div>
 
-                  {/* Donate (preselects Clubs on Donate page) */}
+                  {/* Page-level donate (generic) */}
                   <Link
-                    to={{ pathname: "/donate", search: `?club=${DONATE_CAUSE_ID}` }}
-                    state={{ clubId: DONATE_CAUSE_ID }}
+                    to={{ pathname: "/donate", search: `?club=clubs` }}
+                    state={{ clubId: "clubs" }}
                     className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
                     aria-label="Donate to Clubs & Activities"
                   >
@@ -150,11 +161,7 @@ export default function Clubs() {
       {/* Tabs */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="rounded-2xl border border-amber-200/60 bg-white/95 backdrop-blur p-3 shadow-[0_8px_24px_rgba(180,83,9,.08)]">
-          <div
-            className="flex gap-2 overflow-x-auto no-scrollbar"
-            role="tablist"
-            aria-label="Club categories"
-          >
+          <div className="flex gap-2 overflow-x-auto no-scrollbar" role="tablist" aria-label="Club categories">
             {CATEGORIES.map((c) => (
               <button
                 key={c.key}
@@ -173,18 +180,17 @@ export default function Clubs() {
         </div>
       </section>
 
-      {/* Panel */}
+      {/* Grid feed */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-6 pb-16">
-        <article className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 md:p-8 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
+        <article className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-5 md:p-6 shadow-[0_10px_28px_rgba(180,83,9,.10)]">
           <header className="flex items-center justify-between gap-4">
             <h2 className="font-serif text-2xl md:text-3xl text-amber-900">
               {CATEGORIES.find((c) => c.key === active)?.label}
             </h2>
 
-            {/* Donate button here too */}
             <Link
-              to={{ pathname: "/donate", search: `?club=${DONATE_CAUSE_ID}` }}
-              state={{ clubId: DONATE_CAUSE_ID }}
+              to={{ pathname: "/donate", search: `?club=clubs` }}
+              state={{ clubId: "clubs" }}
               className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.01]"
             >
               Donate to Clubs
@@ -196,47 +202,37 @@ export default function Clubs() {
 
           {/* Loading / Error */}
           {loading && (
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="animate-pulse rounded-2xl border border-amber-200/60 p-4 bg-white"
-                >
-                  <div className="h-36 rounded-xl bg-stone-200/70" />
-                  <div className="mt-3 h-4 w-3/4 bg-stone-200/70 rounded" />
-                  <div className="mt-2 h-3 w-5/6 bg-stone-200/70 rounded" />
+            <div className="mt-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 md:gap-3">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="animate-pulse rounded-2xl border border-amber-200/60 bg-white overflow-hidden">
+                  <div className="aspect-square bg-stone-200/70" />
+                  <div className="p-3">
+                    <div className="h-4 w-3/4 bg-stone-200/70 rounded" />
+                    <div className="mt-2 h-3 w-5/6 bg-stone-200/70 rounded" />
+                  </div>
                 </div>
               ))}
             </div>
           )}
+
           {err && !loading && (
             <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-red-900">
               {err}
             </div>
           )}
 
-          {/* Clubs scroller */}
+          {/* IG-style grid */}
           {!loading && !err && (
-            <div
-              className="mt-6 -mx-4 sm:-mx-6 px-4 sm:px-6 overflow-x-auto no-scrollbar"
-              style={{
-                WebkitMaskImage:
-                  "linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)",
-                maskImage:
-                  "linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)",
-              }}
-            >
-              <div className="flex gap-4 snap-x snap-mandatory pb-2">
-                {grouped[active]?.length ? (
-                  grouped[active].map((club, i) => (
-                    <ClubCard key={`${club.name}-${i}`} club={club} />
-                  ))
-                ) : (
-                  <div className="text-stone-600 text-sm px-1">
-                    No clubs found in this category yet.
-                  </div>
-                )}
-              </div>
+            <div className="mt-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 md:gap-3">
+              {grouped[active]?.length ? (
+                grouped[active].map((club, i) => (
+                  <ClubCard key={`${club.id}-${i}`} club={club} />
+                ))
+              ) : (
+                <div className="text-stone-600 text-sm px-1 col-span-full">
+                  No clubs found in this category yet.
+                </div>
+              )}
             </div>
           )}
         </article>
@@ -253,36 +249,38 @@ export default function Clubs() {
 /** ===================== CARD ===================== **/
 function ClubCard({ club }) {
   return (
-    <article className="snap-start shrink-0 w-[84%] sm:w-[56%] lg:w-[38%] xl:w-[32%] rounded-2xl border border-amber-200/60 bg-white shadow hover:shadow-lg transition overflow-hidden">
-      {/* Image (constant height) */}
-      <div className="relative h-40 sm:h-44 md:h-48 overflow-hidden">
+    <article className="group rounded-2xl border border-amber-200/60 bg-white shadow hover:shadow-lg transition overflow-hidden">
+      {/* Square media */}
+      <div className="relative aspect-square overflow-hidden bg-amber-50">
         {club.image ? (
           <img
             src={club.image}
-            alt={club.name}
-            className="h-full w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+            alt={club.displayName}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
         ) : (
-          <div className="h-full w-full grid place-items-center bg-amber-50 text-amber-900">
+          <div className="h-full w-full grid place-items-center text-amber-900">
             <span className="text-xs">No image</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
-        <div className="absolute bottom-0 left-0 right-0 p-3">
-          <div className="inline-flex items-center rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-amber-900">
+
+        {/* Category chip */}
+        <div className="absolute bottom-2 left-2">
+          <span className="inline-flex items-center rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-amber-900">
             {club?.category?.charAt(0).toUpperCase() + club?.category?.slice(1)}
-          </div>
+          </span>
         </div>
       </div>
 
-      {/* Body */}
-      <div className="p-4">
-        <h3 className="text-base sm:text-lg font-semibold text-amber-900 line-clamp-2">
-          {club.name}
+      {/* Caption */}
+      <div className="p-3 md:p-4">
+        <h3 className="text-sm md:text-base font-semibold text-amber-900 line-clamp-2">
+          {club.displayName}
         </h3>
+
         {club.blurb && (
-          <p className="mt-1 text-[13px] sm:text-[14px] leading-6 text-stone-700 line-clamp-3">
+          <p className="mt-1 text-[12px] md:text-[13px] leading-6 text-stone-700 line-clamp-3">
             {club.blurb}
           </p>
         )}
@@ -293,7 +291,7 @@ function ClubCard({ club }) {
               href={club.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-amber-800 text-amber-900 px-3 py-1.5 text-xs sm:text-sm hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+              className="inline-flex items-center gap-2 rounded-xl border border-amber-800 text-amber-900 px-3 py-1.5 text-xs hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
             >
               Learn More
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
@@ -302,18 +300,13 @@ function ClubCard({ club }) {
             </a>
           )}
 
-          {/* Optional: direct donate for a specific club label in the note (best effort) */}
+          {/* Donate uses the club's id as the cause */}
           <Link
-            to={{
-              pathname: "/donate",
-              search: `?club=${DONATE_CAUSE_ID}`,
-            }}
-            state={{
-              clubId: DONATE_CAUSE_ID,
-            }}
-            className="inline-flex items-center gap-2 rounded-xl bg-amber-800 px-3 py-1.5 text-xs sm:text-sm text-white shadow hover:scale-[1.02] transition"
+            to={{ pathname: "/donate", search: `?club=${encodeURIComponent(club.id)}` }}
+            state={{ clubId: club.id }}
+            className="inline-flex items-center gap-2 rounded-xl bg-amber-800 px-3 py-1.5 text-xs text-white shadow hover:scale-[1.02] transition"
           >
-            Support Club
+            Support {club.displayName}
           </Link>
         </div>
       </div>
