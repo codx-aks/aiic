@@ -3,6 +3,13 @@ import { Link } from "react-router-dom";
 
 const CAUSES = [
   {
+    slug: "clubs",
+    title: "Clubs & Student Activities",
+    blurb:
+      "Support cultural, technical, and literary clubs and fests—like Delta, Spider, RMI, PSI Racing, Music Troupe, Dance Troupe, Sports Teams, Orientation, Festember, Pragyan, NITTFest that build leadership, creativity, and community on campus.",
+    image: "/cause6.jpg", 
+  },
+  {
     slug: "scholarships",
     title: "Scholarship & Student Support",
     blurb:
@@ -38,13 +45,7 @@ const CAUSES = [
     image: "/cause5.jpeg",
   },
 
-   {
-    slug: "clubs",
-    title: "Clubs & Student Activities",
-    blurb:
-      "Support cultural, technical, and literary clubs and fests—like Delta, Spider, RMI, PSI Racing, Music Troupe, Dance Troupe, Sports Teams, Orientation, Festember, Pragyan, NITTFest that build leadership, creativity, and community on campus.",
-    image: "/cause6.jpg", 
-  },
+   
 ];
 
 export default function Causes() {

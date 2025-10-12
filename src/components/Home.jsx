@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 const NEWS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWA0-6f-rV3cf8E6c8vE8bBB0VHMSRXDjwHpqRtqQWPt2_RTDxyC2Gk5iwgE2fXP-KnOEdjv2lUlSx/pub?gid=1063083730&single=true&output=csv";
-/* ======================================================================= */
 
 /* ----------------------------- CSV PARSER ------------------------------ */
 function parseCSV(text) {
@@ -199,8 +198,8 @@ function NewsCarousel({ items }) {
   const [paused, setPaused] = React.useState(false);
   const wrap = (i) => (i + items.length) % items.length;
 
-  const AUTO_MS = 3000;                 // 3s independent auto-advance
-  const IMG_H = "h-[320px] md:h-[420px]"; // constant height for both sides
+  const AUTO_MS = 3000;               
+  const IMG_H = "h-[320px] md:h-[420px]";
 
   React.useEffect(() => {
     if (paused || items.length <= 1) return;
@@ -322,7 +321,7 @@ function NewsCarousel({ items }) {
 /* ------------------------------ Facebook Panel ----------------------------- */
 function FacebookSection() {
   const PAGE_URL =
-    "https://www.facebook.com/p/NIT-Trichy-Alumni-100072175306327/";
+    "https://www.facebook.com/NITT.Official/";
 
   const src = `https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(
     PAGE_URL
@@ -464,56 +463,8 @@ function Home() {
     return () => io.disconnect();
   }, []);
 
-  const research = useMemo(
-    () => [
-      {
-        title: "Magnetic Materials Laboratory",
-        dept: "Department of Physics",
-        institute: "National Institute of Technology, Tiruchirappalli",
-        image: "/research1.jpeg",
-        description:
-          "The research areas of the magnetic materials laboratory encompass studies on the structure-property correlation in a wide range of soft and hard magnetic materials...",
-        facultyLink: "https://www.nitt.edu/home/academics/departments/physics/Faculty/justin/",
-      },
-      {
-        title: "6G wireless communication",
-        dept: "Department of Electronics and Communication Engineering",
-        institute: "National Institute of Technology, Tiruchirappalli",
-        image: "/research2.jpeg",
-        description:
-          "Work spans intelligent reflecting surfaces (IRS), hybrid satellite-terrestrial systems, and THz communication...",
-        facultyLink: "https://www.nitt.edu/home/academics/departments/ece/faculty/sudharsan/",
-      },
-      {
-        title: "Innovative biomedical diagnostic device",
-        dept: "Department of Instrumentation & Control Engineering",
-        institute: "National Institute of Technology, Tiruchirappalli",
-        image: "/research3.jpeg",
-        description:
-          "Non-invasive neonatal jaundice meter, diabetic foot ulcer early risk detection, PPG + ML vitals monitoring, lung sound analysis...",
-        facultyLink: "https://www.nitt.edu/home/academics/departments/ice/faculty/periyasamyr/",
-      },
-      {
-        title: "@MatDisco",
-        dept: "Department of Chemistry",
-        institute: "National Institute of Technology, Tiruchirappalli",
-        image: "/research4.jpeg",
-        description:
-          "Computational materials discovery across 2D materials, polymers, proteins, with industry & SERB projects...",
-        facultyLink: "https://www.nitt.edu/home/academics/departments/chemistry/Faculty/projesh/",
-      },
-      {
-        title: "AI for Materials & Waste",
-        dept: "Department of MME",
-        institute: "National Institute of Technology, Tiruchirappalli",
-        image: "/research5.jpeg",
-        description:
-          "AI for microstructure analysis and LLMs for metallurgical waste knowledge access...",
-        facultyLink: "https://www.nitt.edu/home/academics/departments/meta/faculty/prince/",
-      },
-    ],
-    []
-  );
+  
+  const research = useMemo( () => [ { title: "Magnetic Materials Laboratory", dept: "Department of Physics", institute: "National Institute of Technology, Tiruchirappalli", image: "/research1.jpeg", description: "The research areas of the magnetic materials laboratory encompass studies on the structure-property correlation in a wide range of soft and hard magnetic materials. The research team under Prof. R. Justin Joseyphus explored exchange bias, size and shape-dependent coercivities in nanoparticles of Fe and its alloys obtained through a novel instant polyol process. The Fe-based alloys are tailor-made to reduce the coercivity without losing their morphology with annealing and are expected to be utilized in future-generation more-electric vehicles. In another study, equipped with a 500 kHz indigenous AC magnetic field generator, the team established high-heating efficiency in superparamagnetic nanoparticles. The discovery has opened up new avenues for efficient magnetic nanoparticles suitable for cancer therapy by lowering the anisotropy energy using appropriate dopants. The image illustrates the magnetic nanoparticle hyperthermia methodology for brain tumor therapy and the thermal profile of the magnetic nanoparticles recorded in the research team's laboratory.", facultyLink: "https://www.nitt.edu/home/academics/departments/physics/Faculty/justin/", }, { title: "6G wireless communication", dept: "Department of Electronics and Communication Engineering", institute: "National Institute of Technology, Tiruchirappalli", image: "/research2.jpeg", description: "Dr. Sudharsan P work spans 3 important topics in 6G wireless communication such as intelligent reflecting surfaces (IRS), hybrid satellite-terrestrial system and THz communication. In IRS work we considered a direct Tx-Rx channel in addition to the IRS channel and analyzed the system. We analyzed the IRS system in a multi antenna setup too. We have anlayzed coverage of amplify-forward relay based multi user hybrid satellite-terrestrial systems. The analytical expressions derived have been verified with simulation giving us good insights into the wireless system. The work with my Ph.D scholar focuses on analyzing THz communication networks. The challenge is to model the interference in such networks carefully and derive metrics such as coverage, rate etc. I have recently obtained a 3 year SERB-MATRICS grant to use stochastic geometry techniques to analyze vehicular communication networks. We have used Poisson point process to analyze automotive radar systems and presented it in NCC 2024 at IIT Madras.", facultyLink: "https://www.nitt.edu/home/academics/departments/ece/faculty/sudharsan/", }, { title: "Innovative biomedical diagnostic device", dept: "Department of Instrumentation & Control Engineering", institute: "National Institute of Technology, Tiruchirappalli", image: "/research3.jpeg", description: "Dr. R. Periyasamy's recent research focuses on developing an innovative biomedical diagnostic device to enhance patient care, particularly for diabetic foot ulcers, neonatal jaundice, and pulmonary diseases. One of his notable projects involves creating a novel sensing device funded by DST-TIDE, which is designed to detect ulcer risk areas in diabetic feet at an early stage. Additionally, he has developed a handheld device for diagnosing compressive neuropathy in diabetic subjects using a two-point discrimination test, supported by DST-SYST. In the field of neonatal care, he has pioneered a non-invasive, on-contact jaundice meter that uses skin reflectometry technique to measure bilirubin levels; this device is currently patent-filed and in process, funded by DST-IDP. Furthermore, he is working on non-invasive haemoglobin estimation and other patient vital sign parameter monitoring by utilizing dual-wavelength photoplethysmography (PPG) and machine learning techniques. He is also involved in the diagnosis of pulmonary diseases through lung sound analysis using machine learning and deep learning approaches. His research, which combines biomedical instrumentation with advanced diagnostic techniques, has been published in high-impact journals and has received several awards.", facultyLink: "https://www.nitt.edu/home/academics/departments/ice/faculty/periyasamyr/", }, { title: "@MatDisco", dept: "Department of Chemistry", institute: "National Institute of Technology, Tiruchirappalli", image: "/research4.jpeg", description: "Dr. Projesh Kumar Roy, Assistant Professor in the Department of Chemistry at NIT Tiruchirappalli, leads the Computational Material Discovery Laboratory (@MatDisco), where cutting-edge computational methods are employed to analyze and predict the properties of novel materials such as 2D materials, glasses, ring-polymers, and proteins. The lab not only advances academic research but also addresses real-world challenges through collaborations with industrial partners. Previously, the PI have successfully completed an industrial project–sponsored jointly by SHELL India Inc. and IISc, Bangalore—on the CO2 gas adsorption in a high-performance polyimide-type polymeric membranes using molecular dynamics and associated methods. We are further extending the project using coarse-grain methodology to understand the intricate details of QSAR between pore-networks and adsorption properties of polymers. A DST-SERB sponsored project on the interactions between oncogenic p53-p73 protein is ongoing at @MatDisco in collaboration with IIT-Madras, with aim to design anti-cancer drugs using cheminformatic tools. We are extending our expertise in machine learning, artificial intelligence, and QM/MM methods as well.", facultyLink: "https://www.nitt.edu/home/academics/departments/chemistry/Faculty/projesh/", }, { title: "AI for Materials & Waste", dept: "Department of MME", institute: "National Institute of Technology, Tiruchirappalli", image: "/research5.jpeg", description: "At Theoretical Metallurgy Lab, my team and I (Dr.-Ing. Prince Gideon Kubendran Amos) are investigating this pivotal question. We perform quantitative analysis of intricate, temporally-evolving microstructures both experimentally observed or numerically modeled. By applying AI techniques—from regression-based object detection to deep learning—we assess dynamic and static microstructures, focusing on the kinetics and characteristic features that influence material properties. Additionally, we explore how large language models (LLMs) can enhance access to crucial information on Metallurgical Waste Management, helping to mitigate its adverse effects and advance sustainable practices in materials engineering.", facultyLink: "https://www.nitt.edu/home/academics/departments/meta/faculty/prince/", }, ], [] );
 
   // Research highlights auto-advance (independent of news)
   useEffect(() => {

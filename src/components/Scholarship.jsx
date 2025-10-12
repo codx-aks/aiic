@@ -27,14 +27,6 @@ const SUBCAUSES = [
     impact: ["Paper presented", "Global exposure", "Career acceleration"],
   },
   {
-    key: "clubs",
-    title: "Club Activities",
-    color: "violet",
-    summary:
-      "NIT Tiruchirappalli excels not only in academics and research but also in diverse extracurricular activities. To nurture and cultivate diverse interests, we host a plethora of student clubs that cater to various tastes, from cultural to literary to technical. These clubs conduct exciting and enriching activities throughout the year, contributing significantly to the holistic development of our students. Our cultural clubs include the Music Troupe, Dance Troupe, Thespians Society, and Amrithavarshini, which provide platforms for artistic expression and performance. Technical clubs such as Spider, Delta, and RMI educate students on various aspects of electronics, mechanics, and more, fostering innovation and practical skills. Literary clubs like Tamil Mandram and Aayam organize literature events, celebrating the richness of language and creativity. We invite you to support these vibrant student clubs and their activities in sustaining the dynamic and inclusive culture of NIT Trichy. Your contributions will help provide resources, materials, and opportunities for our students to excel in their passions and interests beyond the classroom.",
-    impact: ["New events", "Higher participation", "Leadership skills"],
-  },
-  {
     key: "adopt",
     title: "Financial Support (Adopt a Student)",
     color: "rose",
