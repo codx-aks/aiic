@@ -36,6 +36,7 @@ import DAA from './components/DAA';
 import YAA from './components/YAA';
 
 import UpcomingEvents from './components/UpcomingEvents';
+import PreviousEvents from './components/PreviousEvents';
 
 const MENU = [
   { id: 'home', label: 'Home', to: '/' },
@@ -87,6 +88,7 @@ const MENU = [
     label: 'Events',
     children: [
       { label: 'Upcoming Events', to: '/events/upcoming' },
+      { label: 'Previous Events', to: '/events/previous' },
     ],
   },
   { id: 'contact', label: 'Contact Us', to: '/contact' },
@@ -347,6 +349,7 @@ function App() {
         <Route path="/awards/yaa" element={<YAA />} />
 
         <Route path="/events/upcoming" element={<UpcomingEvents />} />
+        <Route path="/events/previous" element={<PreviousEvents />} />
 
         <Route path="/donate" element={<Donate />} />
         <Route path="/contact" element={<Contact />} />

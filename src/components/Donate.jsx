@@ -1,13 +1,6 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
-/** Optional: provide a CSV with a list of valid cause ids to show as suggestions.
- *  If empty, the field remains free-text and accepts anything. CSV must contain a column 'id'.
- *  Example: const CAUSES_CSV_URL = "https://docs.google.com/spreadsheets/d/e/.../pub?gid=0&single=true&output=csv";
- */
-const CAUSES_CSV_URL = "";   // optional suggestions
-const CLUBS_CSV_URL = "";    // optional suggestions used earlier
-
 const CURRENT_YEAR = new Date().getFullYear();
 const YEAR_OPTIONS = Array.from({ length: 60 }, (_, i) => CURRENT_YEAR - i);
 const BRANCHES = [
@@ -17,7 +10,6 @@ const BRANCHES = [
   "Mathematics", "MBA (DoMS)", "MCA", "Other"
 ];
 
-/* utils */
 function prettyFromId(id) {
   if (!id) return "";
   return id
@@ -25,27 +17,6 @@ function prettyFromId(id) {
     .replace(/\s+/g, " ")
     .trim()
     .replace(/\b\w/g, (m) => m.toUpperCase());
-}
-function parseCSV(text) {
-  const rows = [];
-  let cur = [], val = "", inQ = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i], n = text[i + 1];
-    if (inQ) {
-      if (c === '"' && n === '"') { val += '"'; i++; }
-      else if (c === '"') { inQ = false; }
-      else { val += c; }
-    } else {
-      if (c === '"') inQ = true;
-      else if (c === ",") { cur.push(val.trim()); val = ""; }
-      else if (c === "\n" || c === "\r") {
-        if (val !== "" || cur.length) { cur.push(val.trim()); rows.push(cur); cur = []; val = ""; }
-        if (c === "\r" && n === "\n") i++;
-      } else { val += c; }
-    }
-  }
-  if (val !== "" || cur.length) { cur.push(val.trim()); rows.push(cur); }
-  return rows;
 }
 
 export default function Donate() {
@@ -84,89 +55,36 @@ export default function Donate() {
   const [toast, setToast] = useState("");
   const [txn, setTxn] = useState(null);
 
-  // Optional: load suggestions
-  const [causeIds, setCauseIds] = useState([]); // { id, label }
-  const [clubIds, setClubIds] = useState([]);   // { id, label }
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      if (!CAUSES_CSV_URL) return;
-      try {
-        const res = await fetch(CAUSES_CSV_URL, { cache: "no-store" });
-        if (!res.ok) throw new Error("Failed to load causes");
-        const txt = await res.text();
-        const rows = parseCSV(txt);
-        const headers = rows[0]?.map((h) => h.toLowerCase()) || [];
-        const idIdx = headers.indexOf("id");
-        const nameIdx = headers.indexOf("name");
-        if (idIdx === -1) return;
-        const ids = rows.slice(1)
-          .map((r) => ({
-            id: r[idIdx],
-            label: r[nameIdx] || prettyFromId(r[idIdx] || ""),
-          }))
-          .filter((x) => x.id && x.id.trim().length > 0);
-        if (alive) setCauseIds(ids);
-      } catch { /* ignore */ }
-    })();
-    return () => { alive = false; };
-  }, []);
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      if (!CLUBS_CSV_URL) return;
-      try {
-        const res = await fetch(CLUBS_CSV_URL, { cache: "no-store" });
-        if (!res.ok) throw new Error("Failed to load clubs");
-        const txt = await res.text();
-        const rows = parseCSV(txt);
-        const headers = rows[0]?.map((h) => h.toLowerCase()) || [];
-        const idIdx = headers.indexOf("id");
-        const nameIdx = headers.indexOf("name");
-        if (idIdx === -1) return;
-        const ids = rows.slice(1)
-          .map((r) => ({
-            id: r[idIdx],
-            label: r[nameIdx] || prettyFromId(r[idIdx] || ""),
-          }))
-          .filter((x) => x.id && x.id.trim().length > 0);
-        if (alive) setClubIds(ids);
-      } catch { /* ignore */ }
-    })();
-    return () => { alive = false; };
-  }, []);
-
-  // Apply prefill note
+  // Apply prefill note / designation
   useEffect(() => {
     if (prefill.type === "Cause") {
       setType("Cause");
-      setDesignation(prefill.id); // accept any id
+      setDesignation(prefill.id);
       setNote((n) => n || "Donation directed via Scholarship page");
     }
     if (prefill.type === "Club") {
       setType("Club");
-      setDesignation(prefill.id); // accept any id
+      setDesignation(prefill.id);
       setNote((n) => n || "Donation directed via Clubs page");
     }
   }, [prefill]);
 
   // Keep designation sensible when switching type
   useEffect(() => {
-    if (type === "General") setDesignation("general");
-    if ((type === "Cause" || type === "Club") && (!designation || designation === "general")) {
-      const src = type === "Cause" ? causeIds : clubIds;
-      if (src.length) setDesignation(src[0].id);
+    if (type === "General") {
+      setDesignation("general");
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // when switching to Cause/Club, clear designation if it was "general" or empty
+    if (!designation || designation === "general") {
+      setDesignation("");
+    }
   }, [type]);
 
   const formatINR = (n) =>
     `₹${(Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
-  const AMOUNT_CHIPS = [1000, 2500, 5000, 10000, 25000, 50000];
 
-  // Validation: just require non-empty id for Cause/Club
+  // Validation: require non-empty id for Cause/Club
   const canSubmit =
     name.trim().length >= 2 &&
     /\S+@\S+\.\S+/.test(email) &&
@@ -228,8 +146,8 @@ export default function Donate() {
         prefill: { name, email, contact: phone },
         notes: {
           type,
-          designation_id: designation,   // raw id (exactly what you passed)
-          designation_name: displayName, // pretty label
+          designation_id: designation,
+          designation_name: displayName,
           message: note,
           donor_name: name,
           donor_email: email,
@@ -407,46 +325,16 @@ export default function Donate() {
                 />
               )}
 
-              {type === "Cause" && (
+              {(type === "Cause" || type === "Club") && (
                 <>
                   <input
                     value={designation}
                     onChange={(e) => setDesignation(e.target.value)}
-                    list={causeIds.length ? "cause-ids" : undefined}
-                    placeholder="Enter cause id (e.g., scholarships, project, travel, adopt, medical)"
+                    placeholder={type === "Cause" ? "Enter cause id (e.g., scholarships, project, travel, adopt, medical)" : "Enter club id (e.g., delta-force, spider, festember)"}
                     className="mt-1 w-full rounded-xl border border-amber-200 bg-white/90 px-3 py-2.5 text-amber-900 shadow-sm outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-300/50"
                   />
-                  {causeIds.length > 0 && (
-                    <datalist id="cause-ids">
-                      {causeIds.map((c) => (
-                        <option key={c.id} value={c.id}>{c.label}</option>
-                      ))}
-                    </datalist>
-                  )}
                   <div className="mt-1 text-xs text-stone-500">
-                    Uses the exact <span className="font-medium">cause id</span> you enter/pass.
-                  </div>
-                </>
-              )}
-
-              {type === "Club" && (
-                <>
-                  <input
-                    value={designation}
-                    onChange={(e) => setDesignation(e.target.value)}
-                    list={clubIds.length ? "club-ids" : undefined}
-                    placeholder="Enter club id (e.g., delta-force, spider, festember)"
-                    className="mt-1 w-full rounded-xl border border-amber-200 bg-white/90 px-3 py-2.5 text-amber-900 shadow-sm outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-300/50"
-                  />
-                  {clubIds.length > 0 && (
-                    <datalist id="club-ids">
-                      {clubIds.map((c) => (
-                        <option key={c.id} value={c.id}>{c.label}</option>
-                      ))}
-                    </datalist>
-                  )}
-                  <div className="mt-1 text-xs text-stone-500">
-                    Uses the exact <span className="font-medium">club id</span> you enter/pass.
+                    Uses the exact <span className="font-medium">id</span> you enter/pass.
                   </div>
                 </>
               )}

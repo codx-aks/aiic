@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 const CSV_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWA0-6f-rV3cf8E6c8vE8bBB0VHMSRXDjwHpqRtqQWPt2_RTDxyC2Gk5iwgE2fXP-KnOEdjv2lUlSx/pub?gid=1970216258&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWA0-6f-rV3cf8E6c8vE8bBB0VHMSRXDjwHpqRtqQWPt2_RTDxyC2Gk5iwgE2fXP-KnOEdjv2lUlSx/pub?gid=2096390871&single=true&output=csv";
 
 function parseCSV(text) {
   const rows = [];
@@ -124,7 +124,6 @@ function EventCard({ e, index }) {
         <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-[linear-gradient(120deg,rgba(255,255,255,.25),transparent_40%)]" />
       </div>
 
-      {/* Body */}
       <div className="px-5 pt-4 pb-5">
         <div className="flex flex-wrap items-center gap-2">
           {e.tag && (
@@ -153,13 +152,12 @@ function EventCard({ e, index }) {
         )}
       </div>
 
-      {/* Glow */}
       <div className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition bg-[radial-gradient(60%_40%_at_70%_15%,rgba(251,191,36,.20),transparent_60%)]" />
     </article>
   );
 }
 
-export default function UpcomingEvents() {
+export default function PreviousEvents() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
@@ -227,11 +225,10 @@ export default function UpcomingEvents() {
               </p>
             </div>
             <h1 className="mt-1 font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
-              Upcoming Events
+              Previous Events
             </h1>
             <p className="mt-2 max-w-2xl text-amber-100/90">
-              Jubilees, reunions and other events organised for our alumni community. Dates may
-              fine-tune closer to the event—watch this space!
+              Jubilees, reunions and other events organised for our alumni community in the past.
             </p>
           </div>
         </div>
@@ -262,7 +259,7 @@ export default function UpcomingEvents() {
             ))}
             {!content.length && (
               <div className="text-stone-600 text-sm">
-                No upcoming events found.
+                No previous events found.
               </div>
             )}
           </div>
