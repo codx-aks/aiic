@@ -10,6 +10,115 @@ const CATEGORIES = [
 ];
 
 const AWARDEES = [
+  // 2025 ------
+  {
+    name: "Dr. Ramkumar Narayanswamy",
+    batch: "UG/ECE/1984",
+    current: "Fellow and Head of Technical Marketing, NIL Technologies Aps, USA",
+    category: "Academics/ Research/ Innovation/ Invention",
+    year: 2025,
+    photo: "/daa2025/daa1.jpeg",
+  },
+  {
+    name: "Mr. N Surendran",
+    batch: "UG/Mechanical/1986",
+    current: "Retd., Project Director SpaDex, ISRO, GoI",
+    category: "Academics/ Research/ Innovation/ Invention",
+    year: 2025,
+    photo: "/daa2025/daa2.jpeg",
+  },
+  {
+    name: "Mr. Gajraj Singh Rathore",
+    batch: "UG/MME/1985",
+    current: "Whole Time Director & Chief Operating Officer, JSW Steels Ltd., Mumbai",
+    category: "Corporate / Industry",
+    year: 2025,
+    photo: "/daa2025/daa3.jpeg",
+  },
+  {
+    name: "Dr. Raja Gunasingh Kasilingam",
+    batch: "UG/Industrial Engineering/1980",
+    current: "President, Revenue Technology Services, USA",
+    category: "Corporate / Industry",
+    year: 2025,
+    photo: "/daa2025/daa4.jpeg",
+  },
+  {
+    name: "Mr. Venkatesh Jayaraman",
+    batch: "UG/CIVIL/1984",
+    current: "Chief Operating Officer, Bioxgreen Technology Pvt Ltd., Chennai",
+    category: "Corporate / Industry",
+    year: 2025,
+    photo: "/daa2025/daa5.jpeg",
+  },
+  {
+    name: "Mr. Nipun Mehrotra",
+    batch: "UG/EEE/1983 ",
+    current: "CEO and Founder, The Agri Collaboratory, Bengaluru",
+    category: "Corporate / Industry",
+    year: 2025,
+    photo: "/daa2025/daa6.jpeg",
+  },
+  {
+    name: "Mr. Vishwanathan Shankar",
+    batch: "UG/Industrial Engineering/1979",
+    current: "Retd., Chief Information Officer, Sundaram Clayton Ltd., Chennai",
+    category: "Corporate / Industry",
+    year: 2025,
+    photo: "/daa2025/daa7.jpeg",
+  },
+  {
+    name: "Mr. G V Ravi Shankar",
+    batch: "UG/CSE/1999",
+    current: "Managing Director & Partner, Peak XV Partners, Bengaluru",
+    category: "Corporate / Industry",
+    year: 2025,
+    photo: "/daa2025/daa8.jpeg",
+  },
+  {
+    name: "Ms. K Hema Rao",
+    batch: "UG/EEE/1989",
+    current: "Chief Service Officer & Board of Director, 3S Touch Service Solutions Pvt Ltd., Bengaluru",
+    category: "Corporate / Industry",
+    year: 2025,
+    photo: "/daa2025/daa9.jpeg",
+  },
+  {
+    name: "Mr. S Jayaraman",
+    batch: "UG/EEE/1984",
+    current: "CEO, Sajas Electricals Group Companies, Trichy",
+    category: "Entrepreneurial Venture",
+    year: 2025,
+    photo: "/daa2025/daa10.jpeg",
+  },
+  {
+    name: "(Late) Mr. K Ravi Ramachandran",
+    batch: "UG/EEE/1986",
+    current: "Retd., Principal Commissioner of Income Tax, GoI",
+    category: "Public Administration",
+    year: 2025,
+    photo: "/daa2025/daa11.jpeg",
+  },
+  {
+    name: "Dr. Srinivasan Ram Ramanujam",
+    batch: "UG/Chemical/1974",
+    current: "Drs. Ram and Thaila Ramanujam Foundation, USA",
+    category: "Service to the Society",
+    year: 2025,
+    photo: "/daa2025/daa13.jpeg",
+  },
+  {
+    name: "Mr. S N Srikanth",
+    batch: "UG/Mechanical/1979",
+    current: "Chairman and Managing Director, Hauer-Diana Group, Chennai",
+    category: "Service to the Society",
+    year: 2025,
+    photo: "/daa2025/daa13.jpeg",
+  },
+
+
+
+  // 2024 ------
   {
     name: "Mr. Siva Namasivayam",
     batch: "UG/CSE/1985",
