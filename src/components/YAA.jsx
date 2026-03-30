@@ -10,136 +10,209 @@ const CATEGORIES = [
 ];
 
 const AWARDEES = [
+
+  //2025
+
   {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
+    name: "Dr. Kameswarie Nunna",
+    batch: "UG/ICE/2009",
+    current: "Director of AI, Newton Consulting Ltd., UK",
+    category: "Corporate / Industry",
+    year: 2025,
+    photo: "/yaa2025/yaa1.jpg",
+  },
+   {
+    name: "Ms. Yashvi Singh",
+    batch: "UG/MME/2017",
+    current: "Staff Front-End Technology Development Capital Supplier Development Manager, Micron Technology, USA",
+    category: "Corporate / Industry",
+    year: 2025,
+    photo: "/yaa2025/yaa2.jpg",
+  },
+   {
+    name: "Mr. Sriram R",
+    batch: "UG/Architecture/2012",
+    current: "Principal Architect, FHD India, Bengaluru",
+    category: "Corporate / Industry",
+    year: 2025,
+    photo: "/yaa2025/yaa3.jpg",
+  },
+
+  // 2023
+
+  {
+    name: "Dr Harish Sharma Krishnamoorthy",
+    batch: "UG/EEE/2008",
+    current: "",
     category: "Academic / Research / Innovation / Invention",
     year: 2023,
     photo: "/yaa2023/yaa1.jpeg",
   },
    {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
-    category: "Academic / Research / Innovation / Invention",
+    name: "Mr Arpit Agarwal",
+    batch: "UG/ECE/2005",
+    current: "",
+    category: "Entrepreneurial Venture",
     year: 2023,
     photo: "/yaa2023/yaa2.jpeg",
   },
-   {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
-    category: "Academic / Research / Innovation / Invention",
+  
+  // 2022
+  {
+    name: "Mr V Badrinarayanan IPS",
+    batch: "UG/ICE/2010",
+    current: "",
+    category: "Public Administration",
     year: 2022,
     photo: "/yaa2022/yaa1.jpeg",
   },
-   {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
-    category: "Academic / Research / Innovation / Invention",
+  {
+    name: "Ms Deeksha Senguttuvan",
+    batch: "UG/Chemical/2013",
+    current: "",
+    category: "Corporate / Industry",
     year: 2022,
     photo: "/yaa2022/yaa2.jpeg",
   },
-   {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
+  
+   
+  // 2021
+
+  {
+    name: "Dr. Ing-Srinivasan R.,",
+    batch: "UG/Chemical/2012",
+    current: "Centre for Sustainable Tech., Assistant Professor, IISc, Bangalore",
     category: "Academic / Research / Innovation / Invention",
     year: 2021,
     photo: "/yaa2021/yaa1.jpeg",
   },
-   {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
+ 
+  // 2020
+
+  {
+    name: "DR. GAUTHAM RAM CHANDRA MOULI",
+    batch: "UG/EEE/2011",
+    current: "ASSISTANT PROFESSOR, TU DELFT, THE NETHERLANDS",
     category: "Academic / Research / Innovation / Invention",
     year: 2020,
     photo: "/yaa2020/yaa1.jpeg",
   },
-   {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
+  
+  // 2018
+
+  {
+    name: "DR. PRAVEEN KUMAR B",
+    batch: "UG/MME/2002",
+    current: "CENTRE HEAD, Young Scientist Centre, DRDO, (ARDE) Pune",
     category: "Academic / Research / Innovation / Invention",
     year: 2018,
     photo: "/yaa2018/yaa1.jpeg",
   },
+ 
+  // 2017
+
   {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
-    category: "Academic / Research / Innovation / Invention",
+    name: "Shri. Vishnu IAS",
+    batch: "UG/Production/2009",
+    current: "",
+    category: "Public Administration",
     year: 2017,
     photo: "/yaa2017/yaa1.jpeg",
   },
-  {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
-    category: "Academic / Research / Innovation / Invention",
+   {
+    name: "Shri. Vaibhav Lodha",
+    batch: "UG/ICE/2007",
+    current: "",
+    category: "Entrepreneurial Venture",
     year: 2017,
     photo: "/yaa2017/yaa2.jpeg",
   },
+
+
+   // 2016 - a
    {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
+    name: "DR. KANNAN GOVINDAN",
+    batch: "PHD/2007",
+    current: "Professor and Centre Head of Centre for Sustainable Engineering Operations Management, Department of Technology and Innovation, University of Southern Denmark",
     category: "Academic / Research / Innovation / Invention",
     year: 2016,
     photo: "/yaa2016/yaa1.jpeg",
   },
-  {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
-    category: "Academic / Research / Innovation / Invention",
+   {
+    name: "VIVEK RAVISANKAR",
+    batch: "UG/CSE/2008",
+    current: "CO-FOUNDER OF HACKERRANK",
+    category: "Entrepreneurial Venture",
     year: 2016,
     photo: "/yaa2016/yaa2.jpeg",
   },
-  {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
+   {
+    name: "DR. T. RAM PRABHU",
+    batch: "UG/MME/2005",
+    current: "Scientist –C / Assistant Director, CEMILAC, Defence Research Development Organization (DRDO), Ministry of Defence, Bangalore",
     category: "Academic / Research / Innovation / Invention",
     year: 2016,
     photo: "/yaa2016/yaa3.jpeg",
   },
   {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
+    name: "DR. ARJUNA SATHIASEELAN",
+    batch: "UG/CSE/2000",
+    current: "Senior Researcher, University of Cambridge, UK",
     category: "Academic / Research / Innovation / Invention",
     year: 2016,
     photo: "/yaa2016/yaa4.jpeg",
   },
-  {
-    name: "Dr. A. Meera",
-    batch: "ECE, 1996",
-    dept: "Electronics & Communication",
-    current: "Professor & Center Head, AI Systems Lab, IITM",
-    category: "Academic / Research / Innovation / Invention",
+   {
+    name: "BALAJI SREENIVASAN",
+    batch: "UG/Mechanical/1997",
+    current: "Founder, Chief Executive Officer and Director Aurigo Software Technologies, Inc.",
+    category: "Entrepreneurial Venture",
     year: 2016,
     photo: "/yaa2016/yaa5.jpeg",
   },
-
-
-
-
+  
+  // 2016 - b
+  {
+    name: "Dr. T. J. Ramnath Babu",
+    batch: "UG/Mechanical/2009",
+    current: "",
+    category: "Academic / Research / Innovation / Invention",
+    year: 2016,
+    photo: "/yaa2016b/yaa1.jpeg",
+  },
+   {
+    name: "Dr. J. Ramkumar",
+    batch: "UG/Production/1996",
+    current: "",
+    category: "Academic / Research / Innovation / Invention",
+    year: 2016,
+    photo: "/yaa2016/yaa2.jpg",
+  },
+   {
+    name: "S. Shankari",
+    batch: "UG/ECE/2000",
+    current: "",
+    category: "Corporate / Industry",
+    year: 2016,
+    photo: "/yaa2016/yaa3.jpeg",
+  },
+  {
+    name: "Dr. Sapna Gupta",
+    batch: "UG/MME/2010",
+    current: "",
+    category: "Corporate / Industry",
+    year: 2016,
+    photo: "/yaa2016/yaa4.jpeg",
+  },
+   {
+    name: "C. Shika",
+    batch: "UG/ICE/1998",
+    current: "",
+    category: "Public Administration",
+    year: 2016,
+    photo: "/yaa2016/yaa5.jpeg",
+  },
+  
 ];
 
 function classNames(...s) {
@@ -249,7 +322,6 @@ export default function YAA() {
       const okQ =
         !ql ||
         a.name.toLowerCase().includes(ql) ||
-        a.dept.toLowerCase().includes(ql) ||
         a.batch.toLowerCase().includes(ql) ||
         a.current.toLowerCase().includes(ql);
       return okCat && okQ;

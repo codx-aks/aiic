@@ -17,7 +17,7 @@ const AWARDEES = [
     current: "Fellow and Head of Technical Marketing, NIL Technologies Aps, USA",
     category: "Academics/ Research/ Innovation/ Invention",
     year: 2025,
-    photo: "/daa2025/daa1.jpeg",
+    photo: "/daa2025/daa1.jpg",
   },
   {
     name: "Mr. N Surendran",
@@ -25,7 +25,7 @@ const AWARDEES = [
     current: "Retd., Project Director SpaDex, ISRO, GoI",
     category: "Academics/ Research/ Innovation/ Invention",
     year: 2025,
-    photo: "/daa2025/daa2.jpeg",
+    photo: "/daa2025/daa2.jpg",
   },
   {
     name: "Mr. Gajraj Singh Rathore",
@@ -33,7 +33,7 @@ const AWARDEES = [
     current: "Whole Time Director & Chief Operating Officer, JSW Steels Ltd., Mumbai",
     category: "Corporate / Industry",
     year: 2025,
-    photo: "/daa2025/daa3.jpeg",
+    photo: "/daa2025/daa3.jpg",
   },
   {
     name: "Dr. Raja Gunasingh Kasilingam",
@@ -41,7 +41,7 @@ const AWARDEES = [
     current: "President, Revenue Technology Services, USA",
     category: "Corporate / Industry",
     year: 2025,
-    photo: "/daa2025/daa4.jpeg",
+    photo: "/daa2025/daa4.jpsg",
   },
   {
     name: "Mr. Venkatesh Jayaraman",
@@ -49,7 +49,7 @@ const AWARDEES = [
     current: "Chief Operating Officer, Bioxgreen Technology Pvt Ltd., Chennai",
     category: "Corporate / Industry",
     year: 2025,
-    photo: "/daa2025/daa5.jpeg",
+    photo: "/daa2025/daa5.jpg",
   },
   {
     name: "Mr. Nipun Mehrotra",
@@ -57,7 +57,7 @@ const AWARDEES = [
     current: "CEO and Founder, The Agri Collaboratory, Bengaluru",
     category: "Corporate / Industry",
     year: 2025,
-    photo: "/daa2025/daa6.jpeg",
+    photo: "/daa2025/daa6.jpg",
   },
   {
     name: "Mr. Vishwanathan Shankar",
@@ -65,7 +65,7 @@ const AWARDEES = [
     current: "Retd., Chief Information Officer, Sundaram Clayton Ltd., Chennai",
     category: "Corporate / Industry",
     year: 2025,
-    photo: "/daa2025/daa7.jpeg",
+    photo: "/daa2025/daa7.jpg",
   },
   {
     name: "Mr. G V Ravi Shankar",
@@ -73,7 +73,7 @@ const AWARDEES = [
     current: "Managing Director & Partner, Peak XV Partners, Bengaluru",
     category: "Corporate / Industry",
     year: 2025,
-    photo: "/daa2025/daa8.jpeg",
+    photo: "/daa2025/daa8.jpg",
   },
   {
     name: "Ms. K Hema Rao",
@@ -81,7 +81,7 @@ const AWARDEES = [
     current: "Chief Service Officer & Board of Director, 3S Touch Service Solutions Pvt Ltd., Bengaluru",
     category: "Corporate / Industry",
     year: 2025,
-    photo: "/daa2025/daa9.jpeg",
+    photo: "/daa2025/daa9.jpg",
   },
   {
     name: "Mr. S Jayaraman",
@@ -89,7 +89,7 @@ const AWARDEES = [
     current: "CEO, Sajas Electricals Group Companies, Trichy",
     category: "Entrepreneurial Venture",
     year: 2025,
-    photo: "/daa2025/daa10.jpeg",
+    photo: "/daa2025/daa10.jpg",
   },
   {
     name: "(Late) Mr. K Ravi Ramachandran",
@@ -97,7 +97,7 @@ const AWARDEES = [
     current: "Retd., Principal Commissioner of Income Tax, GoI",
     category: "Public Administration",
     year: 2025,
-    photo: "/daa2025/daa11.jpeg",
+    photo: "/daa2025/daa11.jpg",
   },
   {
     name: "Dr. Srinivasan Ram Ramanujam",
@@ -105,7 +105,7 @@ const AWARDEES = [
     current: "Drs. Ram and Thaila Ramanujam Foundation, USA",
     category: "Service to the Society",
     year: 2025,
-    photo: "/daa2025/daa13.jpeg",
+    photo: "/daa2025/daa13.jpg",
   },
   {
     name: "Mr. S N Srikanth",
@@ -113,7 +113,7 @@ const AWARDEES = [
     current: "Chairman and Managing Director, Hauer-Diana Group, Chennai",
     category: "Service to the Society",
     year: 2025,
-    photo: "/daa2025/daa13.jpeg",
+    photo: "/daa2025/daa13.jpg",
   },
 
 
