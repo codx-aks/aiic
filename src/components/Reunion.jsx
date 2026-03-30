@@ -4,12 +4,12 @@ const REUNIONS = [
   {
     title: "1985 Batch 40th Year Reunion",
     date: "6 February 2026",
-    images: ["/1984.jpeg"],
+    images: ["/reunion1985.jpeg"],
   },
   {
     title: "2000 Batch Silver Jubilee Reunion",
     date: "22 December 2025",
-    images: ["/1999.jpeg"],
+    images: ["/reunion2000.jpeg", "/reunion2000a.jpeg", "/reunion2000b.jpeg", "/reunion2000c.jpeg", "/reunion2000d.jpeg", "/reunion2000e.jpeg"],
   },
   {
     title: "25th Year Reunion of ME VLSI Systems",
@@ -19,12 +19,12 @@ const REUNIONS = [
   {
     title: "1970 Batch Reunion",
     date: "23 September 2025",
-    images: ["/1969.jpeg"],
+    images: ["/reunion1970.JPG", "/reunion1970b.JPG", "/reunion1970c.JPG", "/reunion1970d.JPG"],
   },
   {
     title: "REC 1975 Golden Jubilee Reunion",
     date: "25 January 2025",
-    images: ["/1975.jpeg"],
+    images: ["/reunion25jan25.jpg"],
     details: [
       "On January 25th, the Batch of 1975 celebrated their Golden Jubilee, with 95 alumni along with their families gathering to commemorate 50 years of shared experiences, and contributions to their alma mater.",
       "The reunion fostered meaningful student-alumni interactions, where alumni shared career insights, and industry perspectives, reinforcing the enduring bond and legacy of NIT Trichy."
@@ -33,7 +33,7 @@ const REUNIONS = [
   {
     title: "Diamond Jubilee Reunion",
     date: "20 January 2025",
-    images: ["/1969.jpeg"],
+    images: ["/reunion20jan25.jpg"],
     details: [
       "The first batch of students from Regional Engineering College Tiruchirappalli, celebrated the Diamond Jubilee reunion 20th January 2025",
       "Around 15 alumni, accompanied by their spouses, participated in the celebration, spending the day reminiscing about their student days and reconnecting with old friends",
@@ -44,7 +44,7 @@ const REUNIONS = [
     title: "Silver Jubilee Reunion - REConnecT99_00",
     subtitle: "The Class of 1999, Engineering and Class of 2000, Architecture on the 19th and 20th of December, 2024",
     date: "19-20 December 2024",
-    images: ["/1999.jpeg"],
+    images: ["/reunion20dec24.jpg", "/reunion20dec24b.jpg"],
     details: [
       "More than 230 alums attended the REConnecT99_00 from various parts of the world",
       "The batch contributed close to Rs. 45 lakhs in donations institute facility enrichment which includes create / refurbish new labs, revamp hostel infrastructure and support student education."
