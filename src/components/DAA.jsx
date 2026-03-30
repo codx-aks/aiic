@@ -6,7 +6,7 @@ const CATEGORIES = [
   "Corporate / Industry",
   "Entrepreneurial Venture",
   "Public Administration",
-  "Social Service",
+  "Service to the Society",
 ];
 
 const AWARDEES = [
@@ -15,7 +15,7 @@ const AWARDEES = [
     name: "Dr. Ramkumar Narayanswamy",
     batch: "UG/ECE/1984",
     current: "Fellow and Head of Technical Marketing, NIL Technologies Aps, USA",
-    category: "Academics/ Research/ Innovation/ Invention",
+    category: "Academic / Research / Innovation / Invention",
     year: 2025,
     photo: "/daa2025/daa1.jpg",
   },
@@ -23,7 +23,7 @@ const AWARDEES = [
     name: "Mr. N Surendran",
     batch: "UG/Mechanical/1986",
     current: "Retd., Project Director SpaDex, ISRO, GoI",
-    category: "Academics/ Research/ Innovation/ Invention",
+    category: "Academic / Research / Innovation / Invention",
     year: 2025,
     photo: "/daa2025/daa2.jpg",
   },
@@ -1760,7 +1760,7 @@ export default function DAA() {
               technical education in the country has a large number of Alumni who have excelled in their chosen fields in
               India and abroad. The Institute would like to honour her outstanding Alumni by presenting them with the
               Distinguished Alumni Awards for excellence in Academic, Research, Managerial Contribution, Entrepreneurship,
-              Public Administration, Social Service etc. These awards have been given since 2007 and the awards are
+              Public Administration, Service to the Society etc. These awards have been given since 2007 and the awards are
               distributed annually in a ceremony held at the Institute.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">

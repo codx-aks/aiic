@@ -6,7 +6,7 @@ const CATEGORIES = [
   "Corporate / Industry",
   "Entrepreneurial Venture",
   "Public Administration",
-  "Social Service",
+  "Service to the Society",
 ];
 
 const AWARDEES = [
@@ -361,7 +361,7 @@ export default function YAA() {
           <div className="lg:col-span-7">
             <h2 className="font-serif text-2xl text-amber-900">About YAA</h2>
             <p className="mt-3 text-[15px] leading-7 text-stone-800">
-              NITT  also recognizes and encourages younger alumni by awarding them with the “Young Achiever Award” instituted for any alumni of RECT/NITT who are under the age of 40. The Young Achiever Award (YAA) is an award given to young alumni who have made significant contributions to their profession, business, or society. The award also aims to encourage awardees to continue to excel in their careers and strengthen their relationship with their Alma Mater. These Awards are presented annually by the Institute. It can also identify individuals who may be able to contribute their time, experience, and resources to help future graduates, through mentorships or industry collaboration. The award is intended to recognize the achievements of alumni in the following  categories: Excellence in Academic, Research, Managerial Contribution, Entrepreneurship, Public Administration, Social Service etc.
+              NITT  also recognizes and encourages younger alumni by awarding them with the “Young Achiever Award” instituted for any alumni of RECT/NITT who are under the age of 40. The Young Achiever Award (YAA) is an award given to young alumni who have made significant contributions to their profession, business, or society. The award also aims to encourage awardees to continue to excel in their careers and strengthen their relationship with their Alma Mater. These Awards are presented annually by the Institute. It can also identify individuals who may be able to contribute their time, experience, and resources to help future graduates, through mentorships or industry collaboration. The award is intended to recognize the achievements of alumni in the following  categories: Excellence in Academic, Research, Managerial Contribution, Entrepreneurship, Public Administration, Service to the Society etc.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {CATEGORIES.slice(1).map((c) => (
