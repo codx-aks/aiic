@@ -2,19 +2,47 @@ import React, { useState } from "react";
 
 const REUNIONS = [
   {
+    title: "Department of Management Studies — Alumni Interaction Meet 2026",
+    subtitle: "Theme: “Steering Managerial Excellence in an AI-Powered World”",
+    date: "14–15 February 2026",
+    images: ["/doms2026.jpg"],
+    details: [
+      "On 14 February 2026, the Department of Management Studies conducted the Alumni Interaction Meet 2026 with 35 distinguished alumni. The theme, “Steering Managerial Excellence in an AI-Powered World,” set the stage for thought-provoking discussions.",
+      "On 15 February 2026, alumni conducted structured mock interviews, offering industry-aligned feedback and significantly enhancing students’ placement readiness and professional preparedness.",
+      "The year 2025–26 stands as a testimony to the unwavering commitment of NIT Tiruchirappalli’s alumni community. From record endowments and strategic global collaborations to student scholarships and infrastructure development, alumni engagement continues to strengthen the Institute’s academic excellence and societal impact.",
+    ],
+  },
+  {
     title: "1985 Batch 40th Year Reunion",
     date: "6 February 2026",
     images: ["/reunion1985.jpeg"],
+    details: [
+      "On 6 February 2026, 155 alumni and families from the Batch of 1985 returned to campus to commemorate four decades of shared memories and achievements.",
+      "The reunion featured structured student–alumni panel discussions across CSE, Mechanical, Chemical, ECE, and Architecture disciplines, strengthening intergenerational learning.",
+      "The batch contributed close to ₹1 crore toward facility enrichment, including the creation of Makers Labs and educational support for wards of NMR staff.",
+    ],
   },
   {
     title: "2000 Batch Silver Jubilee Reunion",
     date: "22 December 2025",
     images: ["/reunion2000.jpeg", "/reunion2000a.jpeg", "/reunion2000b.jpeg", "/reunion2000c.jpeg", "/reunion2000d.jpeg", "/reunion2000e.jpeg"],
+    details: [
+      "On 22 December 2025, the Batch of 2000 celebrated their Silver Jubilee Reunion with 300+ alumni and families on campus.",
+      "The reunion included faculty interactions, cultural programmes, and student engagement sessions.",
+      "As a gesture of commitment, the batch pledged ₹75 lakhs toward institute initiatives, with additional contributions underway.",
+    ],
   },
   {
-    title: "25th Year Reunion of ME VLSI Systems",
-    date: "8 December 2025",
-    images: ["/1975.jpeg"],
+    title: "M.Tech VLSI System — Silver Jubilee Reunion 2025",
+    subtitle: "25th anniversary of the first M.Tech VLSI System graduating batch, hosted by the Department of Electronics and Communication Engineering",
+    date: "6 December 2025",
+    images: ["/vlsi2025.jpg"],
+    details: [
+      "The Department of Electronics and Communication Engineering established the M.Tech VLSI System programme in July 1999, with its inaugural class graduating in December 2000. On Saturday, December 6, 2025, the department hosted a Silver Jubilee reunion in the ECE conference hall to commemorate the 25th anniversary of this first graduating batch.",
+      "The event saw global participation, with nine VLSI alumni attending in person and three joining virtually. The presence of emeritus professors Prof. P. Somaskandan and Dr. K. Rameshwaran further distinguished the occasion. Additionally, esteemed retired faculty members Dr. N. Kalyanasundaram, Dr. S. Raghavan, and Dr. B. Venkataramani conveyed their congratulations and best wishes through special messages.",
+      "The function was felicitated by Dr. G. Aghila, Director of NIT Tiruchirappalli, and Dr. G. Uma, Dean (ID & AR). During the proceedings, they emphasised the significance of India’s Semiconductor Mission and discussed the vital role of VLSI alumni in fostering technical collaborations. The event was also attended by Dr. Shobitha Poulose, Associate Dean (ID & AR), along with Ms. Shilpa Deepesh, RECAL Manager, and Mr. S. Ganesh Babu, RECAL Assistant Manager.",
+      "The Head of the Department, faculty and staff members extended a warm welcome to all attendees and expressed their gratitude for their participation. During the interactive session, the VLSI alumni shared insights from their professional journeys; it was noted that a significant number now serve in leadership roles as Directors, CEOs, and Founders or Co-founders of various semiconductor firms and startups. The proceedings concluded with a lunch hosted by RECAL.",
+    ],
   },
   {
     title: "1970 Batch Reunion",
