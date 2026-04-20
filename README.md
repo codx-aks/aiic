@@ -1,12 +1,25 @@
-# React + Vite
+# AIIC
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Website for the **Alumni & International Institutional Connect (AIIC)** office, NIT Trichy.
 
-Currently, two official plugins are available:
+Built with **React 19**, **Vite**, **Tailwind CSS v4**, and **React Router**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting Started
 
-## Expanding the ESLint configuration
+**Prerequisites:** Node.js 18+ and npm.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Start the dev server (http://localhost:5173)
+npm run dev
+```
+
+## Other Scripts
+
+```bash
+npm run build      # production build → dist/
+npm run preview    # preview the production build locally
+npm run lint       # run ESLint
+```
