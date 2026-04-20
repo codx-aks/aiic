@@ -38,6 +38,8 @@ import YAA from './components/YAA';
 import UpcomingEvents from './components/UpcomingEvents';
 import PreviousEvents from './components/PreviousEvents';
 
+import Footer from './components/Footer';
+
 const MENU = [
   { id: 'home', label: 'Home', to: '/' },
   {
@@ -356,6 +358,8 @@ function App() {
 
         <Route path="/about" element={<Navigate to="/aiic/about" replace />} />
       </Routes>
+
+      <Footer />
     </Router>
   );
 }
