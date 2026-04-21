@@ -102,27 +102,264 @@ body { overflow-x: hidden; }
   .nitt-carousel-arrow.next { right: 10px; }
 }
 
-/* ── Number Stats ───────────────────────────────────────────────────────── */
-.nitt-stat-cell {
-  flex: 1 1 0;
-  padding: 40px 28px;
-  border-right: 1px solid rgba(255,255,255,0.08);
+/* ── Number Stats · cinematic ────────────────────────────────────────────── */
+.nitt-stats-frame {
   position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid rgba(251, 191, 36, .14);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(255, 247, 220, .035), rgba(255, 247, 220, 0) 70%),
+    rgba(255, 247, 220, .012);
+  box-shadow:
+    0 30px 80px -40px rgba(251, 191, 36, .22),
+    inset 0 1px 0 rgba(251, 191, 36, .09);
   overflow: hidden;
-  transition: background .35s;
+  isolation: isolate;
 }
-.nitt-stat-cell:hover { background: rgba(251,191,36,0.04); }
+.nitt-stats-frame::before,
+.nitt-stats-frame::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, .55), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+.nitt-stats-frame::before { top: 0; }
+.nitt-stats-frame::after  { bottom: 0; }
+
+/* Cinematic light sweep across the frame on reveal */
+.nitt-stats-sweep {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 60%;
+  left: -60%;
+  background: linear-gradient(105deg,
+    transparent 0%,
+    rgba(251, 191, 36, 0) 35%,
+    rgba(255, 247, 220, 0.10) 50%,
+    rgba(251, 191, 36, 0) 65%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: screen;
+}
+.nitt-stats-frame.is-in .nitt-stats-sweep {
+  animation: frame-sweep 2s cubic-bezier(.22,1,.36,1) .2s 1 forwards;
+}
+@keyframes frame-sweep {
+  from { left: -60%; }
+  to   { left: 120%; }
+}
+
+.nitt-stat-cell {
+  position: relative;
+  padding: 48px 20px 40px;
+  text-align: center;
+  overflow: hidden;
+  transition: background .5s ease;
+}
+.nitt-stat-cell + .nitt-stat-cell {
+  border-left: 1px solid rgba(251, 191, 36, .08);
+}
+
+/* Hover halo behind number */
 .nitt-stat-cell::before {
   content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(251,191,36,0.08), transparent 70%);
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(280px 180px at 50% 42%, rgba(251, 191, 36, .16), transparent 60%);
   opacity: 0;
-  transition: opacity .35s;
+  transition: opacity .6s ease;
+  pointer-events: none;
 }
 .nitt-stat-cell:hover::before { opacity: 1; }
-@media (max-width: 640px) {
-  .nitt-stats-row { flex-wrap: wrap; }
-  .nitt-stat-cell { flex: 1 1 50%; border-bottom: 1px solid rgba(255,255,255,0.08); }
+
+/* Wrapper around number, enables halo ring */
+.nitt-stat-num-wrap {
+  position: relative;
+  display: inline-block;
+  transform: translateY(14px) scale(.95);
+  opacity: 0;
+  transition:
+    opacity 1s cubic-bezier(.22,1,.36,1),
+    transform 1s cubic-bezier(.22,1,.36,1);
+}
+.nitt-stat-cell.is-in .nitt-stat-num-wrap {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  animation: num-float 7s ease-in-out infinite 1.2s;
+}
+
+/* Soft gold halo behind the digits */
+.nitt-stat-num-wrap::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 180%; height: 220%;
+  transform: translate(-50%, -50%) scale(.6);
+  background: radial-gradient(closest-side, rgba(251, 191, 36, .22), transparent 72%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity .8s ease, transform 1.2s cubic-bezier(.22,1,.36,1);
+}
+.nitt-stat-cell.is-in .nitt-stat-num-wrap::before {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.nitt-stat-cell:hover .nitt-stat-num-wrap::before {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+/* The number itself — big Playfair with a continuous gold sheen */
+.nitt-stat-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-size: clamp(2.8rem, 5.8vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  display: inline-block;
+  background:
+    linear-gradient(110deg,
+      #fde68a 0%,
+      #fff7dc 28%,
+      #ffffff 45%,
+      #fff7dc 55%,
+      #fde68a 72%,
+      #fbbf24 100%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: num-sheen 5s ease-in-out infinite;
+  filter: drop-shadow(0 4px 24px rgba(251, 191, 36, .2));
+}
+@keyframes num-sheen {
+  0%   { background-position: 120% 0; }
+  100% { background-position: -120% 0; }
+}
+@keyframes num-float {
+  0%, 100% { translate: 0 0; }
+  50%       { translate: 0 -3px; }
+}
+
+/* Thin rule that scales in */
+.nitt-stat-rule {
+  width: 28px; height: 1px;
+  margin: 22px auto 14px;
+  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, .75), transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 1s cubic-bezier(.22,1,.36,1) .6s;
+}
+.nitt-stat-cell.is-in .nitt-stat-rule { transform: scaleX(1); }
+
+/* Label fades in after the number */
+.nitt-stat-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(253, 230, 138, .85);
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity .8s cubic-bezier(.22,1,.36,1) .8s,
+    transform .8s cubic-bezier(.22,1,.36,1) .8s;
+}
+.nitt-stat-cell.is-in .nitt-stat-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 860px) {
+  .nitt-stats-frame { grid-template-columns: repeat(2, 1fr); }
+  .nitt-stat-cell { padding: 38px 16px 32px; }
+  .nitt-stat-cell:nth-child(odd) { border-left: none; }
+  .nitt-stat-cell:nth-child(n+3) { border-top: 1px solid rgba(251, 191, 36, .08); }
+}
+@media (max-width: 480px) {
+  .nitt-stat-cell { padding: 32px 12px 28px; }
+  .nitt-stat-label { font-size: .6rem; letter-spacing: .24em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nitt-stat-num { animation: none; }
+  .nitt-stat-cell.is-in .nitt-stat-num-wrap { animation: none; }
+}
+
+/* ── Legacy ribbon (slow marquee) ───────────────────────────────────────── */
+.nitt-legacy {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(120, 53, 15, 0.05), rgba(120, 53, 15, 0) 100%),
+    #f5ecdc;
+  border-top: 1px solid rgba(180, 83, 9, .2);
+  border-bottom: 1px solid rgba(180, 83, 9, .2);
+}
+.nitt-legacy::before,
+.nitt-legacy::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+.nitt-legacy::before { left: 0; background: linear-gradient(90deg, #f5ecdc, transparent); }
+.nitt-legacy::after  { right: 0; background: linear-gradient(-90deg, #f5ecdc, transparent); }
+
+.nitt-legacy-track {
+  display: flex;
+  width: max-content;
+  animation: legacy-scroll 52s linear infinite;
+  padding: 16px 0;
+}
+.nitt-legacy-group {
+  display: flex;
+  align-items: center;
+  padding-right: 0;
+}
+.nitt-legacy-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 28px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: .015em;
+  color: #5a2e11;
+  white-space: nowrap;
+}
+.nitt-legacy-item em {
+  font-style: italic;
+  font-weight: 500;
+  color: #9a6319;
+}
+.nitt-legacy-dot {
+  width: 6px; height: 6px;
+  transform: rotate(45deg);
+  background: linear-gradient(135deg, #fbbf24, #b45309);
+  flex-shrink: 0;
+}
+@keyframes legacy-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nitt-legacy-track { animation: none; }
+}
+@media (max-width: 520px) {
+  .nitt-legacy-item { font-size: .9rem; padding: 0 20px; gap: 14px; }
+  .nitt-legacy::before, .nitt-legacy::after { width: 48px; }
 }
 
 /* ── Card hover ─────────────────────────────────────────────────────────── */
@@ -563,47 +800,31 @@ function NumbersBand() {
     return val;
   };
 
-  const Stat = ({ value, suffix, label, sublabel, idx, inView }) => {
-    const n = useCountUp({ end: value, duration: 2000, inView, delay: idx * 120 });
-    const display = value >= 1000
-      ? Math.round(n / 1000).toLocaleString()
-      : Math.round(n).toLocaleString();
-    const showK = value >= 1000;
+  const formatValue = (n, value) => {
+    if (value >= 1000) {
+      const display = n / 1000;
+      const head = display >= 10
+        ? Math.round(display).toString()
+        : display.toFixed(1).replace(/\.0$/, "");
+      return `${head}K+`;
+    }
+    return `${Math.round(n).toLocaleString()}+`;
+  };
+
+  const Stat = ({ value, label, idx, inView }) => {
+    const n = useCountUp({ end: value, duration: 2200, inView, delay: idx * 140 });
+    const display = formatValue(n, value);
 
     return (
-      <div className="nitt-stat-cell" style={{
-        opacity: inView ? 1 : 0,
-        transform: inView ? "none" : "translateY(16px)",
-        transition: `opacity .8s ease ${idx * 0.12}s, transform .8s ease ${idx * 0.12}s`,
-        textAlign: "center",
-      }}>
-        <div style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
-          fontSize: "clamp(2.8rem, 5vw, 4rem)",
-          fontWeight: 900, lineHeight: 1,
-          color: "#fff",
-          letterSpacing: "-0.03em",
-          animation: inView ? `count-glow 3s ease-in-out ${idx * 0.15 + 0.5}s infinite` : "none",
-        }}>
-          {display}
-          {showK && <span style={{ color: "#fbbf24", fontSize: "0.5em" }}>K</span>}
-          <span style={{ color: "#f59e0b", fontSize: "0.45em", marginLeft: "2px" }}>{showK ? suffix?.replace("K+","") || "+" : suffix || "+"}</span>
-        </div>
-        <div style={{
-          marginTop: "10px",
-          fontFamily: "'DM Sans', sans-serif",
-          fontSize: "0.72rem", fontWeight: 700,
-          letterSpacing: "0.2em", textTransform: "uppercase",
-          color: "rgba(253,230,138,0.65)",
-        }}>{label}</div>
-        {sublabel && (
-          <div style={{
-            marginTop: "4px",
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: "0.65rem", color: "rgba(253,230,138,0.35)",
-            letterSpacing: "0.06em",
-          }}>{sublabel}</div>
-        )}
+      <div
+        className={`nitt-stat-cell${inView ? " is-in" : ""}`}
+        style={{ "--stat-delay": `${idx * 0.12}s` }}
+      >
+        <span className="nitt-stat-num-wrap" style={{ transitionDelay: `${idx * 0.12}s` }}>
+          <span className="nitt-stat-num">{display}</span>
+        </span>
+        <div className="nitt-stat-rule" aria-hidden style={{ transitionDelay: `${idx * 0.12 + 0.6}s` }} />
+        <div className="nitt-stat-label" style={{ transitionDelay: `${idx * 0.12 + 0.8}s` }}>{label}</div>
       </div>
     );
   };
@@ -622,46 +843,91 @@ function NumbersBand() {
   }, []);
 
   const STATS = [
-    { value: 50000, suffix: "+",  label: "Alumni", sublabel: "Worldwide" },
-    { value: 7000,  suffix: "+",  label: "Students", sublabel: "On Campus" },
-    { value: 350,   suffix: "+",  label: "Faculty", sublabel: "Researchers" },
-    { value: 165,   suffix: "+",  label: "Patents", sublabel: "Filed" },
+    { value: 50000, label: "Alumni" },
+    { value: 7000,  label: "Students" },
+    { value: 350,   label: "Faculty" },
+    { value: 165,   label: "Patents" },
   ];
 
   return (
     <section ref={ref} style={{ position: "relative", overflow: "hidden" }}>
-      {/* Deep dark base */}
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, #0f0500 0%, #1c0d00 40%, #140a00 100%)" }} />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(135deg, #1a0b02 0%, #2a1408 50%, #1a0b02 100%)",
+        }}
+      />
       <AuroraBackground />
-      {/* Top glow line */}
-      <div className="nitt-glow-line" style={{ position: "relative", zIndex: 10 }} />
 
-      <div style={{ position: "relative", zIndex: 10, maxWidth: "1120px", margin: "0 auto", padding: "60px 24px" }}>
-        <div style={{ marginBottom: "48px", textAlign: "center" }}>
-          <SectionLabel>Institution of Eminence · NIT Tiruchirappalli</SectionLabel>
-          <h2 style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-            fontWeight: 800, color: "#fef3c7",
-            letterSpacing: "-0.01em", lineHeight: 1.2, marginTop: "8px",
-          }}>NITT in Numbers</h2>
+      <div
+        style={{
+          position: "relative",
+          zIndex: 10,
+          maxWidth: "1120px",
+          margin: "0 auto",
+          padding: "clamp(52px, 7vw, 80px) 20px",
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: "clamp(36px, 5vw, 52px)" }}>
+          <h2
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "clamp(1.7rem, 3.8vw, 2.5rem)",
+              fontWeight: 700,
+              color: "#fef3c7",
+              letterSpacing: "-0.005em",
+              lineHeight: 1.2,
+              margin: 0,
+            }}
+          >
+            NITT in Numbers
+          </h2>
         </div>
 
-        <div className="nitt-stats-row" style={{
-          display: "flex",
-          border: "1px solid rgba(255,255,255,0.07)",
-          borderRadius: "6px",
-          overflow: "hidden",
-          background: "rgba(255,255,255,0.02)",
-          backdropFilter: "blur(4px)",
-        }}>
+        <div className={`nitt-stats-frame${inView ? " is-in" : ""}`}>
+          <span className="nitt-stats-sweep" aria-hidden />
           {STATS.map((s, i) => (
             <Stat key={s.label} {...s} idx={i} inView={inView} />
           ))}
         </div>
       </div>
-      <div className="nitt-glow-line" style={{ position: "relative", zIndex: 10 }} />
     </section>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Legacy Ribbon — slow-scrolling institutional marquee
+───────────────────────────────────────────────────────────────────────────── */
+function LegacyRibbon() {
+  const items = [
+    { text: "Established", em: "1964" },
+    { text: "Institution of Eminence" },
+    { text: "Where", em: "engineers become architects" },
+    { text: "Ranked 9th in India by NIRF" },
+    { text: "50,000+ alumni", em: "across 60+ countries" },
+    { text: "Once a NITTian", em: "always a NITTian" },
+    { text: "Tiruchirappalli", em: "Tamil Nadu" },
+  ];
+  return (
+    <div className="nitt-legacy" aria-hidden>
+      <div className="nitt-legacy-track">
+        {[0, 1].map((g) => (
+          <div className="nitt-legacy-group" key={g}>
+            {items.map((it, i) => (
+              <span className="nitt-legacy-item" key={`${g}-${i}`}>
+                <span>
+                  {it.text}
+                  {it.em && <> <em>{it.em}</em></>}
+                </span>
+                <span className="nitt-legacy-dot" />
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -1108,6 +1374,45 @@ function Home() {
                   <span className="nitt-btn-ghost">Support NITT</span>
                 </a>
               </div>
+
+              {/* Establishment signature */}
+              <div
+                className="hero-actions"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "14px",
+                  marginTop: "42px",
+                  paddingTop: "22px",
+                  borderTop: "1px solid rgba(253, 230, 138, .2)",
+                  maxWidth: "460px",
+                  color: "rgba(253, 230, 138, .7)",
+                }}
+              >
+                <span style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontSize: "1.25rem",
+                  fontWeight: 700,
+                  color: "#fde68a",
+                  letterSpacing: ".02em",
+                }}>
+                  Est. 1964
+                </span>
+                <span style={{ width: "1px", height: "22px", background: "rgba(253, 230, 138, .28)" }} />
+                <span style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: ".64rem",
+                  fontWeight: 600,
+                  letterSpacing: ".24em",
+                  textTransform: "uppercase",
+                  color: "rgba(253, 230, 138, .58)",
+                }}>
+                  Institution of Eminence<br />
+                  <span style={{ color: "rgba(253, 230, 138, .4)", letterSpacing: ".2em" }}>
+                    Ministry of Education, Govt. of India
+                  </span>
+                </span>
+              </div>
             </div>
           </div>
 
@@ -1150,6 +1455,9 @@ function Home() {
             pointerEvents: "none",
           }} />
         </section>
+
+        {/* ── LEGACY RIBBON ────────────────────────────────────────────── */}
+        <LegacyRibbon />
 
         {/* ── NUMBERS ──────────────────────────────────────────────────── */}
         <NumbersBand />
