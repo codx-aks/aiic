@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PageHero from "./_PageHero";
 
 const STORIES = [
   {
@@ -36,21 +37,12 @@ const STORIES = [
 export default function SuccessStories() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
-      {/* Hero */}
-      <header className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="py-10 sm:py-12">
-            <div className="relative rounded-3xl border border-amber-900/30 bg-gradient-to-br from-amber-950 to-stone-900 shadow-[0_14px_36px_rgba(0,0,0,.35)]">
-              <div className="absolute inset-0 opacity-40 bg-[radial-gradient(80%_60%_at_10%_10%,rgba(251,191,36,.25),transparent_60%),radial-gradient(70%_50%_at_90%_90%,rgba(234,88,12,.18),transparent_60%)]" />
-              <div className="relative px-6 py-8 sm:px-10 sm:py-12">
-                <h1 className="mt-2 font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
-                  SUCCESS STORY SHARING
-                </h1>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHero
+        crumbs={["Alumni Corner", "Success Stories"]}
+        eyebrow="Alumni · Stories of Impact"
+        title="Success Stories"
+        blurb="Journeys of NITT alumni whose work continues to shape industries, institutions, and communities around the world."
+      />
 
       {/* Stories */}
       <main className="mx-auto max-w-6xl px-4 sm:px-6 pb-20 space-y-5 sm:space-y-6">

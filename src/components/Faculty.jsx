@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import PageHero from "./_PageHero";
 
 const SUBCAUSES = [
   {
@@ -49,41 +50,25 @@ export default function Faculty() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
-      {/* Hero */}
-      <header className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="py-10 sm:py-12">
-            <div className="relative rounded-3xl border border-amber-900/30 bg-gradient-to-br from-amber-950 to-stone-900 shadow-[0_14px_36px_rgba(0,0,0,.35)]">
-              <div className="absolute inset-0 opacity-40 bg-[radial-gradient(80%_60%_at_10%_10%,rgba(251,191,36,.25),transparent_60%),radial-gradient(70%_50%_at_90%_90%,rgba(234,88,12,.18),transparent_60%)]" />
-              <div className="relative px-6 py-8 sm:px-10 sm:py-12">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-amber-100/90 text-xs tracking-wider uppercase">
-                      Giving Back · Faculty Excellence
-                    </p>
-                    <h1 className="mt-1 font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
-                      Faculty Support
-                    </h1>
-                  </div>
-
-                  {/* Header Donate — uses current key directly */}
-                  <Link
-                    to={{ pathname: "/donate", search: `?cause=${current.key}` }}
-                    state={{ causeId: current.key }}
-                    className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
-                    aria-label={`Donate to ${current.title}`}
-                  >
-                    Donate
-                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                      <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
-                    </svg>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHero
+        crumbs={["Giving Back", "Faculty Support"]}
+        eyebrow="Giving Back · Faculty Excellence"
+        title="Faculty Support"
+        blurb="Research chairs, young faculty awards, and well-being support that help NITT attract and sustain world-class teaching and research talent."
+      />
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-5 flex justify-end">
+        <Link
+          to={{ pathname: "/donate", search: `?cause=${current.key}` }}
+          state={{ causeId: current.key }}
+          className="inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2 text-sm text-white shadow hover:scale-[1.02] transition"
+          aria-label={`Donate to ${current.title}`}
+        >
+          Donate
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+            <path d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
+          </svg>
+        </Link>
+      </div>
 
       {/* Overview (image + intro) */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6">

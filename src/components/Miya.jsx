@@ -26,7 +26,7 @@ export default function Miya() {
               <div className="absolute inset-0 opacity-35 bg-[radial-gradient(80%_60%_at_10%_10%,rgba(16,185,129,.25),transparent_60%),radial-gradient(70%_50%_at_90%_90%,rgba(34,197,94,.18),transparent_60%)]" />
               <div className="relative px-6 py-8 sm:px-10 sm:py-12">
                 <p className="text-emerald-100/90 text-xs tracking-wider uppercase">
-                  Batch Legacy
+                  Alumni Legacy
                 </p>
                 <h1 className="mt-1 font-serif text-3xl sm:text-4xl tracking-tight text-emerald-50">
                   Miyawaki Forest — A Green Initiative for a Sustainable Future

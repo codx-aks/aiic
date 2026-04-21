@@ -127,17 +127,97 @@ body { overflow-x: hidden; }
 
 /* ── Card hover ─────────────────────────────────────────────────────────── */
 .nitt-card {
+  position: relative;
   border-radius: 6px;
   border: 1px solid rgba(180,83,9,0.15);
   background: #fff;
   box-shadow: 0 2px 24px rgba(180,83,9,0.05);
-  transition: box-shadow .3s ease, border-color .3s ease;
+  transition: box-shadow .4s ease, border-color .3s ease, transform .4s cubic-bezier(.22,1,.36,1);
   overflow: hidden;
+  will-change: transform;
 }
+.nitt-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(600px 200px at var(--mx,50%) var(--my,0%), rgba(251,191,36,.08), transparent 60%);
+  transition: opacity .5s ease;
+  z-index: 0;
+}
+.nitt-card > * { position: relative; z-index: 1; }
 .nitt-card:hover {
-  box-shadow: 0 8px 48px rgba(180,83,9,0.12), 0 0 0 1px rgba(180,83,9,0.2);
-  border-color: rgba(180,83,9,0.3);
+  box-shadow: 0 18px 58px rgba(180,83,9,0.14), 0 0 0 1px rgba(180,83,9,0.2);
+  border-color: rgba(180,83,9,0.32);
+  transform: translateY(-3px);
 }
+.nitt-card:hover::before { opacity: 1; }
+
+/* Magnetic button wrapper */
+.nitt-magnetic {
+  display: inline-block;
+  transition: transform .35s cubic-bezier(.22,1,.36,1);
+  will-change: transform;
+}
+.nitt-magnetic:hover { transform: translateY(-3px) scale(1.02); }
+
+/* Soft text sheen for Playfair headings */
+.nitt-head-sheen {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(110deg, #1c0f00 0%, #1c0f00 35%, #b45309 45%, #1c0f00 55%, #1c0f00 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-sheen 9s linear infinite;
+}
+@keyframes text-sheen {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* Marching dashed ring accent for icons/badges */
+@keyframes dash-orbit {
+  to { stroke-dashoffset: -24; }
+}
+
+/* Subtle floating for stat cells */
+@keyframes stat-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-3px); }
+}
+@keyframes scroll-hint {
+  0%   { transform: translateY(0); opacity: 0; }
+  25%  { opacity: 1; }
+  75%  { opacity: 1; }
+  100% { transform: translateY(12px); opacity: 0; }
+}
+
+/* Scroll progress bar at very top of page */
+.nitt-scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 1100;
+  background: transparent;
+  pointer-events: none;
+}
+.nitt-scroll-progress::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: var(--sp, 0%);
+  background: linear-gradient(90deg, #b45309, #fbbf24, #d97706);
+  box-shadow: 0 0 12px rgba(251,191,36,.5);
+  transition: width .12s linear;
+}
+
+/* Reveal stagger */
+[data-reveal]:nth-child(2) { transition-delay: .08s; }
+[data-reveal]:nth-child(3) { transition-delay: .16s; }
 
 /* ── Glowing line accent ────────────────────────────────────────────────── */
 .nitt-glow-line {
@@ -788,9 +868,11 @@ function FacebookSection() {
       <h2 style={{
         fontFamily: "'Playfair Display', Georgia, serif",
         fontSize: "clamp(1.5rem, 3vw, 2.2rem)",
-        fontWeight: 800, color: "#1c0f00",
+        fontWeight: 800,
         marginBottom: "32px", marginTop: "8px",
-      }}>Stay Connected</h2>
+      }}>
+        <span className="nitt-head-sheen">Stay Connected</span>
+      </h2>
 
       <div className="nitt-grid-2" style={{ gap: "36px" }}>
         <div style={{ borderRadius: "6px", overflow: "hidden", border: "1px solid rgba(180,83,9,0.14)" }} data-reveal-left>
@@ -888,6 +970,32 @@ function Home() {
     return () => io.disconnect();
   }, [news]);
 
+  /* Pointer-tracked spotlight on `.nitt-card`s */
+  useEffect(() => {
+    const onMove = (e) => {
+      const card = e.target.closest?.(".nitt-card");
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      card.style.setProperty("--my", `${e.clientY - r.top}px`);
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  /* Scroll progress bar */
+  const [scrollPct, setScrollPct] = useState(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const h = document.documentElement;
+      const pct = (h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight)) * 100;
+      setScrollPct(pct);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   /* Research auto-rotate */
   useEffect(() => {
     if (pauseResearch || research.length <= 1) return;
@@ -907,6 +1015,7 @@ function Home() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: GLOBAL_CSS }} />
+      <div className="nitt-scroll-progress" style={{ "--sp": `${scrollPct}%` }} aria-hidden />
 
       <div style={{ minHeight: "100vh", fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif", background: "#fafaf8" }}>
 
@@ -989,15 +1098,49 @@ function Home() {
 
               {/* Buttons */}
               <div className="hero-actions" style={{ display: "flex", flexWrap: "wrap", gap: "14px" }}>
-                <a href="/about" className="nitt-btn-primary">
-                  Explore AIIC
-                  <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M13 5l7 7-7 7v-4H4v-6h9V5z" /></svg>
+                <a href="/about" className="nitt-magnetic">
+                  <span className="nitt-btn-primary">
+                    Explore AIIC
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M13 5l7 7-7 7v-4H4v-6h9V5z" /></svg>
+                  </span>
                 </a>
-                <a href="/donate" className="nitt-btn-ghost">
-                  Support NITT
+                <a href="/donate" className="nitt-magnetic">
+                  <span className="nitt-btn-ghost">Support NITT</span>
                 </a>
               </div>
             </div>
+          </div>
+
+          {/* Scroll indicator */}
+          <div
+            aria-hidden
+            style={{
+              position: "absolute", bottom: "26px", left: "50%",
+              transform: "translateX(-50%)", zIndex: 11,
+              display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
+              color: "rgba(253,230,138,.72)",
+              fontFamily: "'DM Sans', sans-serif", fontSize: ".62rem",
+              letterSpacing: ".28em", textTransform: "uppercase", fontWeight: 600,
+              animation: "hero-text-in .9s cubic-bezier(.22,1,.36,1) 1s both",
+            }}
+          >
+            <span>Scroll</span>
+            <span style={{
+              position: "relative",
+              width: "22px", height: "34px",
+              border: "1.4px solid rgba(253,230,138,.55)",
+              borderRadius: "12px",
+            }}>
+              <span style={{
+                position: "absolute",
+                left: "50%", top: "6px",
+                width: "2px", height: "6px",
+                marginLeft: "-1px",
+                background: "#fbbf24",
+                borderRadius: "2px",
+                animation: "scroll-hint 1.8s ease-in-out infinite",
+              }} />
+            </span>
           </div>
 
           {/* Bottom fade into page */}
@@ -1037,8 +1180,10 @@ function Home() {
                 <h2 style={{
                   fontFamily: "'Playfair Display', Georgia, serif",
                   fontSize: "clamp(1.5rem, 3vw, 2.2rem)",
-                  fontWeight: 800, color: "#1c0f00", marginTop: "6px",
-                }}>Frontiers of Discovery</h2>
+                  fontWeight: 800, marginTop: "6px",
+                }}>
+                  <span className="nitt-head-sheen">Frontiers of Discovery</span>
+                </h2>
               </div>
 
               {/* Tab selectors */}
@@ -1172,8 +1317,10 @@ function Home() {
               <h2 style={{
                 fontFamily: "'Playfair Display', Georgia, serif",
                 fontSize: "clamp(1.5rem, 3vw, 2.2rem)",
-                fontWeight: 800, color: "#1c0f00", marginTop: "6px",
-              }}>From the NITT Community</h2>
+                fontWeight: 800, marginTop: "6px",
+              }}>
+                <span className="nitt-head-sheen">From the NITT Community</span>
+              </h2>
             </div>
 
             <div className="nitt-glow-line" />

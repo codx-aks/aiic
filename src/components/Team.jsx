@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import PageHero from "./_PageHero";
 
 /** ===== Leaders (with photos) ===== */
 const leaders = [
@@ -154,20 +155,12 @@ export default function Team() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
-      <header className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="py-10 sm:py-12">
-            <div className="relative rounded-3xl border border-amber-900/30 bg-gradient-to-br from-amber-950 to-stone-900 shadow-[0_14px_36px_rgba(0,0,0,.35)]">
-              <div className="absolute inset-0 opacity-40 bg-[radial-gradient(80%_60%_at_10%_10%,rgba(251,191,36,.25),transparent_60%),radial-gradient(70%_50%_at_90%_90%,rgba(234,88,12,.18),transparent_60%)]" />
-              <div className="relative px-6 py-8 sm:px-10 sm:py-12">
-                <div className="flex items-center gap-3">
-                  <h1 className="font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">MEET THE TEAM</h1>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHero
+        crumbs={["AIIC", "Meet the Team"]}
+        eyebrow="Office of the IDAR · People"
+        title="Meet the Team"
+        blurb="The Dean, Deans' office, and extended members of the Alumni Institute Interaction Cell at NIT Tiruchirappalli."
+      />
 
       <main className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 space-y-10">
         <section className="rounded-3xl border border-amber-200/60 bg-white/95 backdrop-blur p-6 sm:p-8 shadow-[0_10px_28px_rgba(180,83,9,.08)]">

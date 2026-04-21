@@ -27,14 +27,18 @@ const IMAGES = [
   { src: "/reunion20jan25.jpg",  alt: "Alumni Reunion — Jan 2025",        cat: "Reunion",  to: "/alumni/reunion" },
   { src: "/reunion25jan25.jpg",  alt: "Alumni Reunion — Jan 2025",        cat: "Reunion",  to: "/alumni/reunion" },
 
-  { src: "/heritage.jpeg",       alt: "Heritage Walk",                    cat: "Heritage", to: "/alumni/batch-legacy/heritage" },
-  { src: "/heritage1.jpeg",      alt: "Heritage Initiative",              cat: "Heritage", to: "/alumni/batch-legacy/heritage" },
+  { src: "/heritage.jpeg",       alt: "Heritage Walk",                    cat: "Heritage", to: "/alumni/alumni-legacy/heritage" },
+  { src: "/heritage1.jpeg",      alt: "Heritage Initiative",              cat: "Heritage", to: "/alumni/alumni-legacy/heritage" },
 
-  { src: "/miya.jpeg",           alt: "Miyawaki Forest Project",          cat: "Miyawaki", to: "/alumni/batch-legacy/miyawaki" },
-  { src: "/miya1.jpeg",          alt: "Miyawaki Plantation Drive",        cat: "Miyawaki", to: "/alumni/batch-legacy/miyawaki" },
+  { src: "/miya.jpeg",           alt: "Miyawaki Forest Project",          cat: "Miyawaki", to: "/alumni/alumni-legacy/miyawaki" },
+  { src: "/miya1.jpeg",          alt: "Miyawaki Plantation Drive",        cat: "Miyawaki", to: "/alumni/alumni-legacy/miyawaki" },
 
-  { src: "/oxygen.jpeg",         alt: "Oxygen Park Initiative",           cat: "Oxygen",   to: "/alumni/batch-legacy/oxygen" },
-  { src: "/oxygen1.jpeg",        alt: "Oxygen Park Plantation",           cat: "Oxygen",   to: "/alumni/batch-legacy/oxygen" },
+  { src: "/oxygen.jpeg",         alt: "Oxygen Park Initiative",           cat: "Oxygen",   to: "/alumni/alumni-legacy/oxygen" },
+  { src: "/oxygen1.jpeg",        alt: "Oxygen Park Plantation",           cat: "Oxygen",   to: "/alumni/alumni-legacy/oxygen" },
+
+  { src: "/bl-1978.jpeg",        alt: "1978 Batch — EWS Endowment & Scholarship",         cat: "Batch Legacy", to: "/alumni/batch-legacy" },
+  { src: "/bl-1989.jpeg",        alt: "RECT 1989 Student Aid Fund — MoU signing",         cat: "Batch Legacy", to: "/alumni/batch-legacy" },
+  { src: "/bl-1999cse.png",      alt: "IoT & UAV Research Laboratory — 1999 CSE Batch",   cat: "Batch Legacy", to: "/alumni/batch-legacy" },
 ];
 
 const GALLERY_CSS = `

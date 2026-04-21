@@ -1,16 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   AIIC · Global footer.
-   Compact, premium. Brand + quick links + socials + contact.
-───────────────────────────────────────────────────────────────────────────── */
-
 const SOCIALS = [
   {
     id: "instagram",
     label: "Instagram",
-    href: "https://www.instagram.com/nit_trichy/",
+    href: "https://www.instagram.com/nit_tiruchirappalli/",
     handle: "@nit_trichy",
     svg: (
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
@@ -38,7 +33,7 @@ const SOCIALS = [
   {
     id: "linkedin",
     label: "LinkedIn",
-    href: "https://www.linkedin.com/school/nit-trichy/",
+    href: "https://www.linkedin.com/school/nittrichy/",
     handle: "NIT Tiruchirappalli",
     svg: (
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
@@ -63,7 +58,7 @@ const QUICK_LINKS = [
 const CSS = `
 .aiic-footer {
   position: relative;
-  margin-top: 48px;
+  margin-top: 36px;
   background: linear-gradient(180deg, #120800 0%, #1b0e02 55%, #231508 100%);
   color: #f3e4c3;
   font-family: 'DM Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -95,37 +90,37 @@ const CSS = `
   position: relative; z-index: 2;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 26px 24px 14px;
+  padding: 18px 24px 10px;
   display: grid;
   grid-template-columns: 1.35fr 1fr 1.1fr;
-  gap: 32px;
+  gap: 26px;
 }
 @media (max-width: 900px) {
-  .aiic-footer-inner { grid-template-columns: 1fr; gap: 20px; padding: 22px 22px 12px; }
+  .aiic-footer-inner { grid-template-columns: 1fr; gap: 16px; padding: 16px 22px 8px; }
 }
 
 .aiic-foot-brand-row {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 9px;
+  margin-bottom: 6px;
 }
 .aiic-foot-logo {
-  width: 32px; height: 32px;
+  width: 28px; height: 28px;
   display: grid; place-items: center;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, rgba(251,191,36,.16), transparent 65%);
   border: 1px solid rgba(251,191,36,.22);
 }
-.aiic-foot-logo img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
+.aiic-foot-logo img { width: 100%; height: 100%; object-fit: contain; padding: 2px; }
 .aiic-foot-brand {
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: .94rem;
   letter-spacing: .01em;
   color: #fff7dc;
   line-height: 1.2;
 }
 .aiic-foot-brand-sub {
-  font-size: .62rem;
+  font-size: .58rem;
   color: rgba(253,230,138,.6);
   letter-spacing: .18em;
   text-transform: uppercase;
@@ -133,23 +128,23 @@ const CSS = `
 }
 .aiic-foot-tag {
   max-width: 340px;
-  font-size: .82rem;
-  line-height: 1.6;
+  font-size: .76rem;
+  line-height: 1.55;
   color: rgba(253,230,138,.75);
   margin: 0;
 }
 
 .aiic-foot-head {
-  font-size: .6rem;
+  font-size: .56rem;
   font-weight: 700;
   letter-spacing: .26em;
   text-transform: uppercase;
   color: rgba(251,191,36,.85);
-  margin-bottom: 10px;
+  margin-bottom: 7px;
   display: inline-flex; align-items: center; gap: 8px;
 }
 .aiic-foot-head::before {
-  content: ''; width: 14px; height: 1px;
+  content: ''; width: 12px; height: 1px;
   background: linear-gradient(90deg, rgba(251,191,36,.7), transparent);
 }
 
@@ -159,12 +154,12 @@ const CSS = `
   margin: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px 14px;
+  gap: 2px 12px;
 }
 .aiic-foot-link {
   position: relative;
   display: inline-block;
-  font-size: .84rem;
+  font-size: .78rem;
   color: rgba(253,230,138,.8);
   text-decoration: none;
   padding: 1px 0;
@@ -181,10 +176,10 @@ const CSS = `
 .aiic-foot-link:hover::before { transform: translateX(3px); color: #fbbf24; }
 
 .aiic-foot-contact {
-  font-size: .82rem;
-  line-height: 1.6;
+  font-size: .76rem;
+  line-height: 1.55;
   color: rgba(253,230,138,.78);
-  margin: 0 0 10px;
+  margin: 0 0 8px;
 }
 .aiic-foot-contact a { color: #fde68a; text-decoration: none; border-bottom: 1px dashed rgba(253,230,138,.3); }
 .aiic-foot-contact a:hover { color: #fff7dc; border-bottom-color: #fbbf24; }
@@ -198,19 +193,19 @@ const CSS = `
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 6px 11px 6px 10px;
+  gap: 6px;
+  padding: 5px 10px 5px 9px;
   border-radius: 999px;
   border: 1px solid rgba(251,191,36,.24);
   background: rgba(255,247,220,.04);
   color: #fde68a;
-  font-size: .72rem;
+  font-size: .68rem;
   font-weight: 500;
   letter-spacing: .02em;
   text-decoration: none;
   transition: transform .25s cubic-bezier(.2,.8,.2,1), border-color .25s, background .25s, color .25s, box-shadow .25s;
 }
-.aiic-foot-social svg { color: #fbbf24; width: 14px; height: 14px; transition: color .25s, transform .35s cubic-bezier(.2,.8,.2,1); }
+.aiic-foot-social svg { color: #fbbf24; width: 12px; height: 12px; transition: color .25s, transform .35s cubic-bezier(.2,.8,.2,1); }
 .aiic-foot-social:hover {
   transform: translateY(-2px);
   border-color: rgba(251,191,36,.55);
@@ -227,15 +222,15 @@ const CSS = `
 .aiic-foot-bar {
   position: relative; z-index: 2;
   max-width: 1200px;
-  margin: 14px auto 0;
-  padding: 10px 24px 14px;
+  margin: 10px auto 0;
+  padding: 8px 24px 10px;
   border-top: 1px solid rgba(251,191,36,.15);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   flex-wrap: wrap;
-  font-size: .72rem;
+  font-size: .66rem;
   color: rgba(253,230,138,.58);
 }
 .aiic-foot-bar-right { display: inline-flex; align-items: center; gap: 12px; }

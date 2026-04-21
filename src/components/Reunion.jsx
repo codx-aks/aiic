@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PageHero from "./_PageHero";
 
 const REUNIONS = [
   {
@@ -95,27 +96,15 @@ export default function Reunion() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
-      {/* Header */}
-      <header className="relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="py-10 sm:py-12">
-            <div className="relative rounded-3xl border border-amber-900/30 bg-gradient-to-br from-amber-950 to-stone-900 shadow-[0_14px_36px_rgba(0,0,0,.35)]">
-              <div className="absolute inset-0 opacity-40 bg-[radial-gradient(80%_60%_at_10%_10%,rgba(251,191,36,.25),transparent_60%),radial-gradient(70%_50%_at_90%_90%,rgba(234,88,12,.18),transparent_60%)]" />
-              <div className="relative px-6 py-8 sm:px-10 sm:py-12">
-                <h1 className="font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
-                  REUNION
-                </h1>
-                <p className="mt-2 text-amber-100/80 text-base sm:text-lg max-w-2xl">
-                  Celebrating the enduring bonds and shared memories of our alumni
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHero
+        crumbs={["Alumni Corner", "Reunion"]}
+        eyebrow="Alumni · Reunions & Gatherings"
+        title="Reunions"
+        blurb="Celebrating the enduring bonds and shared memories of NITT alumni — from golden jubilees to quarter-century returns."
+      />
 
       {/* Reunions Grid */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 pb-20 pt-6">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 pb-20 pt-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {REUNIONS.map((reunion, index) => (
             <ReunionCard 

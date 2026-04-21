@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import PageHero from "./_PageHero";
 
 const CSV_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWA0-6f-rV3cf8E6c8vE8bBB0VHMSRXDjwHpqRtqQWPt2_RTDxyC2Gk5iwgE2fXP-KnOEdjv2lUlSx/pub?gid=1970216258&single=true&output=csv";
@@ -216,26 +217,12 @@ export default function UpcomingEvents() {
 
   return (
     <div className="relative min-h-[60vh] bg-gradient-to-br from-stone-50 via-amber-50/30 to-orange-50/20">
-      <header className="mx-auto max-w-6xl px-6 pt-10">
-        <div className="relative rounded-3xl border border-amber-900/30 bg-gradient-to-br from-amber-950 to-stone-900 shadow-[0_14px_36px_rgba(0,0,0,.35)]">
-          <div className="absolute inset-0 opacity-40 bg-[radial-gradient(80%_60%_at_10%_10%,rgba(251,191,36,.25),transparent_60%),radial-gradient(70%_50%_at_90%_90%,rgba(234,88,12,.18),transparent_60%)]" />
-          <div className="relative px-6 py-7 sm:px-10 sm:py-10">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping" />
-              <p className="text-amber-100/90 text-xs tracking-wider uppercase">
-                Alumni Calendar
-              </p>
-            </div>
-            <h1 className="mt-1 font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
-              Upcoming Events
-            </h1>
-            <p className="mt-2 max-w-2xl text-amber-100/90">
-              Jubilees, reunions and other events organised for our alumni community. Dates may
-              fine-tune closer to the event—watch this space!
-            </p>
-          </div>
-        </div>
-      </header>
+      <PageHero
+        crumbs={["Alumni Corner", "Upcoming Events"]}
+        eyebrow="Alumni Calendar · Upcoming"
+        title="Upcoming Events"
+        blurb="Jubilees, reunions and other events organised for our alumni community. Dates may fine-tune closer to the event — watch this space!"
+      />
 
       <main className="mx-auto max-w-6xl px-6 pb-16 pt-8">
         {loading && (

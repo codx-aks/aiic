@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PageHero from "./_PageHero";
 
 const bankDetails = [
   { label: "Name of the account holder", value: "ALUMNI INSTITUTE INTERACTION CELL AIIC" },
@@ -13,25 +14,12 @@ const bankDetails = [
 export default function WaysOfGiving() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
-      {/* Hero */}
-      <header className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="py-10 sm:py-12">
-            <div className="relative rounded-3xl border border-amber-900/30 bg-gradient-to-br from-amber-950 to-stone-900 shadow-[0_14px_36px_rgba(0,0,0,.35)]">
-              <div className="absolute inset-0 opacity-40 bg-[radial-gradient(80%_60%_at_10%_10%,rgba(251,191,36,.25),transparent_60%),radial-gradient(70%_50%_at_90%_90%,rgba(234,88,12,.18),transparent_60%)]" />
-              <div className="relative px-6 py-8 sm:px-10 sm:py-12">
-                <h1 className="font-serif text-3xl sm:text-4xl tracking-tight text-amber-50">
-                  Ways to Donate
-                </h1>
-                <p className="mt-2 text-amber-100/90 max-w-3xl">
-                  Your gift powers scholarships, research, and campus initiatives at NIT Trichy.
-                  Every contribution—big or small—strengthens the NITT community.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHero
+        crumbs={["Giving Back", "Ways to Donate"]}
+        eyebrow="Giving Back · How to Give"
+        title="Ways to Donate"
+        blurb="Your gift powers scholarships, research, and campus initiatives at NIT Trichy. Every contribution — big or small — strengthens the NITT community."
+      />
 
       {/* Intro */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-10">
