@@ -134,6 +134,16 @@ const CSS = `
   color: rgba(253,230,138,.78);
   animation: ph-in .85s cubic-bezier(.22,1,.36,1) .35s both;
 }
+@media (max-width: 640px) {
+  .ph-inner { padding: 22px 18px 20px; }
+  .ph-blurb { display: none; }
+  .ph-crumbs { margin-bottom: 8px; font-size: .56rem; letter-spacing: .16em; }
+  .ph-crest { width: 32px; height: 32px; margin-bottom: 8px; }
+  .ph-eyebrow { font-size: .54rem; letter-spacing: .26em; }
+  .ph-eyebrow-line::before, .ph-eyebrow-line::after { width: 22px; }
+  .ph-title { font-size: 1.3rem !important; }
+  .ph-accent { margin-top: 9px; width: 44px; }
+}
 
 @keyframes ph-in {
   from { opacity: 0; transform: translateY(12px); }

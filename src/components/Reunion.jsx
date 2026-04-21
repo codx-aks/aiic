@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 import PageHero from "./_PageHero";
 
-const REUNIONS = [
+export const REUNIONS = [
   {
+    slug: "doms-alumni-interaction-2026",
     title: "Department of Management Studies — Alumni Interaction Meet 2026",
     subtitle: "Theme: “Steering Managerial Excellence in an AI-Powered World”",
     date: "14–15 February 2026",
@@ -14,6 +16,7 @@ const REUNIONS = [
     ],
   },
   {
+    slug: "1985-40th-reunion",
     title: "1985 Batch 40th Year Reunion",
     date: "6 February 2026",
     images: ["/reunion1985.jpeg"],
@@ -24,6 +27,7 @@ const REUNIONS = [
     ],
   },
   {
+    slug: "2000-silver-jubilee",
     title: "2000 Batch Silver Jubilee Reunion",
     date: "22 December 2025",
     images: ["/reunion2000.jpeg", "/reunion2000a.jpeg", "/reunion2000b.jpeg", "/reunion2000c.jpeg", "/reunion2000d.jpeg", "/reunion2000e.jpeg"],
@@ -34,23 +38,25 @@ const REUNIONS = [
     ],
   },
   {
+    slug: "vlsi-silver-jubilee-2025",
     title: "M.Tech VLSI System — Silver Jubilee Reunion 2025",
     subtitle: "25th anniversary of the first M.Tech VLSI System graduating batch, hosted by the Department of Electronics and Communication Engineering",
     date: "6 December 2025",
     images: ["/vlsi2025.jpg"],
     details: [
-      "The Department of Electronics and Communication Engineering established the M.Tech VLSI System programme in July 1999, with its inaugural class graduating in December 2000. On Saturday, December 6, 2025, the department hosted a Silver Jubilee reunion in the ECE conference hall to commemorate the 25th anniversary of this first graduating batch.",
-      "The event saw global participation, with nine VLSI alumni attending in person and three joining virtually. The presence of emeritus professors Prof. P. Somaskandan and Dr. K. Rameshwaran further distinguished the occasion. Additionally, esteemed retired faculty members Dr. N. Kalyanasundaram, Dr. S. Raghavan, and Dr. B. Venkataramani conveyed their congratulations and best wishes through special messages.",
-      "The function was felicitated by Dr. G. Aghila, Director of NIT Tiruchirappalli, and Dr. G. Uma, Dean (ID & AR). During the proceedings, they emphasised the significance of India’s Semiconductor Mission and discussed the vital role of VLSI alumni in fostering technical collaborations. The event was also attended by Dr. Shobitha Poulose, Associate Dean (ID & AR), along with Ms. Shilpa Deepesh, RECAL Manager, and Mr. S. Ganesh Babu, RECAL Assistant Manager.",
-      "The Head of the Department, faculty and staff members extended a warm welcome to all attendees and expressed their gratitude for their participation. During the interactive session, the VLSI alumni shared insights from their professional journeys; it was noted that a significant number now serve in leadership roles as Directors, CEOs, and Founders or Co-founders of various semiconductor firms and startups. The proceedings concluded with a lunch hosted by RECAL.",
-    ],
+      "Global participation: 9 VLSI alumni attended in person, 3 virtually; emeritus professors and retired faculty contributed messages.",
+      "Event graced by Director and Dean, highlighting India’s Semiconductor Mission and alumni-driven collaborations, with RECAL representatives present.",
+      "Alumni shared industry insights, many in leadership roles; event concluded with a RECAL-hosted lunch."
+    ]
   },
   {
+    slug: "1970-batch-reunion",
     title: "1970 Batch Reunion",
     date: "23 September 2025",
     images: ["/reunion1970.JPG", "/reunion1970b.JPG", "/reunion1970c.JPG", "/reunion1970d.JPG"],
   },
   {
+    slug: "rec-1975-golden-jubilee",
     title: "REC 1975 Golden Jubilee Reunion",
     date: "25 January 2025",
     images: ["/reunion25jan25.jpg"],
@@ -60,6 +66,7 @@ const REUNIONS = [
     ]
   },
   {
+    slug: "diamond-jubilee-2025",
     title: "Diamond Jubilee Reunion",
     date: "20 January 2025",
     images: ["/reunion20jan25.jpg"],
@@ -70,6 +77,7 @@ const REUNIONS = [
     ]
   },
   {
+    slug: "reconnect-99-00-silver-jubilee",
     title: "Silver Jubilee Reunion - REConnecT99_00",
     subtitle: "The Class of 1999, Engineering and Class of 2000, Architecture on the 19th and 20th of December, 2024",
     date: "19-20 December 2024",
@@ -80,11 +88,13 @@ const REUNIONS = [
     ]
   },
   {
+    slug: "1984-40th-reunion",
     title: "1984 Batch 40th Year Reunion",
     date: "20 September 2024",
     images: ["/1984.jpeg"],
   },
   {
+    slug: "1974-golden-jubilee",
     title: "1974 Batch Golden Jubilee Reunion",
     date: "25 January 2024",
     images: ["/1974.jpeg"],
@@ -92,8 +102,6 @@ const REUNIONS = [
 ];
 
 export default function Reunion() {
-  const [selectedReunion, setSelectedReunion] = useState(null);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50/25 to-orange-50/15">
       <PageHero
@@ -106,34 +114,23 @@ export default function Reunion() {
       {/* Reunions Grid */}
       <main className="mx-auto max-w-7xl px-4 sm:px-6 pb-20 pt-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {REUNIONS.map((reunion, index) => (
-            <ReunionCard 
-              key={index} 
-              reunion={reunion}
-              onClick={() => setSelectedReunion(reunion)}
-            />
+          {REUNIONS.map((reunion) => (
+            <ReunionCard key={reunion.slug} reunion={reunion} />
           ))}
         </div>
       </main>
-
-      {/* Modal */}
-      {selectedReunion && (
-        <ReunionModal 
-          reunion={selectedReunion}
-          onClose={() => setSelectedReunion(null)}
-        />
-      )}
     </div>
   );
 }
 
-function ReunionCard({ reunion, onClick }) {
-  const hasDetails = reunion.details;
+function ReunionCard({ reunion }) {
+  const hasDetails = !!reunion.details;
 
   return (
-    <article 
-      onClick={onClick}
-      className="group relative overflow-hidden rounded-2xl border border-amber-200/70 bg-white shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer"
+    <Link
+      to={`/alumni/reunion/${reunion.slug}`}
+      aria-label={`View details about ${reunion.title}`}
+      className="group relative block overflow-hidden rounded-2xl border border-amber-200/70 bg-white shadow-md hover:shadow-xl transition-all duration-300"
     >
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-stone-100">
@@ -143,7 +140,7 @@ function ReunionCard({ reunion, onClick }) {
           loading="lazy"
           className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
-        
+
         {/* Badge for multiple images */}
         {reunion.images.length > 1 && (
           <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm text-white px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1">
@@ -155,192 +152,38 @@ function ReunionCard({ reunion, onClick }) {
         {/* Overlay hint */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
           <span className="text-white text-sm font-medium flex items-center gap-1.5">
-            Click to view details
+            View details
             <ArrowRightIcon className="h-4 w-4" />
           </span>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-4 sm:p-5">
-        <h3 className="text-base sm:text-lg font-serif font-semibold text-stone-900 leading-tight line-clamp-2">
+      <div className="p-4 sm:p-4">
+        <h3 className="text-sm sm:text-[0.95rem] font-serif font-semibold text-stone-900 leading-snug line-clamp-2 min-h-[2.5rem]">
           {reunion.title}
         </h3>
         {reunion.subtitle && (
-          <p className="mt-1 text-xs sm:text-sm text-stone-600 line-clamp-2">
+          <p className="mt-1 text-[0.72rem] sm:text-xs text-stone-600 line-clamp-2 leading-snug">
             {reunion.subtitle}
           </p>
         )}
-        <div className="mt-3 flex items-center gap-2 text-amber-700">
-          <CalendarIcon className="h-4 w-4" />
-          <span className="text-xs sm:text-sm font-medium">{reunion.date}</span>
+        <div className="mt-2.5 flex items-center gap-1.5 text-amber-700">
+          <CalendarIcon className="h-3.5 w-3.5" />
+          <span className="text-[0.72rem] sm:text-xs font-medium">{reunion.date}</span>
         </div>
-        
+
         {/* Details indicator */}
         {hasDetails && (
-          <div className="mt-3 pt-3 border-t border-stone-100">
-            <span className="text-xs text-stone-500 flex items-center gap-1">
-              <InfoIcon className="h-3.5 w-3.5" />
-              Click for more details
+          <div className="mt-2.5 pt-2.5 border-t border-stone-100">
+            <span className="text-[0.7rem] text-stone-500 flex items-center gap-1">
+              <InfoIcon className="h-3 w-3" />
+              View full story & gallery
             </span>
           </div>
         )}
       </div>
-    </article>
-  );
-}
-
-function ReunionModal({ reunion, onClose }) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const hasMultipleImages = reunion.images.length > 1;
-  const hasDetails = reunion.details;
-
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === reunion.images.length - 1 ? 0 : prev + 1
-    );
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === 0 ? reunion.images.length - 1 : prev - 1
-    );
-  };
-
-  // Prevent body scroll when modal is open
-  React.useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, []);
-
-  return (
-    <div 
-      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center bg-black/70 backdrop-blur-sm overflow-y-auto"
-      onClick={onClose}
-    >
-      <div 
-        className="relative bg-white rounded-none sm:rounded-2xl shadow-2xl w-full sm:max-w-5xl sm:my-8 max-h-screen sm:max-h-[90vh] overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full transition-all backdrop-blur-sm"
-          aria-label="Close modal"
-        >
-          <CloseIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-        </button>
-
-        {/* Scrollable content */}
-        <div className="overflow-y-auto max-h-screen sm:max-h-[90vh]">
-          {/* Header */}
-          <div className="bg-gradient-to-br from-amber-950 to-stone-900 text-white p-5 sm:p-6 md:p-8 pr-12 sm:pr-16">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-semibold leading-tight">
-              {reunion.title}
-            </h2>
-            {reunion.subtitle && (
-              <p className="mt-2 text-amber-100/90 text-sm sm:text-base leading-relaxed">
-                {reunion.subtitle}
-              </p>
-            )}
-            <div className="mt-3 sm:mt-4 flex items-center gap-2 text-amber-200">
-              <CalendarIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="text-xs sm:text-sm font-medium">{reunion.date}</span>
-            </div>
-          </div>
-
-          {/* Details Section */}
-          {hasDetails && (
-            <div className="p-5 sm:p-6 md:p-8 space-y-4 sm:space-y-5 bg-white border-b border-stone-200">
-              <div>
-                <ul className="space-y-3 sm:space-y-4">
-                  {reunion.details.map((detail, index) => (
-                    <li key={index} className="flex items-start gap-3 text-stone-700">
-                      <span className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-amber-600" />
-                      <span className="leading-relaxed text-sm sm:text-base">{detail}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          )}
-
-          {/* Image Gallery */}
-          <div className="relative bg-stone-50 p-5 sm:p-6 md:p-8">
-            <div className="relative w-full">
-              <div className="flex items-center justify-center bg-stone-100 rounded-xl overflow-hidden">
-                <img
-                  src={reunion.images[currentImageIndex]}
-                  alt={`${reunion.title} - Image ${currentImageIndex + 1}`}
-                  className="w-full h-auto object-contain max-h-[60vh]"
-                />
-              </div>
-              
-              {/* Navigation for multiple images */}
-              {hasMultipleImages && (
-                <>
-                  <button
-                    onClick={prevImage}
-                    className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-2 sm:p-3 rounded-full transition-all backdrop-blur-sm"
-                    aria-label="Previous image"
-                  >
-                    <ChevronLeftIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-2 sm:p-3 rounded-full transition-all backdrop-blur-sm"
-                    aria-label="Next image"
-                  >
-                    <ChevronRightIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-                  </button>
-                  
-                  {/* Image counter */}
-                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-black/60 backdrop-blur-sm text-white px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium">
-                    {currentImageIndex + 1} / {reunion.images.length}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Thumbnail strip */}
-            {hasMultipleImages && (
-              <div className="mt-4 sm:mt-6">
-                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-stone-300 scrollbar-track-stone-100">
-                  {reunion.images.map((image, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentImageIndex(index)}
-                      className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                        index === currentImageIndex 
-                          ? 'border-amber-600 ring-2 ring-amber-600/30' 
-                          : 'border-stone-200 hover:border-amber-400'
-                      }`}
-                    >
-                      <img
-                        src={image}
-                        alt={`Thumbnail ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* No details message */}
-          {!hasDetails && (
-            <div className="p-6 sm:p-8 text-center bg-white border-b border-stone-200">
-              <p className="text-stone-500 italic text-sm sm:text-base">
-                More details coming soon...
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+    </Link>
   );
 }
 
@@ -400,55 +243,6 @@ function ArrowRightIcon(props) {
       {...props}
     >
       <path d="M5 12h14M12 5l7 7-7 7" />
-    </svg>
-  );
-}
-
-function CloseIcon(props) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  );
-}
-
-function ChevronLeftIcon(props) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M15 18l-6-6 6-6" />
-    </svg>
-  );
-}
-
-function ChevronRightIcon(props) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M9 18l6-6-6-6" />
     </svg>
   );
 }

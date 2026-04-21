@@ -629,6 +629,34 @@ body { overflow-x: hidden; }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #1a0a00; }
 ::-webkit-scrollbar-thumb { background: #b45309; border-radius: 3px; }
+
+/* ── Mobile lightening ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Stop expensive continuous animations on mobile */
+  .nitt-scroll-progress { display: none; }
+  .hero-headline { font-size: clamp(2rem, 8vw, 2.6rem) !important; line-height: 1.08 !important; }
+  .hero-sub { font-size: .9rem !important; line-height: 1.6 !important; margin-bottom: 22px !important; }
+  .hero-pill { padding: 5px 11px !important; margin-bottom: 18px !important; }
+  .hero-pill span:last-child { font-size: .56rem !important; letter-spacing: .16em !important; }
+  /* Main content tighter */
+  .nitt-main-home { padding: 28px 16px 52px !important; gap: 32px !important; }
+  .nitt-main-home .nitt-card { padding: 24px 18px !important; }
+  /* Kenburns: stop zooming video in and out (saves battery) */
+  .hero-kenburns { animation: none !important; }
+  /* Legacy ribbon: keep, but shorter fade + slower = lighter */
+  .nitt-legacy { padding: 14px 0 !important; }
+  /* Cards: remove spotlight shine (was pointer driven) */
+  .nitt-card::before { display: none !important; }
+  /* Hide card-corner flourishes on mobile to reduce noise */
+  .nitt-card-corner { display: none !important; }
+  /* Stop decorative sweeping gradients */
+  .nitt-stats-sweep { display: none !important; }
+  /* Hide verbose secondary paragraphs marked with this class */
+  .home-hide-mobile { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nitt-scroll-progress, .nitt-stats-sweep { display: none; }
+}
 `;
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -780,67 +808,105 @@ function SectionLabel({ children }) {
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Numbers Band
+   The count-up animation is a "first-visit only" effect per browser-tab
+   session. After the user has seen it animate once, any subsequent visits to
+   the Home page within the same session render the final numbers immediately
+   (no replay). Cleared automatically when the tab is closed.
 ───────────────────────────────────────────────────────────────────────────── */
+const NUMBERS_ANIMATED_KEY = "aiic:numbers-animated";
+
+const readAlreadyAnimated = () => {
+  if (typeof window === "undefined") return false;
+  try { return window.sessionStorage.getItem(NUMBERS_ANIMATED_KEY) === "1"; }
+  catch { return false; }
+};
+
+const markAlreadyAnimated = () => {
+  if (typeof window === "undefined") return;
+  try { window.sessionStorage.setItem(NUMBERS_ANIMATED_KEY, "1"); } catch {}
+};
+
+/* IMPORTANT: These helpers and the Stat component are defined at module scope
+   on purpose. Home re-renders on every scroll (scrollPct state), so anything
+   defined *inside* NumbersBand would get a fresh function identity on each
+   render → React would unmount & remount, restarting the count-up. */
+const useCountUp = ({ end = 0, duration = 2000, inView = false, delay = 0, skip = false }) => {
+  const [val, setVal] = React.useState(skip ? end : 0);
+  React.useEffect(() => {
+    if (skip) { setVal(end); return; }
+    if (!inView) return;
+    let raf = 0, t0 = 0;
+    const ease = (t) => 1 - Math.pow(1 - t, 4);
+    const step = (ts) => {
+      if (!t0) t0 = ts;
+      const p = Math.min(1, (ts - t0) / duration);
+      setVal(end * ease(p));
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    const t = setTimeout(() => (raf = requestAnimationFrame(step)), delay);
+    return () => { clearTimeout(t); cancelAnimationFrame(raf); };
+  }, [end, duration, inView, delay, skip]);
+  return val;
+};
+
+const formatStatValue = (n, value) => {
+  if (value >= 1000) {
+    const display = n / 1000;
+    const head = display >= 10
+      ? Math.round(display).toString()
+      : display.toFixed(1).replace(/\.0$/, "");
+    return `${head}K+`;
+  }
+  return `${Math.round(n).toLocaleString()}+`;
+};
+
+const Stat = React.memo(function Stat({ value, label, idx, inView, skip }) {
+  const n = useCountUp({ end: value, duration: 2200, inView, delay: idx * 140, skip });
+  const display = formatStatValue(n, value);
+
+  return (
+    <div
+      className={`nitt-stat-cell${inView ? " is-in" : ""}`}
+      style={{ "--stat-delay": `${idx * 0.12}s` }}
+    >
+      <span className="nitt-stat-num-wrap" style={{ transitionDelay: `${idx * 0.12}s` }}>
+        <span className="nitt-stat-num">{display}</span>
+      </span>
+      <div className="nitt-stat-rule" aria-hidden style={{ transitionDelay: `${idx * 0.12 + 0.6}s` }} />
+      <div className="nitt-stat-label" style={{ transitionDelay: `${idx * 0.12 + 0.8}s` }}>{label}</div>
+    </div>
+  );
+});
+
 function NumbersBand() {
-  const useCountUp = ({ end = 0, duration = 2000, inView = false, delay = 0 }) => {
-    const [val, setVal] = React.useState(0);
-    React.useEffect(() => {
-      if (!inView) return;
-      let raf = 0, t0 = 0;
-      const ease = (t) => 1 - Math.pow(1 - t, 4);
-      const step = (ts) => {
-        if (!t0) t0 = ts;
-        const p = Math.min(1, (ts - t0) / duration);
-        setVal(end * ease(p));
-        if (p < 1) raf = requestAnimationFrame(step);
-      };
-      const t = setTimeout(() => (raf = requestAnimationFrame(step)), delay);
-      return () => { clearTimeout(t); cancelAnimationFrame(raf); };
-    }, [end, duration, inView, delay]);
-    return val;
-  };
-
-  const formatValue = (n, value) => {
-    if (value >= 1000) {
-      const display = n / 1000;
-      const head = display >= 10
-        ? Math.round(display).toString()
-        : display.toFixed(1).replace(/\.0$/, "");
-      return `${head}K+`;
-    }
-    return `${Math.round(n).toLocaleString()}+`;
-  };
-
-  const Stat = ({ value, label, idx, inView }) => {
-    const n = useCountUp({ end: value, duration: 2200, inView, delay: idx * 140 });
-    const display = formatValue(n, value);
-
-    return (
-      <div
-        className={`nitt-stat-cell${inView ? " is-in" : ""}`}
-        style={{ "--stat-delay": `${idx * 0.12}s` }}
-      >
-        <span className="nitt-stat-num-wrap" style={{ transitionDelay: `${idx * 0.12}s` }}>
-          <span className="nitt-stat-num">{display}</span>
-        </span>
-        <div className="nitt-stat-rule" aria-hidden style={{ transitionDelay: `${idx * 0.12 + 0.6}s` }} />
-        <div className="nitt-stat-label" style={{ transitionDelay: `${idx * 0.12 + 0.8}s` }}>{label}</div>
-      </div>
-    );
-  };
+  // Snapshot the flag once per mount so toggling it during this mount doesn't
+  // change behaviour mid-render.
+  const skipRef = React.useRef(readAlreadyAnimated());
+  const skipAnim = skipRef.current;
 
   const ref = React.useRef(null);
-  const [inView, setInView] = React.useState(false);
+  // If we've already animated in this session, start in the "in view" state so
+  // the final values + reveal styling render on first paint (no transition,
+  // since the class is present from mount).
+  const [inView, setInView] = React.useState(skipAnim);
+
   React.useEffect(() => {
+    if (skipAnim) return;
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      (ents) => ents.forEach((e) => e.isIntersecting && (setInView(true), io.disconnect())),
+      (ents) => ents.forEach((e) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          markAlreadyAnimated();
+          io.disconnect();
+        }
+      }),
       { threshold: 0.15 }
     );
     io.observe(el);
     return () => io.disconnect();
-  }, []);
+  }, [skipAnim]);
 
   const STATS = [
     { value: 50000, label: "Alumni" },
@@ -889,7 +955,7 @@ function NumbersBand() {
         <div className={`nitt-stats-frame${inView ? " is-in" : ""}`}>
           <span className="nitt-stats-sweep" aria-hidden />
           {STATS.map((s, i) => (
-            <Stat key={s.label} {...s} idx={i} inView={inView} />
+            <Stat key={s.label} {...s} idx={i} inView={inView} skip={skipAnim} />
           ))}
         </div>
       </div>
@@ -1167,7 +1233,7 @@ function FacebookSection() {
           <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "1rem", lineHeight: 1.85, color: "#44403c" }}>
             Follow the NIT Trichy Alumni community for reunions, chapters, opportunities, and campus updates — right from Facebook.
           </p>
-          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.92rem", lineHeight: 1.8, color: "#78716c" }}>
+          <p className="home-hide-mobile" style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.92rem", lineHeight: 1.8, color: "#78716c" }}>
             Highlights, throwbacks, and impact stories are posted regularly. Join the conversation and amplify NITT's momentum.
           </p>
           <a href={PAGE_URL} target="_blank" rel="noreferrer" className="nitt-btn-primary" style={{ alignSelf: "flex-start" }}>
@@ -1181,9 +1247,28 @@ function FacebookSection() {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   Mobile detect — kills heavy effects on small screens
+───────────────────────────────────────────────────────────────────────────── */
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia(`(max-width: ${breakpoint}px)`).matches
+      : false
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint}px)`);
+    const on = () => setIsMobile(mq.matches);
+    mq.addEventListener?.("change", on);
+    return () => mq.removeEventListener?.("change", on);
+  }, [breakpoint]);
+  return isMobile;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    Home
 ───────────────────────────────────────────────────────────────────────────── */
 function Home() {
+  const isMobile = useIsMobile();
   const [activeResearch, setActiveResearch] = useState(0);
   const [pauseResearch, setPauseResearch] = useState(false);
   const [news, setNews] = useState([]);
@@ -1236,8 +1321,9 @@ function Home() {
     return () => io.disconnect();
   }, [news]);
 
-  /* Pointer-tracked spotlight on `.nitt-card`s */
+  /* Pointer-tracked spotlight on `.nitt-card`s (desktop only) */
   useEffect(() => {
+    if (isMobile) return;
     const onMove = (e) => {
       const card = e.target.closest?.(".nitt-card");
       if (!card) return;
@@ -1247,7 +1333,7 @@ function Home() {
     };
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
-  }, []);
+  }, [isMobile]);
 
   /* Scroll progress bar */
   const [scrollPct, setScrollPct] = useState(0);
@@ -1289,35 +1375,38 @@ function Home() {
         <section style={{ position: "relative", height: "100svh", minHeight: "600px", width: "100%", overflow: "hidden" }}>
           {/* Video base */}
           <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
-            <div style={{ position: "absolute", inset: 0, animation: "kenburns 24s ease-in-out infinite" }}>
+            <div className="hero-kenburns" style={{ position: "absolute", inset: 0, animation: "kenburns 24s ease-in-out infinite" }}>
               <video
                 src="/nitt.mp4"
                 style={{ height: "100%", width: "100%", objectFit: "cover" }}
                 autoPlay muted loop playsInline poster="/hero-poster.jpg"
+                ref={(el) => { if (el) el.playbackRate = 1.6; }}
               />
             </div>
           </div>
 
-          {/* Layered overlays */}
+          {/* Subtle scrim — only enough contrast for text legibility on the left */}
           <div style={{
             position: "absolute", inset: 0,
-            background: "linear-gradient(170deg, rgba(0,0,0,0.6) 0%, rgba(10,5,0,0.45) 50%, rgba(0,0,0,0.78) 100%)",
+            background: "linear-gradient(100deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.18) 45%, rgba(0,0,0,0) 75%)",
           }} />
           <div style={{
-            position: "absolute", inset: 0, opacity: 0.75,
-            background: "radial-gradient(120% 80% at 5% 10%, rgba(251,191,36,0.16), transparent 55%), radial-gradient(100% 70% at 90% 90%, rgba(234,88,12,0.16), transparent 55%)",
-            animation: "pan-slow 16s ease-in-out infinite",
+            position: "absolute", left: 0, right: 0, bottom: 0, height: "30%",
+            background: "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%)",
+            pointerEvents: "none",
           }} />
-          {/* Noise texture */}
-          <div style={{
-            position: "absolute", inset: 0, opacity: 0.035,
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            backgroundSize: "200px 200px",
-            animation: "noise-move 4s steps(4) infinite",
-          }} />
+          {/* Noise texture (desktop only) */}
+          {!isMobile && (
+            <div style={{
+              position: "absolute", inset: 0, opacity: 0.035,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+              backgroundSize: "200px 200px",
+              animation: "noise-move 4s steps(4) infinite",
+            }} />
+          )}
 
-          <Particles count={22} />
-          <OrbitingDots />
+          {!isMobile && <Particles count={22} />}
+          {!isMobile && <OrbitingDots />}
 
           {/* Content */}
           <div style={{ position: "relative", zIndex: 10, height: "100%", display: "flex", alignItems: "center" }}>
@@ -1341,7 +1430,10 @@ function Home() {
                   fontSize: "0.65rem", fontWeight: 700,
                   letterSpacing: "0.22em", textTransform: "uppercase",
                   color: "#7c2d12",
-                }}>Alumni Institute Interaction Cell · NIT Tiruchirappalli</span>
+                }}>
+                  <span className="home-hide-mobile">Alumni Institute Interaction Cell · </span>
+                  NIT Tiruchirappalli
+                </span>
               </div>
 
               {/* Headline */}
@@ -1352,14 +1444,13 @@ function Home() {
               {/* Subtext */}
               <p className="hero-sub" style={{
                 fontFamily: "'DM Sans', sans-serif",
-                fontSize: "clamp(0.95rem, 1.8vw, 1.1rem)",
-                lineHeight: 1.8,
-                color: "rgba(255,255,255,0.8)",
-                maxWidth: "500px",
-                marginBottom: "36px",
+                fontSize: "clamp(0.95rem, 1.8vw, 1.05rem)",
+                lineHeight: 1.6,
+                color: "rgba(255,255,255,0.85)",
+                maxWidth: "460px",
+                marginBottom: "32px",
               }}>
-                Mentorship. Research. Campus transformation.<br />
-                Together, we turn legacy into momentum.
+                Turning legacy into momentum.
               </p>
 
               {/* Buttons */}
@@ -1375,44 +1466,6 @@ function Home() {
                 </a>
               </div>
 
-              {/* Establishment signature */}
-              <div
-                className="hero-actions"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "14px",
-                  marginTop: "42px",
-                  paddingTop: "22px",
-                  borderTop: "1px solid rgba(253, 230, 138, .2)",
-                  maxWidth: "460px",
-                  color: "rgba(253, 230, 138, .7)",
-                }}
-              >
-                <span style={{
-                  fontFamily: "'Playfair Display', Georgia, serif",
-                  fontSize: "1.25rem",
-                  fontWeight: 700,
-                  color: "#fde68a",
-                  letterSpacing: ".02em",
-                }}>
-                  Est. 1964
-                </span>
-                <span style={{ width: "1px", height: "22px", background: "rgba(253, 230, 138, .28)" }} />
-                <span style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: ".64rem",
-                  fontWeight: 600,
-                  letterSpacing: ".24em",
-                  textTransform: "uppercase",
-                  color: "rgba(253, 230, 138, .58)",
-                }}>
-                  Institution of Eminence<br />
-                  <span style={{ color: "rgba(253, 230, 138, .4)", letterSpacing: ".2em" }}>
-                    Ministry of Education, Govt. of India
-                  </span>
-                </span>
-              </div>
             </div>
           </div>
 
@@ -1463,7 +1516,7 @@ function Home() {
         <NumbersBand />
 
         {/* ── MAIN ─────────────────────────────────────────────────────── */}
-        <main style={{
+        <main className="nitt-main-home" style={{
           maxWidth: "1120px", margin: "0 auto",
           padding: "48px 24px 96px",
           display: "flex", flexDirection: "column", gap: "52px",

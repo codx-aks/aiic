@@ -16,12 +16,17 @@ import InstituteNewsletter from './components/InstituteNewsletter';
 import AnnualReport from './components/AnnualReport';
 import Gallery from './components/Gallery';
 import Reunion from './components/Reunion';
+import ReunionDetail from './components/ReunionDetail';
 import SuccessStories from './components/SuccessStories';
 import BatchLegacy from './components/BatchLegacy';
+import BatchLegacyDetail from './components/BatchLegacyDetail';
 import AlumniLegacy from './components/AlumniLegacy';
 import Miya from "./components/Miya";
 import Heritage from "./components/Heritage";
 import Oxygen from "./components/Oxygen";
+import Basketball from "./components/Basketball";
+import Medical from "./components/Medical";
+import ElectricVehicle from "./components/ElectricVehicle";
 
 import WhyGive from './components/WhyGive';
 import WaysOfGiving from './components/WaysOfGiving';
@@ -758,11 +763,15 @@ function App() {
         <Route path="/alumni/report/annual" element={<AnnualReport />} />
         <Route path="/alumni/gallery" element={<Gallery />} />
         <Route path="/alumni/reunion" element={<Reunion />} />
+        <Route path="/alumni/reunion/:slug" element={<ReunionDetail />} />
         <Route path="/alumni/success-stories" element={<SuccessStories />} />
         <Route path="/alumni/alumni-legacy" element={<AlumniLegacy />} />
         <Route path="/alumni/alumni-legacy/miyawaki" element={<Miya />} />
         <Route path="/alumni/alumni-legacy/heritage" element={<Heritage />} />
         <Route path="/alumni/alumni-legacy/oxygen" element={<Oxygen />} />
+        <Route path="/alumni/alumni-legacy/basketball-tennis" element={<Basketball />} />
+        <Route path="/alumni/alumni-legacy/medical-equipment" element={<Medical />} />
+        <Route path="/alumni/alumni-legacy/electric-vehicle" element={<ElectricVehicle />} />
 
         <Route path="/alumni/batch-legacy" element={<BatchLegacy />} />
 
@@ -770,6 +779,11 @@ function App() {
         <Route path="/alumni/batch-legacy/heritage" element={<Navigate to="/alumni/alumni-legacy/heritage" replace />} />
         <Route path="/alumni/batch-legacy/miyawaki" element={<Navigate to="/alumni/alumni-legacy/miyawaki" replace />} />
         <Route path="/alumni/batch-legacy/oxygen" element={<Navigate to="/alumni/alumni-legacy/oxygen" replace />} />
+        <Route path="/alumni/batch-legacy/basketball-tennis" element={<Navigate to="/alumni/alumni-legacy/basketball-tennis" replace />} />
+        <Route path="/alumni/batch-legacy/medical-equipment" element={<Navigate to="/alumni/alumni-legacy/medical-equipment" replace />} />
+        <Route path="/alumni/batch-legacy/electric-vehicle" element={<Navigate to="/alumni/alumni-legacy/electric-vehicle" replace />} />
+
+        <Route path="/alumni/batch-legacy/:slug" element={<BatchLegacyDetail />} />
 
 
         <Route path="/giving/why-give" element={<WhyGive />} />

@@ -7,7 +7,7 @@ const leaders = [
   { name: "Dr. S. Jerome", role: "Associate Dean, Institute Development", email: "jerome@nitt.edu", image: "/jerome.jpeg" },
   { name: "Dr. Shobitha Poulose", role: "Associate Dean, Alumni Relations", email: "adidar@nitt.edu", image: "/shob.jpeg" },
   { name: "Dr. Nivethitha S", role: "Associate Dean, International Relations", email: "adidir@nitt.edu", image: "/niv.jpeg" },
-  { name: "Dr. Kalpana Narayanan", role: "Consultant (Alumni Affairs)", email: "alumni@nitt.edu", image: "/kal.jpeg" },
+  { name: "Mr. Baskaran M", role: "Assistant (SG-I)", email: "alumni@nitt.edu", image: "/bhaskar.jpeg" },
   { name: "Ms. Shanmugapriya S.R", role: "Junior Assistant", email: "alumni@nitt.edu", image: "/shan.jpeg" },
   { name: "Mr. Sridhar P", role: "Office Attendant", email: "alumni@nitt.edu", image: "/sri.jpeg" },
 ];

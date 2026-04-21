@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import PageHero from "./_PageHero";
 
 /* ─────────────────────────────────────────────────────────────────────────────
    AIIC · Gallery
-   Editorial hero · category filters · bento mosaic · lightbox · kinetic hover
+   Editorial hero · bento mosaic · lightbox · kinetic hover
 ───────────────────────────────────────────────────────────────────────────── */
 
 const IMAGES = [
@@ -52,137 +53,56 @@ const GALLERY_CSS = `
   font-family: var(--aiic-sans);
 }
 
-/* Editorial hero — compact band */
-.gal-hero {
-  position: relative;
-  overflow: hidden;
+/* Stats strip below the shared dark hero */
+.gal-stats {
   border-bottom: 1px solid rgba(180,83,9,.1);
+  background: rgba(255,253,247,.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
-.gal-hero-inner {
-  max-width: 1200px;
+.gal-stats-inner {
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 36px 24px 28px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 28px;
-  align-items: end;
-}
-@media (max-width: 760px) {
-  .gal-hero-inner {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 26px 20px 22px;
-  }
-}
-
-.gal-hero-title {
-  font-family: var(--aiic-serif);
-  font-weight: 800;
-  font-size: clamp(1.65rem, 3.1vw, 2.3rem);
-  line-height: 1.08;
-  letter-spacing: -.012em;
-  color: var(--aiic-ink);
-  margin: 8px 0 8px;
-}
-.gal-hero-title em {
-  font-style: italic;
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 600;
-  background: linear-gradient(95deg, #78350f 0%, #b45309 40%, #d97706 70%);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.gal-hero-sub {
-  font-size: .9rem;
-  line-height: 1.65;
-  color: #57534e;
-  max-width: 640px;
-}
-.gal-hero-stats {
+  padding: 14px 24px;
   display: flex;
-  gap: 26px;
-  align-items: baseline;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
   flex-wrap: wrap;
-  justify-content: flex-end;
 }
-@media (max-width: 760px) {
-  .gal-hero-stats { justify-content: flex-start; gap: 22px; }
-}
-.gal-hero-stat-n {
+.gal-stat { text-align: center; }
+.gal-stat-n {
   font-family: var(--aiic-serif);
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--aiic-amber-800);
   line-height: 1;
   letter-spacing: .005em;
 }
-.gal-hero-stat-l {
-  font-size: .6rem;
-  letter-spacing: .22em;
+.gal-stat-l {
+  font-size: .58rem;
+  letter-spacing: .28em;
   text-transform: uppercase;
   color: rgba(87,83,78,.72);
   margin-top: 4px;
-  font-weight: 600;
+  font-weight: 700;
 }
-
-/* Filter bar */
-.gal-filters {
-  position: sticky;
-  top: 64px;
-  z-index: 20;
-  background: rgba(250,250,248,.9);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(180,83,9,.1);
+.gal-stat-sep {
+  width: 1px;
+  height: 22px;
+  background: linear-gradient(180deg, transparent, rgba(180,83,9,.28), transparent);
 }
-.gal-filters-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 10px 24px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.gal-chip {
-  appearance: none; border: 1px solid rgba(180,83,9,.2);
-  background: rgba(255,255,255,.85);
-  color: var(--aiic-amber-900);
-  padding: 6px 13px;
-  border-radius: 999px;
-  font-family: var(--aiic-sans);
-  font-size: .74rem;
-  font-weight: 600;
-  letter-spacing: .02em;
-  cursor: pointer;
-  transition: all .22s var(--aiic-ease);
-  white-space: nowrap;
-}
-.gal-chip:hover {
-  background: #fffbeb;
-  border-color: var(--aiic-amber-700);
-  transform: translateY(-1px);
-}
-.gal-chip.is-active {
-  background: linear-gradient(135deg, #b45309, #7c2d12);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 6px 16px rgba(180,83,9,.35);
-}
-.gal-count {
-  margin-left: auto;
-  font-size: .74rem;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: rgba(87,83,78,.72);
-  font-weight: 600;
+@media (max-width: 560px) {
+  .gal-stats-inner { gap: 16px; padding: 12px 16px; }
+  .gal-stat-n { font-size: 1.1rem; }
+  .gal-stat-sep { height: 18px; }
 }
 
 /* Uniform grid — every tile the same size, properly aligned */
 .gal-mosaic {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 28px 24px 80px;
+  padding: 40px 24px 80px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 18px;
@@ -333,12 +253,17 @@ const GALLERY_CSS = `
 .gal-lb-stage {
   position: relative;
   display: grid; place-items: center;
-  padding: 0 24px;
+  padding: 0 96px;
   min-height: 0;
 }
+@media (max-width: 640px) {
+  .gal-lb-stage { padding: 0 70px; }
+}
 .gal-lb-stage img {
-  max-width: min(1100px, 96vw);
-  max-height: calc(100vh - 170px);
+  position: relative;
+  z-index: 1;
+  max-width: min(1100px, 100%);
+  max-height: calc(100vh - 180px);
   object-fit: contain;
   border-radius: 14px;
   box-shadow: 0 30px 80px rgba(0,0,0,.6);
@@ -347,21 +272,39 @@ const GALLERY_CSS = `
 .gal-lb-arrow {
   position: absolute;
   top: 50%; transform: translateY(-50%);
+  z-index: 5;
   width: 52px; height: 52px;
   border-radius: 999px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(251,191,36,.28);
+  background: rgba(20, 12, 2, .72);
+  border: 1px solid rgba(251,191,36,.55);
   color: #fde68a;
   display: grid; place-items: center;
   cursor: pointer;
-  transition: background .22s, transform .22s, color .22s;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 10px 26px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.04);
+  transition: background .22s, transform .22s, color .22s, border-color .22s, box-shadow .22s;
 }
-.gal-lb-arrow.prev { left: 16px; }
-.gal-lb-arrow.next { right: 16px; }
+.gal-lb-arrow.prev { left: 20px; }
+.gal-lb-arrow.next { right: 20px; }
 .gal-lb-arrow:hover {
-  background: rgba(251,191,36,.2);
-  color: #fff;
+  background: rgba(251,191,36,.92);
+  color: #1c0a00;
+  border-color: #fbbf24;
   transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 14px 32px rgba(251,191,36,.35), 0 0 0 1px rgba(251,191,36,.4);
+}
+.gal-lb-arrow:focus-visible {
+  outline: none;
+  border-color: #fbbf24;
+  box-shadow: 0 0 0 3px rgba(251,191,36,.35), 0 10px 26px rgba(0,0,0,.55);
+}
+.gal-lb-arrow:active { transform: translateY(-50%) scale(.96); }
+
+@media (max-width: 640px) {
+  .gal-lb-arrow { width: 44px; height: 44px; }
+  .gal-lb-arrow.prev { left: 10px; }
+  .gal-lb-arrow.next { right: 10px; }
 }
 
 .gal-lb-bottom {
@@ -412,30 +355,22 @@ const GALLERY_CSS = `
 `;
 
 export default function Gallery() {
-  const [filter, setFilter] = useState("All");
-  const [lightbox, setLightbox] = useState(null); // index into filtered list
+  const [lightbox, setLightbox] = useState(null); // index into IMAGES
+  const filtered = IMAGES;
 
-  const categories = useMemo(() => {
-    const set = new Set(IMAGES.map((i) => i.cat));
-    return ["All", ...Array.from(set)];
-  }, []);
-
-  const filtered = useMemo(
-    () => (filter === "All" ? IMAGES : IMAGES.filter((i) => i.cat === filter)),
-    [filter]
+  const collectionCount = useMemo(
+    () => new Set(IMAGES.map((i) => i.cat)).size,
+    []
   );
 
   const openAt = useCallback((i) => setLightbox(i), []);
   const closeLB = useCallback(() => setLightbox(null), []);
-  const nav = useCallback(
-    (dir) => {
-      setLightbox((i) => {
-        if (i === null) return i;
-        return (i + dir + filtered.length) % filtered.length;
-      });
-    },
-    [filtered.length]
-  );
+  const nav = useCallback((dir) => {
+    setLightbox((i) => {
+      if (i === null) return i;
+      return (i + dir + IMAGES.length) % IMAGES.length;
+    });
+  }, []);
 
   useEffect(() => {
     if (lightbox === null) return;
@@ -458,57 +393,30 @@ export default function Gallery() {
     <div className="gal-root">
       <style dangerouslySetInnerHTML={{ __html: GALLERY_CSS }} />
 
-      {/* HERO — compact editorial band */}
-      <header className="gal-hero">
-        <div className="gal-hero-inner">
-          <div data-reveal>
-            <span className="aiic-eyebrow">Moments · 1964 — Present</span>
-            <h1 className="gal-hero-title">
-              The AIIC <em>Archive</em>
-            </h1>
-            <p className="gal-hero-sub">
-              Six decades of reunions, awards, heritage walks and campus renewal — click any frame to open its story.
-            </p>
-          </div>
+      {/* HERO — shared dark letterhead band */}
+      <PageHero
+        eyebrow="Moments · 1964 — Present"
+        title="The AIIC Archive"
+        blurb="Six decades of reunions, awards, heritage walks and campus renewal — click any frame to open its story."
+      />
 
-          <div className="gal-hero-stats" data-reveal data-delay="2">
-            <div>
-              <div className="gal-hero-stat-n">{IMAGES.length}</div>
-              <div className="gal-hero-stat-l">Photographs</div>
-            </div>
-            <div>
-              <div className="gal-hero-stat-n">{categories.length - 1}</div>
-              <div className="gal-hero-stat-l">Collections</div>
-            </div>
-            <div>
-              <div className="gal-hero-stat-n">60</div>
-              <div className="gal-hero-stat-l">Years</div>
-            </div>
+      {/* Stats strip */}
+      <div className="gal-stats" data-reveal>
+        <div className="gal-stats-inner">
+          <div className="gal-stat">
+            <div className="gal-stat-n">{IMAGES.length}</div>
+            <div className="gal-stat-l">Photographs</div>
           </div>
-        </div>
-        <div className="aiic-glow-line" aria-hidden />
-      </header>
-
-      {/* FILTERS */}
-      <div className="gal-filters">
-        <div className="gal-filters-inner">
-          {categories.map((c) => (
-            <button
-              key={c}
-              className={`gal-chip ${c === filter ? "is-active" : ""}`}
-              onClick={() => setFilter(c)}
-            >
-              {c}
-              {c !== "All" && (
-                <span style={{ opacity: .65, marginLeft: 6 }}>
-                  · {IMAGES.filter((i) => i.cat === c).length}
-                </span>
-              )}
-            </button>
-          ))}
-          <span className="gal-count">
-            Showing {filtered.length} of {IMAGES.length}
-          </span>
+          <span className="gal-stat-sep" aria-hidden />
+          <div className="gal-stat">
+            <div className="gal-stat-n">{collectionCount}</div>
+            <div className="gal-stat-l">Collections</div>
+          </div>
+          <span className="gal-stat-sep" aria-hidden />
+          <div className="gal-stat">
+            <div className="gal-stat-n">60</div>
+            <div className="gal-stat-l">Years</div>
+          </div>
         </div>
       </div>
 

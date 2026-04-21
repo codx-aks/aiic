@@ -90,13 +90,25 @@ const CSS = `
   position: relative; z-index: 2;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 18px 24px 10px;
+  padding: 20px 24px 12px;
   display: grid;
-  grid-template-columns: 1.35fr 1fr 1.1fr;
-  gap: 26px;
+  grid-template-columns: 1fr 1fr 1.1fr;
+  gap: 28px;
 }
 @media (max-width: 900px) {
-  .aiic-footer-inner { grid-template-columns: 1fr; gap: 16px; padding: 16px 22px 8px; }
+  .aiic-footer-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 20px;
+    padding: 18px 20px 8px;
+  }
+  .aiic-foot-brand-col { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) {
+  .aiic-footer-inner {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px 18px 8px;
+  }
 }
 
 .aiic-foot-brand-row {
@@ -125,13 +137,6 @@ const CSS = `
   letter-spacing: .18em;
   text-transform: uppercase;
   margin-top: 1px;
-}
-.aiic-foot-tag {
-  max-width: 340px;
-  font-size: .76rem;
-  line-height: 1.55;
-  color: rgba(253,230,138,.75);
-  margin: 0;
 }
 
 .aiic-foot-head {
@@ -183,6 +188,11 @@ const CSS = `
 }
 .aiic-foot-contact a { color: #fde68a; text-decoration: none; border-bottom: 1px dashed rgba(253,230,138,.3); }
 .aiic-foot-contact a:hover { color: #fff7dc; border-bottom-color: #fbbf24; }
+.aiic-foot-addr-line { display: inline; }
+@media (max-width: 900px) {
+  .aiic-foot-addr-line { display: none; }
+  .aiic-foot-contact { font-size: .74rem; }
+}
 
 .aiic-foot-socials {
   display: flex;
@@ -253,7 +263,7 @@ export default function Footer() {
 
       <div className="aiic-footer-inner">
         {/* Brand */}
-        <div>
+        <div className="aiic-foot-brand-col">
           <div className="aiic-foot-brand-row">
             <div className="aiic-foot-logo">
               <img
@@ -266,10 +276,6 @@ export default function Footer() {
               <div className="aiic-foot-brand-sub">Alumni & Institute Interaction Cell</div>
             </div>
           </div>
-          <p className="aiic-foot-tag">
-            A living bridge between the worldwide NITT alumni community and our Alma Mater — honouring legacy,
-            powering students, and shaping what comes next.
-          </p>
         </div>
 
         {/* Quick links */}
@@ -290,10 +296,12 @@ export default function Footer() {
         <div>
           <div className="aiic-foot-head">Get in touch</div>
           <address className="aiic-foot-contact" style={{ fontStyle: "normal" }}>
-            AIIC Office, NIT Tiruchirappalli,
-            <br />
-            Tanjore Main Road, Tiruchirappalli — 620015.
-            <br />
+            <span className="aiic-foot-addr-line">
+              AIIC Office, NIT Tiruchirappalli,
+              <br />
+              Tanjore Main Road, Tiruchirappalli — 620015.
+              <br />
+            </span>
             <a href="mailto:aiic@nitt.edu">aiic@nitt.edu</a>
           </address>
 
